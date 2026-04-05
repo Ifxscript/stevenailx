@@ -146,14 +146,14 @@
 .bottom-nav {
   display: none;
   position: fixed;
-  bottom: 24px;
+  bottom: 1%;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
   background-color: var(--color-burgundy);
   border-radius: 50px;
-  padding: 12px 24px;
-  gap: 24px;
+  padding: 8px 16px;
+  gap: 34px;
   align-items: center;
   justify-content: center;
   box-shadow: 0 8px 32px rgba(107, 45, 62, 0.35), 0 2px 8px rgba(61, 43, 43, 0.15);
