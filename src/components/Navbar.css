@@ -1,0 +1,219 @@
+/* ===================================
+   DESKTOP TOP NAVBAR
+   =================================== */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 48px;
+  background-color: transparent;
+  transition: background-color 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease;
+}
+
+.navbar.scrolled {
+  background-color: rgba(245, 237, 232, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 20px rgba(61, 43, 43, 0.06);
+}
+
+/* Logo */
+.navbar-logo {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.navbar-logo-name {
+  font-family: var(--font-body);
+  font-style: normal;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-brown);
+  letter-spacing: 0.3px;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.navbar-logo-name:hover {
+  color: var(--color-burgundy);
+}
+
+.navbar-logo-subtitle {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 400;
+  color: var(--color-blush);
+  letter-spacing: 2.5px;
+  text-transform: lowercase;
+  margin-top: -2px;
+}
+
+/* Nav Links */
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+}
+
+.navbar-link {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-brown);
+  position: relative;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  padding: 4px 0;
+}
+
+.navbar-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background-color: var(--color-burgundy);
+  transition: width 0.3s ease;
+}
+
+.navbar-link:hover {
+  color: var(--color-burgundy);
+}
+
+.navbar-link:hover::after {
+  width: 100%;
+}
+
+/* Book Now Button (Desktop) */
+.navbar-book-btn {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-white-warm);
+  background-color: var(--color-burgundy);
+  border: none;
+  padding: 10px 28px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  letter-spacing: 0.3px;
+  display: inline-block;
+}
+
+.navbar-book-btn:hover {
+  background-color: var(--color-burgundy-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(139, 58, 74, 0.3);
+}
+
+.navbar-book-btn:active {
+  transform: translateY(0);
+}
+
+/* Mobile Booking Button (top-right) */
+.navbar-mobile-book {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  color: var(--color-white-warm);
+  background-color: var(--color-burgundy);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.navbar-mobile-book:hover,
+.navbar-mobile-book:active {
+  background-color: var(--color-burgundy-dark);
+  transform: scale(1.05);
+}
+
+
+/* ===================================
+   MOBILE BOTTOM NAVBAR
+   =================================== */
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  background-color: var(--color-burgundy);
+  border-radius: 50px;
+  padding: 12px 24px;
+  gap: 24px;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 32px rgba(107, 45, 62, 0.35), 0 2px 8px rgba(61, 43, 43, 0.15);
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: var(--color-white-warm);
+  text-decoration: none;
+  transition: color 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  padding: 4px;
+}
+
+.bottom-nav-item:hover,
+.bottom-nav-item:active {
+  transform: translateY(-2px);
+}
+
+.bottom-nav-item.active {
+  color: var(--color-blush);
+}
+
+.bottom-nav-label {
+  font-family: var(--font-body);
+  font-size: 0.55rem;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+
+/* ===================================
+   RESPONSIVE
+   =================================== */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 16px 24px;
+  }
+
+  /* Hide desktop nav links and book button on mobile */
+  .navbar-links {
+    display: none;
+  }
+
+  .navbar-book-btn-desktop {
+    display: none;
+  }
+
+  /* Show booking icon on mobile */
+  .navbar-mobile-book {
+    display: flex;
+  }
+
+  /* Show bottom nav on mobile */
+  .bottom-nav {
+    display: flex;
+  }
+}

@@ -1,0 +1,123 @@
+import { useState, useEffect } from 'react';
+import { Home, Scissors, Image, Phone, ArrowUpRight } from 'lucide-react';
+import './Navbar.css';
+
+const WHATSAPP_NUMBER = '2347034872747';
+const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=Hi%20SteveNailX!%20I%27d%20like%20to%20book%20an%20appointment.`;
+
+const navLinks = [
+  { label: 'Home', href: '#home' },
+  { label: 'About', href: '#about' },
+  { label: 'Services', href: '#services' },
+  { label: 'Gallery', href: '/gallery' },
+];
+
+const bottomNavItems = [
+  { label: 'Home', href: '#home', icon: Home },
+  { label: 'Services', href: '#services', icon: Scissors },
+  { label: 'Gallery', href: '/gallery', icon: Image },
+  { label: 'Socials', href: '/socials', icon: ArrowUpRight },
+];
+
+function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 30);
+
+      const sections = ['home', 'about', 'services'];
+      for (const section of sections.reverse()) {
+        const el = document.getElementById(section);
+        if (el && window.scrollY >= el.offsetTop - 120) {
+          setActiveSection(section);
+          break;
+        }
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleNavClick = (e, href) => {
+    if (href.startsWith('#')) {
+      e.preventDefault();
+      const el = document.querySelector(href);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
+  return (
+    <>
+      {/* ===== Desktop + Mobile Top Navbar ===== */}
+      <nav className={`navbar ${scrolled ? 'scrolled' : ''}`} id="navbar">
+        {/* Logo */}
+        <div className="navbar-logo">
+          <span className="navbar-logo-name">SteveNailX</span>
+          <span className="navbar-logo-subtitle">place of beauty</span>
+        </div>
+
+        {/* Desktop Links */}
+        <ul className="navbar-links">
+          {navLinks.map((link) => (
+            <li key={link.label}>
+              <a
+                className="navbar-link"
+                href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        {/* Desktop Book Now */}
+        <a
+          className="navbar-book-btn navbar-book-btn-desktop"
+          href={WHATSAPP_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Book Now
+        </a>
+
+        {/* Mobile Booking Button (top-right) */}
+        <a
+          className="navbar-mobile-book"
+          href={WHATSAPP_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Book an appointment"
+        >
+          <Phone size={18} strokeWidth={2} />
+        </a>
+      </nav>
+
+      {/* ===== Mobile Bottom Nav ===== */}
+      <nav className="bottom-nav" aria-label="Mobile navigation">
+        {bottomNavItems.map((item) => {
+          const IconComponent = item.icon;
+          const isActive = activeSection === item.href.replace('#', '');
+
+          return (
+            <a
+              key={item.label}
+              className={`bottom-nav-item ${isActive ? 'active' : ''}`}
+              href={item.href}
+              onClick={(e) => item.href.startsWith('#') && handleNavClick(e, item.href)}
+            >
+              <IconComponent size={20} strokeWidth={1.8} />
+              <span className="bottom-nav-label">{item.label}</span>
+            </a>
+          );
+        })}
+      </nav>
+    </>
+  );
+}
+
+export default Navbar;

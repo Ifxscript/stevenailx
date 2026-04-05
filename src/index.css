@@ -1,0 +1,268 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+
+:root {
+  --color-cream: #F5EDE8;
+  --color-white-warm: #FFFAF7;
+  --color-burgundy: #8B3A4A;
+  --color-burgundy-dark: #6B2D3E;
+  --color-brown: #3D2B2B;
+  --color-blush: #D4A99A;
+  --color-blush-light: #E8D5CC;
+
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'DM Sans', 'Segoe UI', Roboto, sans-serif;
+
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-brown);
+  background-color: var(--color-cream);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Hero */
+.hero {
+  min-height: 100vh;
+  padding-top: 100px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.hero-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 700px;
+  height: 700px;
+  border-radius: 50%;
+  background-color: var(--color-burgundy);
+  opacity: 0.4;
+  z-index: 0;
+  pointer-events: none;
+  filter: blur(80px);
+  animation: breatheFade 8s ease-in-out infinite;
+}
+
+.hero-container {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Puts everything in the dead center */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 48px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-text {
+  flex: 0 1 550px; /* Forces text to a set width */
+  z-index: 10;
+}
+
+.hero-text h1 {
+  font-family: var(--font-body);
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--color-brown);
+  line-height: 1.1;
+  margin-bottom: 24px;
+  opacity: 0;
+  animation: fadeUp 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation-delay: 0.1s;
+}
+
+.hero-text p {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  color: var(--color-brown);
+  opacity: 0;
+  margin-bottom: 40px;
+  line-height: 1.6;
+  animation: fadeUpText 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation-delay: 0.25s;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  opacity: 0;
+  animation: fadeUp 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation-delay: 0.4s;
+}
+
+.btn-primary {
+  background-color: var(--color-burgundy);
+  color: var(--color-white-warm);
+  padding: 14px 32px;
+  border-radius: 50px;
+  font-weight: 500;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-burgundy-dark);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-brown);
+  border: 1px solid var(--color-brown);
+  padding: 14px 32px;
+  border-radius: 50px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-brown);
+  color: var(--color-white-warm);
+}
+
+.hero-image-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  position: relative;
+  margin-left: -120px; /* Creates the overlap while the entire group stays centered */
+}
+
+.hero-image {
+  max-height: 80vh;
+  object-fit: contain;
+  -webkit-mask-image: radial-gradient(ellipse 150% 100% at top, black 50%, transparent 85%);
+  mask-image: radial-gradient(ellipse 150% 100% at top, black 50%, transparent 85%);
+  opacity: 0;
+  animation: imageReveal 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation-delay: 0.1s;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding-top: 90px;
+    align-items: flex-start;
+  }
+
+  .hero-circle {
+    width: 350px;
+    height: 350px;
+  }
+
+  .hero-container {
+    flex-direction: column;
+    padding: 0 24px;
+    text-align: center;
+  }
+
+  .hero-text {
+    margin-bottom: 10px; /* Greatly reduced from 40px to pull image closer */
+  }
+
+  .hero-text h1 {
+    font-size: 2.2rem;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hero-buttons a {
+    width: 65%;
+  }
+
+  .hero-image-wrapper {
+    margin-left: 0;
+    justify-content: center;
+    margin-top: -220px; /* Pulls the image up forcefully into the text area */
+  }
+
+  .hero-image {
+    max-height: 50vh;
+  }
+}
+
+/* ===================================
+   ANIMATIONS
+   =================================== */
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeUpText {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 0.8;
+    transform: translateY(0);
+  }
+}
+
+@keyframes imageReveal {
+  0% {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes breatheFade {
+  0%, 100% {
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+}
