@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Home, Scissors, Image, Phone, ArrowUpRight, Search } from 'lucide-react';
 import './Navbar.css';
 
@@ -23,6 +23,13 @@ function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const searchInputRef = useRef(null);
+
+  useEffect(() => {
+    if (isSearchExpanded && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [isSearchExpanded]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -99,7 +106,15 @@ function Navbar() {
       </nav>
 
       {/* ===== Mobile Bottom Nav ===== */}
-      <div className="mobile-nav-container">
+      <div className={`mobile-nav-container ${isSearchExpanded ? 'search-active' : ''}`}>
+        {/* Backdrop overlay */}
+        {isSearchExpanded && (
+          <div 
+            className="search-backdrop" 
+            onClick={() => setIsSearchExpanded(false)}
+          />
+        )}
+
         <nav className={`bottom-nav ${isSearchExpanded ? 'shrink' : ''}`} aria-label="Mobile navigation">
           {bottomNavItems.map((item) => {
             const IconComponent = item.icon;
@@ -130,13 +145,23 @@ function Navbar() {
         >
           {isSearchExpanded ? (
             <div className="search-input-wrapper">
-              <Search size={22} strokeWidth={2} className="search-icon-active" />
-              <input 
-                type="text" 
-                placeholder="Search..." 
-                autoFocus 
-                onBlur={() => setIsSearchExpanded(false)} 
-              />
+              <div className="search-inner-bar">
+                <Search size={20} strokeWidth={2} className="search-icon-active" />
+                <input 
+                  ref={searchInputRef}
+                  type="text" 
+                  placeholder="Search art, styles, artists..." 
+                />
+              </div>
+              <button 
+                className="search-cancel-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsSearchExpanded(false);
+                }}
+              >
+                Cancel
+              </button>
             </div>
           ) : (
             <Search size={22} strokeWidth={1.8} />
