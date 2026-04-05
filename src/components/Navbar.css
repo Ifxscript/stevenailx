@@ -138,16 +138,22 @@
 }
 
 
-/* ===================================
-   MOBILE BOTTOM NAVBAR
-   =================================== */
-.bottom-nav {
+.mobile-nav-container {
   display: none;
   position: fixed;
   bottom: 3%;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  max-width: 95%;
+}
+
+.bottom-nav {
+  display: flex;
   height: 58px;
   background-color: transparent;
   backdrop-filter: blur(15px);
@@ -159,6 +165,41 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 8px 32px rgba(107, 45, 62, 0.35), 0 2px 8px rgba(61, 43, 43, 0.15);
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  overflow: hidden;
+  width: 100%;
+}
+
+.bottom-nav.collapsed {
+  width: 0;
+  padding: 0;
+  gap: 0;
+  opacity: 0;
+  border: none;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+.nav-collapse-bubble {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  background-color: transparent;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(55px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50px;
+  box-shadow: 0 8px 32px rgba(107, 45, 62, 0.35), 0 2px 8px rgba(61, 43, 43, 0.15);
+  color: var(--color-burgundy);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.nav-collapse-bubble:active {
+  transform: scale(0.9);
 }
 
 .bottom-nav-item {
@@ -215,7 +256,7 @@
   }
 
   /* Show bottom nav on mobile */
-  .bottom-nav {
+  .mobile-nav-container {
     display: flex;
   }
 }
