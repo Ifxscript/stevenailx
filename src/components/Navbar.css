@@ -154,8 +154,9 @@
 }
 
 .mobile-nav-container.nav-is-collapsed {
-  left: calc(100% - 24px); /* Pushes toward the right edge */
-  transform: translateX(-100%);
+  left: auto;
+  right: 16px;
+  transform: translateX(0); /* Lock to right side */
 }
 
 .bottom-nav {
@@ -170,10 +171,11 @@
   gap: 34px;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 20px rgba(107, 45, 62, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08); /* Softened shadows per request */
+  box-shadow: 0 4px 18px rgba(107, 45, 62, 0.12), 0 2px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
   overflow: hidden;
-  width: 100%;
+  width: auto; /* Changed from 100% to auto to allow dynamic shrinking */
+  white-space: nowrap; /* Prevent wrapping during transition */
 }
 
 .bottom-nav.collapsed {
@@ -181,8 +183,13 @@
   padding: 0;
   gap: 0;
   opacity: 0;
-  border: none;
+  border-color: transparent;
   box-shadow: none;
+  pointer-events: none;
+}
+
+.bottom-nav.collapsed .bottom-nav-item {
+  opacity: 0;
   pointer-events: none;
 }
 
