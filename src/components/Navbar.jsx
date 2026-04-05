@@ -28,6 +28,12 @@ function Navbar() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 30);
 
+      if (window.scrollY > 100) {
+        setIsNavCollapsed(true);
+      } else {
+        setIsNavCollapsed(false);
+      }
+
       const sections = ['home', 'about', 'services'];
       for (const section of sections.reverse()) {
         const el = document.getElementById(section);
@@ -99,7 +105,7 @@ function Navbar() {
       </nav>
 
       {/* ===== Mobile Bottom Nav ===== */}
-      <div className="mobile-nav-container">
+      <div className={`mobile-nav-container ${isNavCollapsed ? 'nav-is-collapsed' : ''}`}>
         <nav className={`bottom-nav ${isNavCollapsed ? 'collapsed' : ''}`} aria-label="Mobile navigation">
           {bottomNavItems.map((item) => {
             const IconComponent = item.icon;
