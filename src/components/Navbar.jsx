@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Home, Scissors, Image, Phone, ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import './Navbar.css';
+import logo from '../assets/IMG_8009-removebg-preview.png';
 
 const WHATSAPP_NUMBER = '2347034872747';
 const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=Hi%20SteveNailX!%20I%27d%20like%20to%20book%20an%20appointment.`;
@@ -61,9 +62,9 @@ function Navbar() {
       {/* ===== Desktop + Mobile Top Navbar ===== */}
       <nav className={`navbar ${scrolled ? 'scrolled' : ''}`} id="navbar">
         {/* Logo */}
-        <div className="navbar-logo">
-          <span className="navbar-logo-name">SteveNailX</span>
-          <span className="navbar-logo-subtitle">place of beauty</span>
+        <div className="navbar-logo" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          <div className="navbar-logo-monogram" style={{ '--logo-url': `url(${logo})` }}></div>
+          <span className="navbar-logo-name">STEVE NAIL X</span>
         </div>
 
         {/* Desktop Links */}
