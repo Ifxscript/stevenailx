@@ -148,7 +148,10 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
-  background-color: var(--color-burgundy);
+  background-color: transparent;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(55px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 50px;
   padding: 8px 16px;
   gap: 34px;
@@ -163,7 +166,7 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
-  color: var(--color-white-warm);
+  color: rgba(0, 0, 0, 0.5);
   text-decoration: none;
   transition: color 0.3s ease, transform 0.2s ease;
   cursor: pointer;
@@ -177,7 +180,7 @@
 }
 
 .bottom-nav-item.active {
-  color: var(--color-blush);
+  color: var(--color-burgundy);
 }
 
 .bottom-nav-label {

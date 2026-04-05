@@ -110,7 +110,11 @@ function Navbar() {
               href={item.href}
               onClick={(e) => item.href.startsWith('#') && handleNavClick(e, item.href)}
             >
-              <IconComponent size={20} strokeWidth={1.8} />
+              <IconComponent 
+                size={22} 
+                strokeWidth={isActive ? 2 : 1.8}
+                fill={isActive ? 'currentColor' : 'none'}
+              />
               <span className="bottom-nav-label">{item.label}</span>
             </a>
           );
