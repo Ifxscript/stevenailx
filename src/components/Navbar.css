@@ -16,10 +16,8 @@
 }
 
 .navbar.scrolled {
-  background-color: rgba(245, 237, 232, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 2px 20px rgba(61, 43, 43, 0.06);
+  background-color: transparent;
+  box-shadow: none;
 }
 
 /* Logo */
