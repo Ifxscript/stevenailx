@@ -27,13 +27,12 @@ function Navbar() {
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 30);
-
-      if (window.scrollY > 100) {
+      
+      // Auto-shrink on navigation scroll
+      if (window.scrollY > 10) {
         setIsNavCollapsed(true);
-      } else {
-        setIsNavCollapsed(false);
       }
-
+      
       const sections = ['home', 'about', 'services'];
       for (const section of sections.reverse()) {
         const el = document.getElementById(section);
@@ -106,6 +105,18 @@ function Navbar() {
 
       {/* ===== Mobile Bottom Nav ===== */}
       <div className={`mobile-nav-container ${isNavCollapsed ? 'nav-is-collapsed' : ''}`}>
+        {/* Collapse Toggle Bubble */}
+        <div 
+          className="nav-collapse-bubble" 
+          onClick={() => setIsNavCollapsed(!isNavCollapsed)}
+        >
+          {isNavCollapsed ? (
+            <ChevronRight size={24} strokeWidth={2.5} />
+          ) : (
+            <ChevronLeft size={24} strokeWidth={2.5} />
+          )}
+        </div>
+
         <nav className={`bottom-nav ${isNavCollapsed ? 'collapsed' : ''}`} aria-label="Mobile navigation">
           {bottomNavItems.map((item) => {
             const IconComponent = item.icon;
@@ -128,18 +139,6 @@ function Navbar() {
             );
           })}
         </nav>
-
-        {/* Collapse Toggle Bubble */}
-        <div 
-          className="nav-collapse-bubble" 
-          onClick={() => setIsNavCollapsed(!isNavCollapsed)}
-        >
-          {isNavCollapsed ? (
-            <ChevronLeft size={24} strokeWidth={2.5} />
-          ) : (
-            <ChevronRight size={24} strokeWidth={2.5} />
-          )}
-        </div>
       </div>
     </>
   );
