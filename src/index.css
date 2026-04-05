@@ -79,7 +79,8 @@ img {
 .hero-container {
   display: flex;
   align-items: center;
-  justify-content: center; /* Puts everything in the dead center */
+  justify-content: center;
+  /* Puts everything in the dead center */
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 48px;
@@ -89,7 +90,8 @@ img {
 }
 
 .hero-text {
-  flex: 0 1 550px; /* Forces text to a set width */
+  flex: 0 1 550px;
+  /* Forces text to a set width */
   z-index: 10;
 }
 
@@ -162,7 +164,8 @@ img {
   display: flex;
   justify-content: flex-start;
   position: relative;
-  margin-left: -120px; /* Creates the overlap while the entire group stays centered */
+  margin-left: -120px;
+  /* Creates the overlap while the entire group stays centered */
 }
 
 .hero-image {
@@ -193,7 +196,8 @@ img {
   }
 
   .hero-text {
-    margin-bottom: 10px; /* Greatly reduced from 40px to pull image closer */
+    margin-bottom: 10px;
+    /* Greatly reduced from 40px to pull image closer */
   }
 
   .hero-text h1 {
@@ -209,18 +213,25 @@ img {
   }
 
   .hero-buttons {
-    flex-direction: column;
+    flex-direction: row;
     width: 100%;
+    justify-content: center;
+    gap: 12px;
   }
 
   .hero-buttons a {
-    width: 65%;
+    width: auto;
+    flex: 1;
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    text-align: center;
   }
 
   .hero-image-wrapper {
     margin-left: 0;
     justify-content: center;
-    margin-top: -220px; /* Pulls the image up forcefully into the text area */
+    margin-top: -360px;
+    /* Forcefully pulls the image up behind the text block */
   }
 
   .hero-image {
@@ -236,6 +247,7 @@ img {
     opacity: 0;
     transform: translateY(30px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -247,6 +259,7 @@ img {
     opacity: 0;
     transform: translateY(30px);
   }
+
   100% {
     opacity: 0.8;
     transform: translateY(0);
@@ -258,6 +271,7 @@ img {
     opacity: 0;
     transform: scale(1.05);
   }
+
   100% {
     opacity: 1;
     transform: scale(1);
@@ -265,10 +279,13 @@ img {
 }
 
 @keyframes breatheFade {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.4;
     transform: translate(-50%, -50%) scale(1);
   }
+
   50% {
     opacity: 0.55;
     transform: translate(-50%, -50%) scale(1.05);

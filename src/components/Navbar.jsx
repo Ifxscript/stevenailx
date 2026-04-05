@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Home, Scissors, Image, Phone, ArrowUpRight } from 'lucide-react';
+import { Home, Scissors, Image, Phone, ArrowUpRight, Search } from 'lucide-react';
 import './Navbar.css';
 
 const WHATSAPP_NUMBER = '2347034872747';
@@ -22,6 +22,7 @@ const bottomNavItems = [
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -98,28 +99,50 @@ function Navbar() {
       </nav>
 
       {/* ===== Mobile Bottom Nav ===== */}
-      <nav className="bottom-nav" aria-label="Mobile navigation">
-        {bottomNavItems.map((item) => {
-          const IconComponent = item.icon;
-          const isActive = activeSection === item.href.replace('#', '');
+      <div className="mobile-nav-container">
+        <nav className={`bottom-nav ${isSearchExpanded ? 'shrink' : ''}`} aria-label="Mobile navigation">
+          {bottomNavItems.map((item) => {
+            const IconComponent = item.icon;
+            const isActive = activeSection === item.href.replace('#', '');
 
-          return (
-            <a
-              key={item.label}
-              className={`bottom-nav-item ${isActive ? 'active' : ''}`}
-              href={item.href}
-              onClick={(e) => item.href.startsWith('#') && handleNavClick(e, item.href)}
-            >
-              <IconComponent 
-                size={22} 
-                strokeWidth={isActive ? 2 : 1.8}
-                fill={isActive ? 'currentColor' : 'none'}
+            return (
+              <a
+                key={item.label}
+                className={`bottom-nav-item ${isActive ? 'active' : ''}`}
+                href={item.href}
+                onClick={(e) => item.href.startsWith('#') && handleNavClick(e, item.href)}
+              >
+                <IconComponent 
+                  size={22} 
+                  strokeWidth={isActive ? 2 : 1.8}
+                  fill={isActive ? 'currentColor' : 'none'}
+                />
+                <span className="bottom-nav-label">{item.label}</span>
+              </a>
+            );
+          })}
+        </nav>
+
+        {/* Search Bubble */}
+        <div 
+          className={`search-bubble ${isSearchExpanded ? 'expanded' : ''}`} 
+          onClick={() => !isSearchExpanded && setIsSearchExpanded(true)}
+        >
+          {isSearchExpanded ? (
+            <div className="search-input-wrapper">
+              <Search size={22} strokeWidth={2} className="search-icon-active" />
+              <input 
+                type="text" 
+                placeholder="Search..." 
+                autoFocus 
+                onBlur={() => setIsSearchExpanded(false)} 
               />
-              <span className="bottom-nav-label">{item.label}</span>
-            </a>
-          );
-        })}
-      </nav>
+            </div>
+          ) : (
+            <Search size={22} strokeWidth={1.8} />
+          )}
+        </div>
+      </div>
     </>
   );
 }
