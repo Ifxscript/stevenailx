@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
-import { Home, Scissors, Image, Phone, ArrowUpRight, Search } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Home, Scissors, Image, Phone, ArrowUpRight } from 'lucide-react';
 import './Navbar.css';
 
 const WHATSAPP_NUMBER = '2347034872747';
@@ -22,14 +22,6 @@ const bottomNavItems = [
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
-  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
-  const searchInputRef = useRef(null);
-
-  useEffect(() => {
-    if (isSearchExpanded && searchInputRef.current) {
-      searchInputRef.current.focus();
-    }
-  }, [isSearchExpanded]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -106,68 +98,28 @@ function Navbar() {
       </nav>
 
       {/* ===== Mobile Bottom Nav ===== */}
-      <div className={`mobile-nav-container ${isSearchExpanded ? 'search-active' : ''}`}>
-        {/* Backdrop overlay */}
-        {isSearchExpanded && (
-          <div 
-            className="search-backdrop" 
-            onClick={() => setIsSearchExpanded(false)}
-          />
-        )}
+      <nav className="bottom-nav" aria-label="Mobile navigation">
+        {bottomNavItems.map((item) => {
+          const IconComponent = item.icon;
+          const isActive = activeSection === item.href.replace('#', '');
 
-        <nav className={`bottom-nav ${isSearchExpanded ? 'shrink' : ''}`} aria-label="Mobile navigation">
-          {bottomNavItems.map((item) => {
-            const IconComponent = item.icon;
-            const isActive = activeSection === item.href.replace('#', '');
-
-            return (
-              <a
-                key={item.label}
-                className={`bottom-nav-item ${isActive ? 'active' : ''}`}
-                href={item.href}
-                onClick={(e) => item.href.startsWith('#') && handleNavClick(e, item.href)}
-              >
-                <IconComponent 
-                  size={22} 
-                  strokeWidth={isActive ? 2 : 1.8}
-                  fill={isActive ? 'currentColor' : 'none'}
-                />
-                <span className="bottom-nav-label">{item.label}</span>
-              </a>
-            );
-          })}
-        </nav>
-
-        {/* Search Bubble */}
-        <div 
-          className={`search-bubble ${isSearchExpanded ? 'expanded' : ''}`} 
-          onClick={() => !isSearchExpanded && setIsSearchExpanded(true)}
-        >
-          {isSearchExpanded ? (
-            <div className="search-input-wrapper">
-              <div className="search-inner-bar">
-                <Search size={20} strokeWidth={2} className="search-icon-active" />
-                <input 
-                  ref={searchInputRef}
-                  type="text" 
-                  placeholder="Search art, styles, artists..." 
-                />
-              </div>
-              <button 
-                className="search-cancel-btn"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsSearchExpanded(false);
-                }}
-              >
-                Cancel
-              </button>
-            </div>
-          ) : (
-            <Search size={22} strokeWidth={1.8} />
-          )}
-        </div>
-      </div>
+          return (
+            <a
+              key={item.label}
+              className={`bottom-nav-item ${isActive ? 'active' : ''}`}
+              href={item.href}
+              onClick={(e) => item.href.startsWith('#') && handleNavClick(e, item.href)}
+            >
+              <IconComponent 
+                size={22} 
+                strokeWidth={isActive ? 2 : 1.8}
+                fill={isActive ? 'currentColor' : 'none'}
+              />
+              <span className="bottom-nav-label">{item.label}</span>
+            </a>
+          );
+        })}
+      </nav>
     </>
   );
 }
