@@ -1,0 +1,151 @@
+.services-teaser {
+  padding: 100px 5%;
+  background-color: var(--color-pink-light); /* Assuming we have this, or fallback to off-white */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.services-teaser-header {
+  max-width: 800px;
+  margin-bottom: 60px;
+}
+
+.services-teaser-title {
+  font-family: var(--font-body);
+  font-size: 3rem;
+  font-weight: 600;
+  color: var(--color-brown);
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
+}
+
+.services-teaser-title em {
+  font-family: 'Playfair Display', serif; /* A nice serif for the italic part */
+  font-style: italic;
+  font-weight: 400;
+}
+
+.services-teaser-subtitle {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  color: rgba(61, 43, 43, 0.7);
+  line-height: 1.6;
+}
+
+.services-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 60px;
+}
+
+.service-card {
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(107, 45, 62, 0.05);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-align: left;
+}
+
+.service-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(107, 45, 62, 0.1);
+}
+
+.service-card-image {
+  height: 250px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.service-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.service-card:hover .service-card-image img {
+  transform: scale(1.05);
+}
+
+.service-card-content {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.service-card-title {
+  font-family: var(--font-body);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--color-brown);
+}
+
+.service-card-desc {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: rgba(61, 43, 43, 0.6);
+  line-height: 1.5;
+  min-height: 3em;
+}
+
+.service-card-btn {
+  background-color: var(--color-burgundy);
+  color: white;
+  text-decoration: none;
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  width: fit-content;
+  transition: background-color 0.3s ease;
+}
+
+.service-card-btn:hover {
+  background-color: var(--color-burgundy-dark);
+}
+
+.services-teaser-footer {
+  margin-top: 20px;
+}
+
+.explore-more-btn {
+  display: inline-block;
+  padding: 14px 36px;
+  border: 1px solid var(--color-burgundy);
+  color: var(--color-burgundy);
+  text-decoration: none;
+  border-radius: 50px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.explore-more-btn:hover {
+  background-color: var(--color-burgundy);
+  color: white;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .services-teaser {
+    padding: 60px 24px;
+  }
+  
+  .services-teaser-title {
+    font-size: 2.2rem;
+  }
+  
+  .services-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
