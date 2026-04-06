@@ -133,31 +133,60 @@
     font-size: 2.2rem;
   }
   
+  .services-teaser {
+    padding: 60px 0 60px 24px; /* Left padding for cards alignment, 0 right to let them bleed */
+    align-items: flex-start;
+  }
+
+  .services-teaser-caption {
+    padding-right: 24px;
+    margin-bottom: 30px;
+  }
+  
   .services-cards-grid {
-    grid-template-columns: repeat(3, 1fr); /* Keep them in the same row even on mobile */
-    gap: 8px; /* Tighter gap for small screens */
-    overflow-x: hidden;
+    display: flex;
+    grid-template-columns: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 16px;
+    padding-right: 24px; /* Padding at end of scroll */
+    width: 100vw;
+    margin-left: -24px;
+    padding-left: 24px;
+    scrollbar-width: none; /* Hide scrollbar Firefox */
+  }
+
+  .services-cards-grid::-webkit-scrollbar {
+    display: none; /* Hide scrollbar Chrome/Safari */
+  }
+
+  .service-card {
+    flex: 0 0 280px; /* Force specific card width on mobile */
+    scroll-snap-align: start;
+    border-radius: 20px;
   }
 
   .service-card-image {
-    height: 120px; /* Slimmer cards for mobile */
+    height: 180px;
   }
 
   .service-card-title {
-    font-size: 0.8rem;
+    font-size: 1.1rem;
   }
 
   .service-card-desc {
-    display: none; /* Hide descriptions on mobile to keep the single line clean */
+    display: block; /* Bring back descriptions for mobile carousel */
+    font-size: 0.85rem;
+    line-height: 1.4;
   }
 
   .service-card-btn {
-    padding: 6px 12px;
-    font-size: 0.65rem;
+    padding: 10px 20px;
+    font-size: 0.8rem;
   }
 
   .service-card-content {
-    padding: 12px;
-    gap: 8px;
+    padding: 20px;
+    gap: 12px;
   }
 }
