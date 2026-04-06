@@ -1,46 +1,34 @@
 .services-teaser {
-  padding: 100px 5%;
-  background-color: var(--color-pink-light); /* Assuming we have this, or fallback to off-white */
+  padding: 80px 5%;
+  background-color: pink; /* Match the brand's solid pink */
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
 }
 
-.services-teaser-header {
-  max-width: 800px;
-  margin-bottom: 60px;
+.services-teaser-caption {
+  width: 100%;
+  max-width: 1200px;
+  text-align: left; /* Alignment to the left can look more editorial */
+  margin-bottom: 40px;
 }
 
-.services-teaser-title {
+.services-teaser-caption p {
   font-family: var(--font-body);
-  font-size: 3rem;
-  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.35em;
+  font-weight: 500;
   color: var(--color-brown);
-  margin-bottom: 20px;
-  letter-spacing: -0.02em;
-}
-
-.services-teaser-title em {
-  font-family: 'Playfair Display', serif; /* A nice serif for the italic part */
-  font-style: italic;
-  font-weight: 400;
-}
-
-.services-teaser-subtitle {
-  font-family: var(--font-body);
-  font-size: 1.1rem;
-  color: rgba(61, 43, 43, 0.7);
-  line-height: 1.6;
+  opacity: 0.6;
 }
 
 .services-cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(3, 1fr); /* Forced 3rd column for horizontal row */
+  gap: 20px;
   width: 100%;
   max-width: 1200px;
-  margin-bottom: 60px;
+  margin-bottom: 50px;
 }
 
 .service-card {
@@ -146,6 +134,30 @@
   }
   
   .services-cards-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, 1fr); /* Keep them in the same row even on mobile */
+    gap: 8px; /* Tighter gap for small screens */
+    overflow-x: hidden;
+  }
+
+  .service-card-image {
+    height: 120px; /* Slimmer cards for mobile */
+  }
+
+  .service-card-title {
+    font-size: 0.8rem;
+  }
+
+  .service-card-desc {
+    display: none; /* Hide descriptions on mobile to keep the single line clean */
+  }
+
+  .service-card-btn {
+    padding: 6px 12px;
+    font-size: 0.65rem;
+  }
+
+  .service-card-content {
+    padding: 12px;
+    gap: 8px;
   }
 }

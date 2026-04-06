@@ -31,13 +31,8 @@ const services = [
 function ServicesTeaser() {
   return (
     <section className="services-teaser">
-      <div className="services-teaser-header">
-        <h2 className="services-teaser-title">
-          Styles that speak <em>for you.</em>
-        </h2>
-        <p className="services-teaser-subtitle">
-          A space where creativity becomes confidence and attitude, where every service is designed to highlight your unique style.
-        </p>
+      <div className="services-teaser-caption">
+        <p>DISCOVER OUR CRAFT</p>
       </div>
 
       <div className="services-cards-grid">
