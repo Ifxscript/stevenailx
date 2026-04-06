@@ -13,6 +13,9 @@
   padding: 18px 48px;
   background-color: transparent;
   transition: background-color 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease;
+  transform: translate3d(0,0,0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .navbar.scrolled {
@@ -142,7 +145,7 @@
 .mobile-nav-container {
   display: none;
   position: fixed;
-  bottom: 3%;
+  bottom: 24px; /* Use a fixed px value to avoid address bar resizing jumps */
   left: 16px; /* Anchor to the left side per request */
   z-index: 1000;
   gap: 10px;
@@ -151,6 +154,11 @@
   width: max-content;
   max-width: calc(100% - 32px);
   transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  /* Locked for mobile stability */
+  transform: translate3d(0,0,0);
+  -webkit-transform: translate3d(0,0,0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .bottom-nav {

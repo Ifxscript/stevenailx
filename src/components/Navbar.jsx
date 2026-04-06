@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { Home, Scissors, Image, Phone, ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import './Navbar.css';
 import logo from '../assets/IMG_8009-removebg-preview.png';
@@ -60,7 +61,13 @@ function Navbar() {
   return (
     <>
       {/* ===== Desktop + Mobile Top Navbar ===== */}
-      <nav className={`navbar ${scrolled ? 'scrolled' : ''}`} id="navbar">
+      <motion.nav 
+        className={`navbar ${scrolled ? 'scrolled' : ''}`} 
+        id="navbar"
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
         {/* Logo */}
         <div className="navbar-logo" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
           <div className="navbar-logo-monogram" style={{ '--logo-url': `url(${logo})` }}></div>
@@ -102,10 +109,15 @@ function Navbar() {
         >
           <Phone size={18} strokeWidth={2} />
         </a>
-      </nav>
+      </motion.nav>
 
       {/* ===== Mobile Bottom Nav ===== */}
-      <div className={`mobile-nav-container ${isNavCollapsed ? 'nav-is-collapsed' : ''}`}>
+      <motion.div 
+        className={`mobile-nav-container ${isNavCollapsed ? 'nav-is-collapsed' : ''}`}
+        initial={{ x: -100, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ delay: 1, duration: 0.8 }}
+      >
         {/* Collapse Toggle Bubble */}
         <div 
           className="nav-collapse-bubble" 
@@ -140,7 +152,7 @@ function Navbar() {
             );
           })}
         </nav>
-      </div>
+      </motion.div>
     </>
   );
 }

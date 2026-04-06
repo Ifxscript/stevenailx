@@ -1,0 +1,127 @@
+.service-card {
+  width: 100%;
+  aspect-ratio: 1 / 1; /* Forced square shape */
+  border-radius: 24px;
+  overflow: hidden;
+  background-color: transparent; /* Changed to transparent for glass effect */
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px); /* Matches nav icon glass technique */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease;
+  box-shadow: 0 12px 30px rgba(107, 45, 62, 0.08);
+}
+
+.service-card-image {
+  width: 100%;
+  height: 60%; /* 60% of the square height */
+  overflow: hidden;
+}
+
+.service-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.service-card-content {
+  padding: 16px 20px;
+  height: 40%; /* Remaining 40% of the square height */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Space out title and button */
+  gap: 8px;
+  text-align: left;
+}
+
+.service-card-title {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-brown);
+  margin: 0;
+}
+
+.service-card-desc {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: rgba(61, 43, 43, 0.7);
+  line-height: 1.4;
+  line-clamp: 2;
+  -webkit-line-clamp: 2; /* Limit to 2 lines to ensure square fits */
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  overflow: hidden;
+}
+
+.service-card-explore {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background-color: var(--color-burgundy);
+  color: white;
+  text-decoration: none;
+  height: 42px;
+  width: 42px;
+  position: absolute; /* Floating over image */
+  top: 16px;
+  right: 16px;
+  border-radius: 40px;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  z-index: 5;
+}
+
+.explore-text {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: white;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.4s ease;
+  white-space: nowrap;
+  padding-left: 16px;
+}
+
+.explore-icon {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hover effect to expand and reveal 'Explore' */
+.service-card:hover .service-card-explore {
+  width: 120px;
+  background-color: var(--color-burgundy-dark);
+}
+
+.service-card:hover .explore-text {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Ensure mobile also shows the expand behavior or keeps it for swiping */
+@media (max-width: 768px) {
+  .service-card {
+    flex: 0 0 calc(100vw - 80px);
+    max-width: 320px;
+  }
+
+  .service-card-image {
+    height: 60%;
+  }
+
+  .service-card-explore {
+    /* Keep it slightly expanded or more prominent for touch */
+    width: 42px; 
+  }
+}

@@ -7,17 +7,12 @@
   --color-burgundy-dark: #6B2D3E;
   --color-brown: #3D2B2B;
   --color-blush: #D4A99A;
-  --color-blush-light: #E8D5CC;
   --color-pink-light: #FBF4F4;
+  --color-brand-pink: #FFC0CB; /* The standard CSS pink but as a solid variable */
 
   --font-heading: 'Playfair Display', Georgia, serif;
   --font-body: 'DM Sans', 'Segoe UI', Roboto, sans-serif;
 
-  font-family: var(--font-body);
-  font-size: 16px;
-  line-height: 1.5;
-  color: var(--color-brown);
-  background-color: pink;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -32,9 +27,25 @@
   box-sizing: border-box;
 }
 
-body {
+body, .landing-page, #root {
+  background-color: var(--color-brand-pink) !important;
   margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-brown);
   min-height: 100vh;
+}
+
+section, .hero, .services-teaser {
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: none !important;
 }
 
 a {
@@ -51,14 +62,15 @@ img {
   display: block;
 }
 
+
 /* Hero */
 .hero {
   min-height: 100vh;
   padding-top: 100px;
   display: flex;
   align-items: center;
-  overflow: hidden;
   position: relative;
+  /* Removed overflow hidden to prevent blur cutoff lines */
 }
 
 .hero-circle {
@@ -276,6 +288,97 @@ img {
   100% {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+/* Teaser Layout */
+.services-teaser {
+  padding: 80px 5%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.services-teaser-caption {
+  width: 100%;
+  max-width: 1200px;
+  text-align: left; /* Alignment to the left can look more editorial */
+  margin-bottom: 40px;
+}
+
+.services-teaser-caption p {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  letter-spacing: 0.35em;
+  font-weight: 500;
+  color: var(--color-brown);
+  opacity: 0.6;
+}
+
+.services-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Forced 3rd column for horizontal row */
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 50px;
+}
+
+.services-teaser-footer {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 1200px;
+  text-align: right; /* Editorial look: bottom link on the opposite side? Or keep centered? I'll match the left caption */
+  text-align: left;
+}
+
+.explore-more-btn {
+  display: inline-block;
+  color: var(--color-brown);
+  opacity: 0.6;
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  position: relative;
+  padding-bottom: 4px;
+}
+
+.explore-more-btn:hover {
+  opacity: 1;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .services-teaser {
+    padding: 60px 0 60px 24px;
+    align-items: flex-start;
+  }
+
+  .services-teaser-caption {
+    padding-right: 24px;
+    margin-bottom: 30px;
+  }
+  
+  .services-cards-grid {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden !important; /* Force-disable vertical scroll */
+    touch-action: pan-x; /* Locks movement to only horizontal swipes */
+    scroll-snap-type: x mandatory;
+    gap: 16px;
+    padding-right: 24px;
+    width: 100vw;
+    margin-left: -24px;
+    padding-left: 24px;
+    scrollbar-width: none;
+  }
+
+  .services-cards-grid::-webkit-scrollbar {
+    display: none;
   }
 }
 
