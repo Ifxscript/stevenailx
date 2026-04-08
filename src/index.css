@@ -104,6 +104,7 @@ img {
 
 .hero-text {
   flex: 0 1 550px;
+  max-width: 560px;
   /* Forces text to a set width */
   z-index: 10;
 }
@@ -118,6 +119,13 @@ img {
   opacity: 0;
   animation: fadeUp 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
   animation-delay: 0.1s;
+  white-space: pre-line; /* Allows admin-provided line breaks */
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .hero-text p {
@@ -129,6 +137,13 @@ img {
   line-height: 1.6;
   animation: fadeUpText 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
   animation-delay: 0.25s;
+  white-space: pre-line; /* Allows admin-provided line breaks */
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .hero-buttons {
@@ -217,12 +232,16 @@ img {
     font-size: 1.8rem;
     margin-bottom: 8px;
     line-height: 1.15;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
   }
 
   .hero-text p {
     font-size: 0.95rem;
     margin-bottom: 24px;
     line-height: 1.4;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
   }
 
   .hero-buttons {
