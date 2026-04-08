@@ -208,7 +208,7 @@ img {
 
 @media (max-width: 768px) {
   .hero {
-    padding-top: 170px;
+    padding-top: 20vh;
     align-items: flex-start;
   }
 
@@ -262,12 +262,12 @@ img {
   .hero-image-wrapper {
     margin-left: 0;
     justify-content: center;
-    margin-top: -360px;
+    margin-top: -35vh;
     /* Forcefully pulls the image up behind the text block */
   }
 
   .hero-image {
-    max-height: 50vh;
+    max-height: 35vh;
   }
 }
 
@@ -412,5 +412,29 @@ img {
   50% {
     opacity: 0.55;
     transform: translate(-50%, -50%) scale(1.05);
+  }
+}
+
+/* iPhone SE / very small phones */
+@media (max-width: 380px) and (max-height: 700px) {
+  .hero {
+    padding-top: 20vh;
+  }
+
+  .hero-text h1 {
+    font-size: 1.6rem;
+  }
+
+  .hero-text p {
+    font-size: 0.88rem;
+    margin-bottom: 18px;
+  }
+
+  .hero-image-wrapper {
+    margin-top: -52vh;
+  }
+
+  .hero-image {
+    max-height: 34vh;
   }
 }
