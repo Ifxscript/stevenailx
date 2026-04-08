@@ -208,6 +208,7 @@ img {
 
 @media (max-width: 768px) {
   .hero {
+    height: 60vh;
     padding-top: 20vh;
     align-items: flex-start;
   }
@@ -262,7 +263,7 @@ img {
   .hero-image-wrapper {
     margin-left: 0;
     justify-content: center;
-    margin-top: -35vh;
+    margin-top: -320px;
     /* Forcefully pulls the image up behind the text block */
   }
 
