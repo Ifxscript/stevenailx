@@ -208,7 +208,7 @@ img {
 
 @media (max-width: 768px) {
   .hero {
-    height: 60vh;
+    height: 75vh;
     padding-top: 20vh;
     align-items: flex-start;
   }
