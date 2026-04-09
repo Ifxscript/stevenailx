@@ -133,10 +133,10 @@ function Hero() {
               <motion.div
                 className="hero-copy-block"
                 key={`hero-copy-${activeSlide.id}`}
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.45, ease: 'easeInOut' }}
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
               >
                 <motion.h1 variants={itemVariants}>{safeHeading}</motion.h1>
                 <motion.p variants={itemVariants}>{safeSubheading}</motion.p>
@@ -145,7 +145,12 @@ function Hero() {
           </AnimatePresence>
           
           {activeSlide && (
-            <motion.div className="hero-buttons" variants={itemVariants}>
+            <motion.div 
+              className="hero-buttons" 
+              variants={itemVariants}
+              initial="hidden"
+              animate="visible"
+            >
               {ctaPrimary && (
                 <a
                   href={ctaPrimary.href}
@@ -170,22 +175,22 @@ function Hero() {
           )}
         </div>
 
-        <motion.div className="hero-image-wrapper" variants={imageVariants}>
-          <AnimatePresence mode="wait">
+        <div className="hero-image-wrapper">
+          <AnimatePresence mode="popLayout">
             {activeSlide && (
               <motion.img
                 key={activeSlide.id}
                 src={activeSlide.src}
                 alt={activeSlide.alt}
                 className="hero-image"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5, ease: 'easeInOut' }}
+                variants={imageVariants}
+                initial="hidden"
+                animate="visible"
+                exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.4 } }}
               />
             )}
           </AnimatePresence>
-        </motion.div>
+        </div>
 
       </motion.div>
     </section>

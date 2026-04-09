@@ -1,0 +1,100 @@
+.services-page {
+  background-color: var(--color-brand-pink);
+  min-height: 100vh;
+}
+
+.services-page-header {
+  padding: 180px 48px 80px;
+  background-color: var(--color-burgundy);
+  color: var(--color-white-warm);
+  text-align: left;
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.services-page-header h1 {
+  font-family: var(--font-body);
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: 16px;
+}
+
+.services-page-header .subtitle {
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  opacity: 0.85;
+  max-width: 600px;
+}
+
+.services-page-content {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 100px 48px;
+}
+
+.service-category-section {
+  margin-bottom: 140px;
+}
+
+.category-info {
+  margin-bottom: 60px;
+  max-width: 800px;
+}
+
+.category-title {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  letter-spacing: 0.4em;
+  font-weight: 600;
+  color: var(--color-brown);
+  opacity: 0.5;
+  margin-bottom: 16px;
+}
+
+.category-desc {
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  line-height: 1.2;
+  color: var(--color-brown);
+  letter-spacing: -0.01em;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 80px 48px;
+}
+
+/* Ensure current Ghost Cards adapt to the grid width */
+.services-grid .card {
+  width: 100%;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .services-page-header {
+    padding: 140px 24px 60px;
+  }
+
+  .services-page-content {
+    padding: 60px 24px;
+  }
+
+  .service-category-section {
+    margin-bottom: 100px;
+  }
+
+  .category-info {
+    margin-bottom: 40px;
+  }
+
+  .services-grid {
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+}

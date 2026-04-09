@@ -8,7 +8,8 @@
   --color-brown: #3D2B2B;
   --color-blush: #D4A99A;
   --color-pink-light: #FBF4F4;
-  --color-brand-pink: #FFC0CB; /* The standard CSS pink but as a solid variable */
+  --color-brand-pink: #FFC0CB;
+  /* The standard CSS pink but as a solid variable */
 
   --font-heading: 'Playfair Display', Georgia, serif;
   --font-body: 'DM Sans', 'Segoe UI', Roboto, sans-serif;
@@ -27,10 +28,14 @@
   box-sizing: border-box;
 }
 
-body, .landing-page, #root {
+body,
+.landing-page,
+#root {
   background-color: var(--color-brand-pink) !important;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 body {
@@ -41,7 +46,9 @@ body {
   min-height: 100vh;
 }
 
-section, .hero, .services-teaser {
+section,
+.hero,
+.services-teaser {
   background-color: transparent !important;
   background-image: none !important;
   box-shadow: none !important;
@@ -105,7 +112,8 @@ img {
 .hero-text {
   flex: 0 1 550px;
   max-width: 560px;
-  /* Forces text to a set width */
+  min-height: 480px;
+  /* Stabilizes layout during slide transitions */
   z-index: 10;
 }
 
@@ -116,10 +124,8 @@ img {
   color: var(--color-brown);
   line-height: 1.1;
   margin-bottom: 24px;
-  opacity: 0;
-  animation: fadeUp 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-  animation-delay: 0.1s;
-  white-space: pre-line; /* Allows admin-provided line breaks */
+  white-space: pre-line;
+  /* Allows admin-provided line breaks */
   overflow-wrap: anywhere;
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -132,12 +138,10 @@ img {
   font-family: var(--font-body);
   font-size: 1.1rem;
   color: var(--color-brown);
-  opacity: 0;
   margin-bottom: 40px;
   line-height: 1.6;
-  animation: fadeUpText 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-  animation-delay: 0.25s;
-  white-space: pre-line; /* Allows admin-provided line breaks */
+  white-space: pre-line;
+  /* Allows admin-provided line breaks */
   overflow-wrap: anywhere;
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -150,9 +154,6 @@ img {
   display: flex;
   gap: 16px;
   align-items: center;
-  opacity: 0;
-  animation: fadeUp 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-  animation-delay: 0.4s;
 }
 
 .btn-primary {
@@ -201,14 +202,11 @@ img {
   object-fit: contain;
   -webkit-mask-image: radial-gradient(ellipse 150% 100% at top, black 50%, transparent 85%);
   mask-image: radial-gradient(ellipse 150% 100% at top, black 50%, transparent 85%);
-  opacity: 0;
-  animation: imageReveal 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-  animation-delay: 0.1s;
 }
 
 @media (max-width: 768px) {
   .hero {
-  
+
     padding-top: 20vh;
     align-items: flex-start;
   }
@@ -226,7 +224,8 @@ img {
 
   .hero-text {
     margin-bottom: 10px;
-    /* Greatly reduced from 40px to pull image closer */
+    min-height: 380px;
+    /* Reduced for mobile viewport */
   }
 
   .hero-text h1 {
@@ -313,17 +312,19 @@ img {
 
 /* Teaser Layout */
 .services-teaser {
-  padding: 40px 5%;
+  padding: 20px 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .services-teaser-caption {
   width: 100%;
   max-width: 1200px;
-  text-align: left; /* Alignment to the left can look more editorial */
-  margin-bottom: 40px;
+  padding-left: 32px;
+  /* Fixed tight padding aligned with cards */
+  text-align: left;
+  margin-bottom: 24px;
 }
 
 .services-teaser-caption p {
@@ -337,63 +338,47 @@ img {
 
 .services-cards-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Forced 3rd column for horizontal row */
-  gap: 20px;
-  width: 100%;
-  max-width: 1200px;
-  margin-bottom: 50px;
+  grid-auto-flow: column;
+  grid-auto-columns: 320px;
+  /* Matched to Card.css width */
+  gap: 48px;
+  /* High-end breathing room */
+  width: 100vw;
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 0 48px;
+  /* Increased side padding for Web view */
+  margin-bottom: 40px;
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
 }
 
-.services-teaser-footer {
-  margin-top: 20px;
-  width: 100%;
-  max-width: 1200px;
-  text-align: right; /* Editorial look: bottom link on the opposite side? Or keep centered? I'll match the left caption */
-  text-align: left;
+.services-cards-grid::-webkit-scrollbar {
+  display: none;
 }
 
-.explore-more-btn {
-  display: inline-block;
-  color: var(--color-brown);
-  opacity: 0.6;
-  text-decoration: none;
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  font-weight: 500;
-  letter-spacing: 0.35em;
-  text-transform: uppercase;
-  transition: all 0.3s ease;
-  position: relative;
-  padding-bottom: 4px;
-}
+/* Removed legacy footer as Explore is now a Card */
 
-.explore-more-btn:hover {
-  opacity: 1;
-}
+/* Explore More button styles transitioned to .explore-card */
 
 /* Mobile adjustments */
 @media (max-width: 768px) {
   .services-teaser {
-    padding: 60px 0 60px 24px;
-    align-items: flex-start;
+    padding: 20px 0;
   }
 
   .services-teaser-caption {
-    padding-right: 24px;
-    margin-bottom: 30px;
+    padding-left: 20px;
+    margin-bottom: 20px;
   }
-  
+
   .services-cards-grid {
     display: flex;
     overflow-x: auto;
-    overflow-y: hidden !important; /* Force-disable vertical scroll */
-    touch-action: pan-x; /* Locks movement to only horizontal swipes */
-    scroll-snap-type: x mandatory;
+    padding: 0 20px;
     gap: 16px;
-    padding-right: 24px;
-    width: 100vw;
-    margin-left: -24px;
-    padding-left: 24px;
+    width: 100%;
+    max-width: 100vw;
     scrollbar-width: none;
   }
 
@@ -437,5 +422,242 @@ img {
 
   .hero-image {
     max-height: 34vh;
+  }
+}
+
+/* ===================================
+   FOOTER
+   =================================== */
+.footer {
+  background-color: var(--color-burgundy);
+  color: var(--color-cream);
+  padding: 100px 0 40px;
+  position: relative;
+  overflow: hidden;
+  margin-top: 60px;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 48px;
+  position: relative;
+  z-index: 2;
+}
+
+.footer-main {
+  display: flex;
+  justify-content: space-between;
+  gap: 80px;
+  margin-bottom: 80px;
+}
+
+.footer-about {
+  flex: 0 1 420px;
+  text-align: left;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.footer-logo span {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--color-white-warm);
+}
+
+.footer-logo .logo-text {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  font-weight: 600;
+  color: var(--color-white-warm);
+}
+
+.footer-blurb {
+  font-family: var(--font-body);
+  font-size: 1.15rem;
+  line-height: 1.6;
+  opacity: 0.85;
+  margin-bottom: 32px;
+  color: var(--color-pink-light);
+}
+
+.footer-socials {
+  display: flex;
+  gap: 16px;
+}
+
+.footer-socials a {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 250, 247, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-white-warm);
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.footer-socials a:hover {
+  background-color: var(--color-white-warm);
+  color: var(--color-burgundy);
+  border-color: var(--color-white-warm);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.footer-links-group {
+  display: flex;
+  gap: 60px;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.footer-column h4 {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin-bottom: 28px;
+  color: var(--color-blush);
+  font-weight: 600;
+}
+
+.footer-column ul li {
+  margin-bottom: 14px;
+}
+
+.footer-column ul li a,
+.footer-column ul li p {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-white-warm);
+  opacity: 0.65;
+  transition: all 0.3s ease;
+  display: block;
+}
+
+.footer-column ul li a:hover {
+  opacity: 1;
+  padding-left: 5px;
+  color: var(--color-blush);
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 40px;
+  border-top: 1px solid rgba(255, 250, 247, 0.1);
+}
+
+.footer-bottom p {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  opacity: 0.4;
+  letter-spacing: 0.05em;
+}
+
+.back-to-top {
+  background: transparent;
+  border: 1px solid rgba(255, 250, 247, 0.15);
+  color: var(--color-white-warm);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+
+.back-to-top:hover {
+  background-color: var(--color-white-warm);
+  color: var(--color-burgundy);
+  border-color: var(--color-white-warm);
+  transform: scale(1.1);
+}
+
+.footer-signature {
+  position: absolute;
+  bottom: -5%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-heading);
+  font-size: clamp(8rem, 20vw, 25rem);
+  font-weight: 700;
+  color: rgba(255, 250, 247, 0.03);
+  pointer-events: none;
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+  z-index: 1;
+}
+
+@media (max-width: 992px) {
+  .footer-main {
+    flex-direction: column;
+    gap: 60px;
+    align-items: flex-start;
+  }
+
+  .footer-links-group {
+    justify-content: flex-start;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 80px 0 40px;
+  }
+
+  .footer-container {
+    padding: 0 32px;
+  }
+
+  .footer-main {
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-about {
+    text-align: center;
+  }
+
+  .footer-logo {
+    justify-content: center;
+  }
+
+  .footer-socials {
+    justify-content: center;
+  }
+
+  .footer-links-group {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+  }
+
+  .footer-column {
+    flex: 0 1 140px;
+  }
+
+  .footer-bottom {
+    flex-direction: column-reverse;
+    gap: 24px;
+    text-align: center;
+  }
+
+  .footer-signature {
+    font-size: 25vw;
+    bottom: 5%;
   }
 }

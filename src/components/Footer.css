@@ -1,0 +1,191 @@
+.site-footer {
+  background-color: var(--color-burgundy);
+  color: var(--color-white-warm);
+  padding: 80px 0 40px;
+  font-family: var(--font-body);
+  position: relative;
+  z-index: 10;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+
+.footer-main {
+  display: flex;
+  justify-content: space-between;
+  gap: 60px;
+  margin-bottom: 80px;
+}
+
+/* Left Brand Section */
+.footer-brand {
+  flex: 0 0 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.footer-logo-text {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-bottom: 24px;
+  color: var(--color-white-warm);
+}
+
+.footer-about-text {
+  font-size: 0.95rem;
+  line-height: 1.8;
+  opacity: 0.75;
+  margin-bottom: 32px;
+}
+
+/* The Pill Button */
+.app-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background-color: var(--color-white-warm);
+  border: 1px solid rgba(0,0,0,0.05);
+  padding: 12px 28px;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--color-burgundy);
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.app-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Column Grid */
+.footer-columns {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+  flex: 1;
+}
+
+.footer-column h3 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin-bottom: 28px;
+  color: var(--color-white-warm);
+  opacity: 0.6;
+}
+
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-column ul li {
+  margin-bottom: 16px;
+}
+
+.footer-column ul li a,
+.footer-column ul li .static-text {
+  font-size: 0.95rem;
+  color: var(--color-white-warm);
+  opacity: 0.85;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.footer-column ul li a:hover {
+  opacity: 1;
+  transform: translateX(4px);
+}
+
+/* Shadcn-Style Icons */
+.shadcn-icon {
+  width: 16px;
+  height: 16px;
+  opacity: 0.6;
+}
+
+/* Bottom Bar */
+.footer-bottom {
+  border-top: 1px solid rgba(255, 250, 247, 0.1);
+  padding-top: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--color-white-warm);
+  opacity: 0.5;
+}
+
+.footer-lang {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+/* Mobile Responsiveness - LEFT ALIGNED */
+@media (max-width: 1024px) {
+  .footer-columns {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .site-footer {
+    padding: 60px 0 30px;
+  }
+
+  .footer-container {
+    padding: 0 24px;
+  }
+
+  .footer-main {
+    flex-direction: column;
+    gap: 60px;
+    text-align: left; /* Strict Left Alignment */
+    align-items: flex-start;
+  }
+  
+  .footer-brand {
+    flex: none;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .footer-columns {
+    grid-template-columns: 1fr;
+    gap: 48px;
+    width: 100%;
+    text-align: left;
+  }
+  
+  .footer-column h3 {
+    margin-bottom: 20px;
+  }
+
+  .footer-column ul li a {
+    justify-content: flex-start;
+  }
+
+  .footer-bottom {
+    flex-direction: column-reverse;
+    gap: 24px;
+    text-align: left;
+    align-items: flex-start;
+    border-top: 1px solid rgba(255, 250, 247, 0.1);
+    padding-top: 30px;
+  }
+}
