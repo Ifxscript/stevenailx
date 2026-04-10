@@ -1,5 +1,5 @@
 import { aboutData } from '../data/about';
-import Navbar from '../components/Navbar';
+import BackButton from '../components/BackButton';
 import Footer from '../components/Footer';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
@@ -28,7 +28,7 @@ const staggerContainer = {
 function SocialsPage() {
   return (
     <div className="socials-page">
-      <Navbar />
+      <BackButton />
       
       <main className="socials-container">
         

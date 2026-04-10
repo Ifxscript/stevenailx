@@ -1,4 +1,4 @@
-import Navbar from '../components/Navbar';
+import BackButton from '../components/BackButton';
 import Footer from '../components/Footer';
 import Card from '../components/Card';
 import { services } from '../data/services';
@@ -28,7 +28,7 @@ const staggerContainer = {
 function ServicesPage() {
   return (
     <div className="services-page">
-      <Navbar />
+      <BackButton />
       
       {/* Page Header */}
       <header className="services-page-header">

@@ -29,13 +29,16 @@
 }
 
 body,
-.landing-page,
 #root {
-  background-color: var(--color-brand-pink) !important;
+  background-color: #ffffff;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
   width: 100%;
+}
+
+.landing-page {
+  background: linear-gradient(to bottom, var(--color-brand-pink) 0%, #ffffff 85vh);
 }
 
 body {

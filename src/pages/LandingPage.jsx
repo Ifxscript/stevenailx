@@ -1,6 +1,7 @@
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import TeaserSection from '../components/TeaserSection';
+import SneakPeek from '../components/SneakPeek';
 import Footer from '../components/Footer';
 import { services } from '../data/services';
 import { otherServices } from '../data/otherServices';
@@ -34,15 +35,8 @@ function LandingPage() {
         footerText="View more beauty services"
       />
 
-      {/* Gallery Section */}
-      <TeaserSection 
-        id="gallery"
-        title="GALLERY SNEAK PEEK"
-        data={galleryData}
-        footerLink="/gallery"
-        footerText="View full gallery"
-        type="gallery"
-      />
+      {/* Gallery Sneak Peek */}
+      <SneakPeek data={galleryData} />
 
       <Footer />
     </div>

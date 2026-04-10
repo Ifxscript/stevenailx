@@ -1,0 +1,217 @@
+/* ===================================
+   SNEAK PEEK — EDITORIAL COLLAGE
+   =================================== */
+.sneak-peek {
+  width: 100%;
+  overflow: hidden;
+}
+
+/* ===================================
+   DESKTOP: HERO + SIDE COLLAGE
+   =================================== */
+.sneak-peek-collage {
+  display: flex;
+  width: 100%;
+  height: 75vh;
+  min-height: 500px;
+}
+
+/* The dominant hero image — always large */
+.collage-hero {
+  flex: 3;
+  overflow: hidden;
+}
+
+.collage-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.collage-hero:hover img {
+  transform: scale(1.03);
+}
+
+/* Side panel — remaining images */
+.collage-side {
+  flex: 2;
+  display: grid;
+}
+
+.collage-cell {
+  overflow: hidden;
+}
+
+.collage-cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.collage-cell:hover img {
+  transform: scale(1.05);
+}
+
+/* ---- Side layouts based on count ---- */
+
+/* 1 side image: fills entire right */
+.side-1 {
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+}
+
+/* 2 side images: stacked vertically */
+.side-2 {
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+
+/* 3 side images: stacked vertically */
+.side-3 {
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+}
+
+/* 4 side images: 2×2 grid */
+.side-4 {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+
+/* 5 side images: top wide + 2×2 below */
+.side-5 {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+}
+.side-5 .side-cell-0 {
+  grid-column: 1 / -1;
+}
+
+/* 6 side images: 2 cols × 3 rows */
+.side-6 {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+}
+
+/* 7 side images: top wide + 2×3 below */
+.side-7 {
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+}
+.side-7 .side-cell-0 {
+  grid-column: 1 / -1;
+}
+
+/* 8 side images: 2 cols × 4 rows */
+.side-8 {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
+}
+
+/* 9 side images: 3×3 grid */
+.side-9 {
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+}
+
+/* ===================================
+   MOBILE: SWIPEABLE CAROUSEL
+   =================================== */
+.sneak-peek-mobile {
+  display: none;
+  position: relative;
+  width: 100%;
+}
+
+.carousel-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.carousel-track::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  scroll-snap-align: start;
+}
+
+.carousel-slide img {
+  width: 100%;
+  height: 65vh;
+  object-fit: cover;
+  display: block;
+}
+
+/* Pagination dots */
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 0;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--color-brown);
+  opacity: 0.2;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.dot.active {
+  opacity: 0.8;
+  transform: scale(1.3);
+}
+
+/* ===================================
+   EXPLORE MORE LINK
+   =================================== */
+.sneak-peek-footer {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.explore-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-burgundy);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: all 0.3s ease;
+}
+
+.explore-link:hover {
+  gap: 16px;
+  opacity: 0.75;
+}
+
+/* ===================================
+   RESPONSIVE
+   =================================== */
+@media (max-width: 768px) {
+  .sneak-peek-collage {
+    display: none;
+  }
+
+  .sneak-peek-mobile {
+    display: block;
+  }
+
+  .sneak-peek-footer {
+    padding: 28px 0;
+  }
+}

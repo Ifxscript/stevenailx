@@ -19,8 +19,10 @@
 }
 
 .navbar.scrolled {
-  background-color: transparent;
-  box-shadow: none;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
 }
 
 /* Logo area */
@@ -120,133 +122,126 @@
   transform: translateY(0);
 }
 
-/* Mobile Booking Button (top-right) */
-.navbar-mobile-book {
+/* Mobile Menu Toggle (top-right) */
+.navbar-mobile-toggle {
   display: none;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  color: var(--color-white-warm);
-  background-color: var(--color-burgundy);
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  color: var(--color-burgundy);
+  background-color: transparent;
+  border: none;
+  transition: transform 0.2s ease;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  position: relative;
+  z-index: 1100;
 }
 
-.navbar-mobile-book:hover,
-.navbar-mobile-book:active {
-  background-color: var(--color-burgundy-dark);
-  transform: scale(1.05);
-}
-
-
-.mobile-nav-container {
-  display: none;
+/* Full-Screen Mobile Drawer Overlay */
+.mobile-drawer-overlay {
   position: fixed;
-  bottom: 24px; /* Use a fixed px value to avoid address bar resizing jumps */
-  left: 16px; /* Anchor to the left side per request */
-  z-index: 1000;
-  gap: 10px;
-  align-items: center;
-  justify-content: flex-start;
-  width: max-content;
-  max-width: calc(100% - 32px);
-  transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-  /* Locked for mobile stability */
-  transform: translate3d(0,0,0);
-  -webkit-transform: translate3d(0,0,0);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
-.bottom-nav {
-  display: flex;
-  height: 58px;
-  background-color: transparent;
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(55px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 50px;
-  padding: 0 18px;
-  gap: 30px;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 14px rgba(107, 45, 62, 0.1), 0 2px 4px rgba(0, 0, 0, 0.05); /* Even softer shadows */
-  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-  overflow: hidden;
-  width: auto; /* Changed from 100% to auto to allow dynamic shrinking */
-  white-space: nowrap; /* Prevent wrapping during transition */
-}
-
-.bottom-nav.collapsed {
-  width: 0;
-  padding: 0;
-  gap: 0;
-  opacity: 0;
-  border-color: transparent;
-  box-shadow: none;
-  pointer-events: none;
-}
-
-.bottom-nav.collapsed .bottom-nav-item {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.nav-collapse-bubble {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 58px;
-  height: 58px;
-  background-color: transparent;
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(55px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 50px;
-  box-shadow: 0 4px 14px rgba(107, 45, 62, 0.1), 0 2px 4px rgba(0, 0, 0, 0.05); /* Even softer shadows */
-  color: var(--color-burgundy);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  flex-shrink: 0;
-}
-
-.nav-collapse-bubble:active {
-  transform: scale(0.9);
-}
-
-.bottom-nav-item {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+  z-index: 1050;
+  padding: 100px 30px 40px;
   display: flex;
   flex-direction: column;
+}
+
+.drawer-content {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Close button inside drawer */
+.drawer-close-btn {
+  position: absolute;
+  top: -60px;
+  right: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  color: rgba(0, 0, 0, 0.5);
-  text-decoration: none;
-  transition: color 0.3s ease, transform 0.2s ease;
+  background: none;
+  border: none;
+  color: var(--color-brown);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  padding: 4px;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
 }
 
-.bottom-nav-item:hover,
-.bottom-nav-item:active {
-  transform: translateY(-2px);
+.drawer-close-btn:hover {
+  opacity: 1;
 }
 
-.bottom-nav-item.active {
-  color: var(--color-burgundy);
-}
-
-.bottom-nav-label {
+.drawer-header {
   font-family: var(--font-body);
-  font-size: 0.55rem;
-  font-weight: 500;
-  letter-spacing: 0.2px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-brown);
+  margin-bottom: 28px;
+  letter-spacing: -0.02em;
 }
 
+.drawer-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 2-Box Card Styling */
+.drawer-card {
+  background-color: white;
+  border-radius: 28px;
+  box-shadow: 0 10px 40px rgba(139, 58, 74, 0.08);
+  overflow: hidden;
+}
+
+.card-links {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-link-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 28px;
+  text-decoration: none;
+  border-bottom: none;
+  transition: background-color 0.2s ease;
+}
+
+.card-link-item:last-child {
+  border-bottom: none;
+}
+
+.card-link-item:active {
+  background-color: rgba(139, 58, 74, 0.02);
+}
+
+.drawer-card .link-label {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-burgundy);
+  letter-spacing: 0.01em;
+}
+
+.drawer-card .link-arrow {
+  color: var(--color-burgundy);
+  opacity: 0.8;
+}
 
 /* ===================================
    RESPONSIVE
@@ -256,7 +251,12 @@
     padding: 16px 24px;
   }
 
-  /* Hide desktop nav links and book button on mobile */
+  /* Stabilize header when menu is open */
+  .navbar.menu-open {
+    background-color: #ffffff;
+    box-shadow: none;
+  }
+
   .navbar-links {
     display: none;
   }
@@ -265,13 +265,13 @@
     display: none;
   }
 
-  /* Show booking icon on mobile */
-  .navbar-mobile-book {
+  /* Show toggle on mobile only when menu is closed */
+  .navbar-mobile-toggle {
     display: flex;
   }
 
-  /* Show bottom nav on mobile */
-  .mobile-nav-container {
-    display: flex;
+  /* Hide hamburger when drawer is open */
+  .navbar.menu-open .navbar-mobile-toggle {
+    display: none;
   }
 }

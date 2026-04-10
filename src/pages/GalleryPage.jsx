@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-import Navbar from '../components/Navbar';
+import BackButton from '../components/BackButton';
 import Footer from '../components/Footer';
 import { galleryData } from '../data/gallery';
 import './GalleryPage.css';
@@ -56,7 +56,7 @@ function GalleryPage() {
 
   return (
     <div className="gallery-page">
-      <Navbar />
+      <BackButton />
 
       <header className="gallery-page-header">
         <motion.div 
