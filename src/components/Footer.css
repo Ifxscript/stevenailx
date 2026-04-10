@@ -20,52 +20,8 @@
   margin-bottom: 80px;
 }
 
-/* Left Brand Section */
-.footer-brand {
-  flex: 0 0 300px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
+/* Columns Section */
 
-.footer-logo-text {
-  font-family: var(--font-heading);
-  font-size: 2.2rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  margin-bottom: 24px;
-  color: var(--color-white-warm);
-}
-
-.footer-about-text {
-  font-size: 0.95rem;
-  line-height: 1.8;
-  opacity: 0.75;
-  margin-bottom: 32px;
-}
-
-/* The Pill Button */
-.app-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  background-color: var(--color-white-warm);
-  border: 1px solid rgba(0,0,0,0.05);
-  padding: 12px 28px;
-  border-radius: 50px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-decoration: none;
-  color: var(--color-burgundy);
-  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.app-pill:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-}
-
-/* Column Grid */
 .footer-columns {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -159,11 +115,7 @@
     align-items: flex-start;
   }
   
-  .footer-brand {
-    flex: none;
-    align-items: flex-start;
-    text-align: left;
-  }
+
 
   .footer-columns {
     grid-template-columns: 1fr;

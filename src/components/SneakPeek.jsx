@@ -23,7 +23,7 @@ const itemVariants = {
   }
 };
 
-function SneakPeek({ data }) {
+function SneakPeek({ data, title, exploreLabel }) {
   const images = (data || []).slice(0, MAX_IMAGES);
   const count = images.length;
   const carouselRef = useRef(null);
@@ -52,6 +52,13 @@ function SneakPeek({ data }) {
 
   return (
     <section className="sneak-peek" id="gallery">
+      {/* Header with dynamic title */}
+      {title && (
+        <div className="sneak-peek-header">
+          <p className="sneak-peek-caption">{title}</p>
+        </div>
+      )}
+
       {/* ---- Desktop: Hero + Side Collage ---- */}
       <motion.div
         className="sneak-peek-collage"
@@ -103,7 +110,7 @@ function SneakPeek({ data }) {
       {/* ---- Explore More Link ---- */}
       <div className="sneak-peek-footer">
         <Link to="/gallery" className="explore-link">
-          <span>Explore More</span>
+          <span>{exploreLabel || 'Explore More'}</span>
           <ArrowRight size={18} />
         </Link>
       </div>

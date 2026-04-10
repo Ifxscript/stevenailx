@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { heroContent } from '../data/hero';
+import { useLandingPage } from '../context/LandingPageContext';
 
 const TEXT_LIMITS = {
   desktop: {
@@ -87,21 +87,22 @@ const imageVariants = {
 };
 
 function Hero() {
-  const slides = useMemo(() => heroContent.slides || [], []);
+  const { hero } = useLandingPage();
+  const slides = useMemo(() => hero.slides || [], [hero.slides]);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(() =>
     typeof window !== 'undefined' ? window.matchMedia('(max-width: 768px)').matches : false
   );
 
   useEffect(() => {
-    if (!heroContent.rotation?.enabled || slides.length <= 1) return undefined;
+    if (!hero.rotation?.enabled || slides.length <= 1) return undefined;
 
     const intervalId = window.setInterval(() => {
       setActiveImageIndex((current) => (current + 1) % slides.length);
-    }, heroContent.rotation.intervalMs || 3500);
+    }, hero.rotation.intervalMs || 3500);
 
     return () => window.clearInterval(intervalId);
-  }, [slides]);
+  }, [slides, hero.rotation]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(max-width: 768px)');

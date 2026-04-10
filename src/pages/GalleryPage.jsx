@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import BackButton from '../components/BackButton';
 import Footer from '../components/Footer';
-import { galleryData } from '../data/gallery';
+import { useLandingPage } from '../context/LandingPageContext';
 import './GalleryPage.css';
 
 const fadeUp = {
@@ -26,6 +26,8 @@ const staggerContainer = {
 };
 
 function GalleryPage() {
+  const { gallery } = useLandingPage();
+  const galleryData = gallery.items;
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -135,7 +137,7 @@ function GalleryPage() {
                 <span>{galleryData[currentIndex].title}</span>
               </div>
             </motion.div>
-
+ 
             <button className="lightbox-nav next" onClick={nextImage} aria-label="Next">
               <ChevronRight size={48} strokeWidth={1} />
             </button>

@@ -1,22 +1,19 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ChevronRight } from 'lucide-react';
+import { useLandingPage } from '../context/LandingPageContext';
 import './Navbar.css';
 import logo from '../assets/IMG_8009-removebg-preview.png';
 
-const WHATSAPP_NUMBER = '2347034872747';
-const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=Hi%20SteveNailX!%20I%27d%20like%20to%20book%20an%20appointment.`;
-
-const navLinks = [
-  { label: 'Home', href: '/' },
-  { label: 'Services', href: '/services' },
-  { label: 'Gallery', href: '/gallery' },
-  { label: 'Socials', href: '/socials' },
-];
-
 function Navbar() {
+  const { brand, footer } = useLandingPage();
   const [scrolled, setScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Extract navigation links from footer data to ensure consistency
+  const navLinks = footer.navColumns.find(c => c.title === "Navigation")?.links || [];
+  // Extract WhatsApp link from socials
+  const whatsappLink = footer.navColumns.find(c => c.title === "Socials")?.links.find(l => l.label === "WhatsApp")?.href || "#";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,7 +23,6 @@ function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Lock body scroll when menu is open
   useEffect(() => {
     if (isMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -49,7 +45,7 @@ function Navbar() {
         {/* Logo */}
         <div className="navbar-logo" onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setIsMenuOpen(false); }}>
           <div className="navbar-logo-monogram" style={{ '--logo-url': `url(${logo})` }}></div>
-          <span className="navbar-logo-name">STEVE NAIL X</span>
+          <span className="navbar-logo-name">{brand.logo}</span>
         </div>
 
         {/* Desktop Links */}
@@ -62,7 +58,7 @@ function Navbar() {
         </ul>
 
         {/* Desktop Book Now */}
-        <a className="navbar-book-btn navbar-book-btn-desktop" href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer">
+        <a className="navbar-book-btn navbar-book-btn-desktop" href={whatsappLink} target="_blank" rel="noopener noreferrer">
           Book Now
         </a>
 
@@ -87,7 +83,6 @@ function Navbar() {
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           >
             <div className="drawer-content">
-              {/* Close button inside drawer */}
               <button 
                 className="drawer-close-btn" 
                 onClick={toggleMenu}
@@ -99,7 +94,6 @@ function Navbar() {
               <h2 className="drawer-header">Menu</h2>
               
               <div className="drawer-sections">
-                {/* Box 1: Grouped Navigation Links */}
                 <div className="drawer-card">
                   <div className="card-links">
                     {navLinks.map((link) => (
@@ -116,10 +110,9 @@ function Navbar() {
                   </div>
                 </div>
 
-                {/* Box 2: Separate Book Now Action */}
                 <div className="drawer-card book-card">
                   <a 
-                    href={WHATSAPP_LINK} 
+                    href={whatsappLink} 
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className="card-link-item action-link"

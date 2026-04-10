@@ -1,6 +1,6 @@
-import { aboutData } from '../data/about';
 import BackButton from '../components/BackButton';
 import Footer from '../components/Footer';
+import { useLandingPage } from '../context/LandingPageContext';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import './SocialsPage.css';
@@ -26,6 +26,8 @@ const staggerContainer = {
 };
 
 function SocialsPage() {
+  const { brand, socials } = useLandingPage();
+
   return (
     <div className="socials-page">
       <BackButton />
@@ -40,12 +42,12 @@ function SocialsPage() {
           variants={fadeUp}
         >
           <div className="profile-image">
-            <img src={aboutData.profileImage} alt={aboutData.name} />
+            <img src={brand.logoImage} alt={brand.name} />
           </div>
-          <h1>{aboutData.name}</h1>
-          <p className="tagline">{aboutData.tagline}</p>
+          <h1>{brand.name}</h1>
+          <p className="tagline">{brand.tagline}</p>
           <div className="bio-container">
-            <p className="bio">{aboutData.bio}</p>
+            <p className="bio">{brand.bio}</p>
           </div>
         </motion.section>
 
@@ -56,12 +58,12 @@ function SocialsPage() {
           animate="visible"
           variants={staggerContainer}
         >
-          {aboutData.socials.map((social) => (
+          {socials.map((social) => (
             <motion.a 
               key={social.id}
               href={social.href}
-              target="_blank"
-              rel="noopener noreferrer"
+              target={social.href.startsWith('http') ? "_blank" : "_self"}
+              rel={social.href.startsWith('http') ? "noopener noreferrer" : ""}
               className="editorial-link-item"
               variants={fadeUp}
             >

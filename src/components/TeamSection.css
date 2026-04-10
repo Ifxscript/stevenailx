@@ -1,0 +1,159 @@
+.team-section {
+  padding: 40px 0;
+  background-color: #ffffff;
+}
+
+.team-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+
+.team-header {
+  margin-bottom: 32px;
+  text-align: left;
+}
+
+.team-title {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  letter-spacing: 0.35em;
+  font-weight: 500;
+  color: var(--color-brown);
+  opacity: 0.6;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.team-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 80px;
+  justify-content: flex-start;
+}
+
+.team-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 150px; /* Scaled down from 200px */
+}
+
+/* Avatar Container for Badge Positioning */
+.team-avatar-container {
+  position: relative;
+  width: 130px; /* Scaled down from 180px */
+  height: 130px;
+  margin-bottom: 16px;
+}
+
+.team-avatar-wrapper {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: var(--color-burgundy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.team-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.team-avatar-placeholder {
+  font-family: var(--font-heading);
+  font-size: 4rem;
+  font-weight: 700;
+  color: var(--color-white-warm);
+}
+
+/* Rating Badge Styling */
+.team-rating-badge {
+  position: absolute;
+  bottom: -4px; /* Slightly overlapping bottom */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+  z-index: 10;
+  border: 1px solid rgba(0,0,0,0.04);
+  white-space: nowrap;
+}
+
+.badge-star {
+  display: flex;
+  align-items: center;
+}
+
+.badge-score {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-brown);
+}
+
+/* Text Styling */
+.team-info {
+  margin-top: 12px;
+}
+
+.team-name {
+  font-family: var(--font-body);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-brown);
+  margin-bottom: 4px;
+}
+
+.team-role {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #888; /* Lighter grey smaller text */
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .team-section {
+    padding: 32px 0;
+  }
+
+  .team-container {
+    padding: 0 24px;
+  }
+
+  .team-header {
+    margin-bottom: 24px;
+  }
+
+  /* Title font-size removed to inherit the 0.85rem caption style */
+
+
+  .team-row {
+    gap: 40px;
+    justify-content: center;
+  }
+
+  .team-avatar-container {
+    width: 150px;
+    height: 150px;
+  }
+
+  .team-rating-badge {
+    padding: 6px 14px;
+  }
+
+  .badge-score {
+    font-size: 0.9rem;
+  }
+}

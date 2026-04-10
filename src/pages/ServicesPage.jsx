@@ -1,8 +1,7 @@
 import BackButton from '../components/BackButton';
 import Footer from '../components/Footer';
 import Card from '../components/Card';
-import { services } from '../data/services';
-import { otherServices } from '../data/otherServices';
+import { useLandingPage } from '../context/LandingPageContext';
 import { motion } from 'framer-motion';
 import './ServicesPage.css';
 
@@ -26,6 +25,8 @@ const staggerContainer = {
 };
 
 function ServicesPage() {
+  const { services } = useLandingPage();
+
   return (
     <div className="services-page">
       <BackButton />
@@ -54,7 +55,7 @@ function ServicesPage() {
             viewport={{ once: true }}
             variants={fadeUp}
           >
-            <h2 className="category-title">NAIL ARTISTRY</h2>
+            <h2 className="category-title">{services.title}</h2>
             <p className="category-desc">Our signature collections, from classic elegance to bespoke hand-painted masterpieces.</p>
           </motion.div>
 
@@ -65,7 +66,7 @@ function ServicesPage() {
             viewport={{ once: true }}
             variants={staggerContainer}
           >
-            {services.map((service, index) => (
+            {services.items.map((service, index) => (
               <Card 
                 key={service.id} 
                 {...service} 
@@ -85,7 +86,7 @@ function ServicesPage() {
             viewport={{ once: true }}
             variants={fadeUp}
           >
-            <h2 className="category-title">BEYOND THE NAILS</h2>
+            <h2 className="category-title">{services.subtitle}</h2>
             <p className="category-desc">Elevating your daily look with professional makeup, skin-care, and hair installations.</p>
           </motion.div>
 
@@ -96,7 +97,7 @@ function ServicesPage() {
             viewport={{ once: true }}
             variants={staggerContainer}
           >
-            {otherServices.map((service, index) => (
+            {services.otherItems.map((service, index) => (
               <Card 
                 key={service.id} 
                 {...service} 

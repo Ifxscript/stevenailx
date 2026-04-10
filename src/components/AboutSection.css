@@ -1,0 +1,156 @@
+.about-section {
+  padding: 80px 0;
+  background-color: #ffffff;
+}
+
+.about-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 80px;
+}
+
+/* Headings */
+.about-heading,
+.opening-heading {
+  font-family: var(--font-body);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-brown);
+  margin-bottom: 24px;
+}
+
+/* About Text */
+.about-text {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--color-brown);
+  margin-bottom: 32px;
+  opacity: 0.9;
+}
+
+/* Map */
+.about-map-container {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  background-color: #f5f5f5;
+  aspect-ratio: 16 / 9;
+}
+
+.about-map-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Address & Directions */
+.about-address-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.address-text {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--color-brown);
+}
+
+.get-directions-link {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: #6366f1; /* Indigo color for prominence, similar to 'Read more' */
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.get-directions-link:hover {
+  opacity: 0.7;
+  text-decoration: underline;
+}
+
+/* Opening Times List */
+.opening-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.opening-day-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  color: var(--color-brown);
+}
+
+.day-name-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.status-dot.open {
+  background-color: #4ade80; /* Green */
+}
+
+.status-dot.closed {
+  background-color: #d1d1d1; /* Grey */
+}
+
+/* Highlights */
+.opening-day-row.is-today {
+  font-weight: 700;
+}
+
+.opening-day-row.is-closed {
+  color: #a0a0a0;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .about-grid {
+    gap: 40px;
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-section {
+    padding: 60px 0;
+  }
+
+  .about-container {
+    padding: 0 24px;
+  }
+
+  .about-grid {
+    gap: 60px;
+  }
+
+  .about-heading,
+  .opening-heading {
+    font-size: 1.5rem;
+  }
+
+  .about-map-container {
+    aspect-ratio: 4 / 3;
+  }
+}

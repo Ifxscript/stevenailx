@@ -2,45 +2,50 @@ import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import TeaserSection from '../components/TeaserSection';
 import SneakPeek from '../components/SneakPeek';
+import TeamSection from '../components/TeamSection';
+import ReviewsSection from '../components/ReviewsSection';
+import AboutSection from '../components/AboutSection';
 import Footer from '../components/Footer';
-import { services } from '../data/services';
-import { otherServices } from '../data/otherServices';
-import { galleryData } from '../data/gallery';
+import { useLandingPage } from '../context/LandingPageContext';
 
-function LandingPage() {
+const LandingPage = () => {
+  const { services, gallery } = useLandingPage();
+
   return (
     <div className="landing-page">
       <Navbar />
       
-      {/* Hero Section */}
       <section id="home">
         <Hero />
       </section>
 
-      {/* Nail Services Section */}
       <TeaserSection 
         id="services"
-        title="DISCOVER THE ARTISTRY"
-        data={services}
+        title={services.title}
+        data={services.items}
         footerLink="/services"
         footerText="Explore more services"
       />
 
-      {/* Other Beauty Services Section */}
       <TeaserSection 
         id="beauty"
-        title="BEYOND THE NAILS"
-        data={otherServices}
+        title={services.subtitle}
+        data={services.otherItems}
         footerLink="/services#beauty"
         footerText="View more beauty services"
       />
 
-      {/* Gallery Sneak Peek */}
-      <SneakPeek data={galleryData} />
+      <SneakPeek data={gallery.items} title={gallery.title} exploreLabel={gallery.exploreLabel} />
+
+      <TeamSection />
+
+      <ReviewsSection />
+
+      <AboutSection />
 
       <Footer />
     </div>
   );
-}
+};
 
 export default LandingPage;

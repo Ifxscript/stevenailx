@@ -1,25 +1,20 @@
 import React from 'react';
 import { ArrowUpRight, Globe } from 'lucide-react';
-import { footerData } from '../data/footer';
+import { useLandingPage } from '../context/LandingPageContext';
 import './Footer.css';
 
 const Footer = () => {
+  const { footer } = useLandingPage();
+
   return (
     <footer className="site-footer">
       <div className="footer-container">
         <div className="footer-main">
-          {/* Brand & Pill Section */}
-          <div className="footer-brand">
-            <span className="footer-logo-text">{footerData.brand.logo}</span>
-            <p className="footer-about-text">{footerData.brand.about}</p>
-            <a href={footerData.brand.pill.href} className="app-pill">
-              <span>{footerData.brand.pill.text}</span>
-            </a>
-          </div>
+          {/* Brand section removed as per requirement - now managed via context if needed */}
 
           {/* Columns Section */}
           <div className="footer-columns">
-            {footerData.columns.map((column, idx) => (
+            {footer.navColumns.map((column, idx) => (
               <div key={idx} className="footer-column">
                 <h3>{column.title}</h3>
                 <ul>
@@ -51,9 +46,9 @@ const Footer = () => {
         <div className="footer-bottom">
           <div className="footer-lang">
             <Globe className="shadcn-icon" />
-            <span>{footerData.bottom.language}</span>
+            <span>{footer.language}</span>
           </div>
-          <p>{footerData.bottom.copyright}</p>
+          <p>© {new Date().getFullYear()} {footer.copyright}</p>
         </div>
       </div>
     </footer>
