@@ -107,11 +107,11 @@ function SneakPeek({ data, title, exploreLabel }) {
         )}
       </div>
 
-      {/* ---- Explore More Link ---- */}
-      <div className="sneak-peek-footer">
-        <Link to="/gallery" className="explore-link">
-          <span>{exploreLabel || 'Explore More'}</span>
-          <ArrowRight size={18} />
+      {/* ---- Explore More Button ---- */}
+      <div className="section-footer">
+        <Link to="/gallery" className="btn-explore">
+          {exploreLabel || 'Explore More'}
+          <ArrowRight size={18} strokeWidth={2} />
         </Link>
       </div>
     </section>

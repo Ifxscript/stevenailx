@@ -115,10 +115,10 @@ function ReviewsSection() {
           ))}
         </div>
 
-        <div className="reviews-footer">
-          <button className="see-all-reviews-btn" onClick={() => setIsModalOpen(true)}>
-            <span>{reviews.seeAllLabel}</span>
-            <ChevronRight size={18} />
+        <div className="section-footer">
+          <button className="btn-explore" onClick={() => setIsModalOpen(true)}>
+            {reviews.seeAllLabel}
+            <ChevronRight size={18} strokeWidth={2} />
           </button>
         </div>
       </div>

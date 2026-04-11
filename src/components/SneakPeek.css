@@ -4,6 +4,7 @@
 .sneak-peek {
   width: 100%;
   overflow: hidden;
+  padding: var(--section-py) 0;
 }
 
 /* ===================================
@@ -173,40 +174,13 @@
 }
 
 /* ===================================
-   EXPLORE MORE LINK
-   =================================== */
-.sneak-peek-footer {
-  display: flex;
-  justify-content: center;
-  padding: 40px 0;
-}
-
-.explore-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--color-burgundy);
-  text-decoration: none;
-  letter-spacing: 0.02em;
-  transition: all 0.3s ease;
-}
-
-.explore-link:hover {
-  gap: 16px;
-  opacity: 0.75;
-}
-
-/* ===================================
-   HEADER ALIGNMENT
+   RESPONSIVE
    =================================== */
 .sneak-peek-header {
   max-width: var(--grid-max-width);
   /* Removed margin: 0 auto to anchor left */
   padding: 0 var(--grid-px);
-  margin-bottom: 24px;
+  margin-bottom: var(--section-header-mb);
 }
 
 /* ===================================

@@ -53,24 +53,22 @@ function TeaserSection({ id, title, data, footerLink, footerText, type = 'servic
             type={type} 
           />
         ))}
-        
-        {/* Dynamic Explore Card (Naked Arrow) at the end of the row */}
-        {footerLink && (
-          <motion.div
-            variants={cardVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            custom={data.length}
-          >
-            <Link to={footerLink} className="explore-card" aria-label={footerText || 'Explore more'}>
-              <div className="explore-card-icon">
-                <ArrowRight size={40} strokeWidth={1} />
-              </div>
-            </Link>
-          </motion.div>
-        )}
       </div>
+
+      {footerLink && (
+        <motion.div 
+          className="section-footer"
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3, duration: 0.8 }}
+        >
+          <Link to={footerLink} className="btn-explore">
+            {footerText || 'Explore more'}
+            <ArrowRight size={18} strokeWidth={2} />
+          </Link>
+        </motion.div>
+      )}
     </section>
   );
 }

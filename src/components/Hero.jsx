@@ -120,7 +120,6 @@ function Hero() {
 
   return (
     <section className="hero" id="home">
-      <div className="hero-circle"></div>
       <motion.div 
         className="hero-container"
         variants={containerVariants}
@@ -159,7 +158,7 @@ function Hero() {
                   rel={ctaPrimary.external ? 'noopener noreferrer' : undefined}
                   className="btn-primary"
                 >
-                  {ctaPrimary.label}
+                  Book Appointment
                 </a>
               )}
               {ctaSecondary && (
@@ -169,7 +168,7 @@ function Hero() {
                   rel={ctaSecondary.external ? 'noopener noreferrer' : undefined}
                   className="btn-secondary"
                 >
-                  {ctaSecondary.label}
+                  View Services
                 </a>
               )}
             </motion.div>
