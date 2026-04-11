@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, ChevronRight } from 'lucide-react';
+import { Star } from 'lucide-react';
 import { useLandingPage } from '../context/LandingPageContext';
 import ReviewsModal from './ReviewsModal';
 import './ReviewsSection.css';
@@ -117,8 +117,7 @@ function ReviewsSection() {
 
         <div className="section-footer">
           <button className="btn-explore" onClick={() => setIsModalOpen(true)}>
-            {reviews.seeAllLabel}
-            <ChevronRight size={18} strokeWidth={2} />
+            see more &gt;
           </button>
         </div>
       </div>

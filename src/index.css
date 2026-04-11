@@ -128,7 +128,6 @@ img {
 .hero-text {
   flex: 0 1 550px;
   max-width: 560px;
-  min-height: auto; /* Removed 480px rigid limit */
   z-index: 10;
 }
 
@@ -154,7 +153,6 @@ img {
   font-size: 1.1rem;
   color: var(--color-brown);
   margin-bottom: 32px;
-  min-height: auto; /* Removed rigid limit */
   line-height: 1.6;
   white-space: pre-line;
   overflow-wrap: anywhere;
@@ -163,6 +161,10 @@ img {
   line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.hero-copy-block {
+  width: 100%;
 }
 
 .hero-buttons {
@@ -245,8 +247,6 @@ img {
 
   .hero-text {
     margin-bottom: 0px;
-    min-height: auto;
-    padding-bottom: 20px;
   }
 
   .hero-text h1 {
@@ -263,6 +263,15 @@ img {
     line-height: 1.4;
     -webkit-line-clamp: 4;
     line-clamp: 4;
+  }
+
+  .hero-copy-block {
+    width: 100%;
+  }
+
+  .hero-image-wrapper {
+    margin-left: 0;
+    justify-content: center;
   }
 
   .hero-buttons {

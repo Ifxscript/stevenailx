@@ -1,7 +1,6 @@
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
 import Card from './Card';
 import { useHorizontalScroll } from '../hooks/useHorizontalScroll';
 
@@ -64,8 +63,7 @@ function TeaserSection({ id, title, data, footerLink, footerText, type = 'servic
           transition={{ delay: 0.3, duration: 0.8 }}
         >
           <Link to={footerLink} className="btn-explore">
-            {footerText || 'Explore more'}
-            <ArrowRight size={18} strokeWidth={2} />
+            see more &gt;
           </Link>
         </motion.div>
       )}

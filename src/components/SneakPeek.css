@@ -120,86 +120,68 @@
 /* ===================================
    MOBILE: SWIPEABLE CAROUSEL
    =================================== */
-.sneak-peek-mobile {
-  display: none;
-  position: relative;
-  width: 100%;
-}
-
-.carousel-track {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-
-.carousel-track::-webkit-scrollbar {
-  display: none;
-}
-
-.carousel-slide {
-  flex: 0 0 100%;
-  width: 100%;
-  scroll-snap-align: start;
-}
-
-.carousel-slide img {
-  width: 100%;
-  height: 65vh;
-  object-fit: cover;
-  display: block;
-}
-
-/* Pagination dots */
-.carousel-dots {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  padding: 16px 0;
-}
-
-.dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background-color: var(--color-brown);
-  opacity: 0.2;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.dot.active {
-  opacity: 0.8;
-  transform: scale(1.3);
-}
-
-/* ===================================
-   RESPONSIVE
-   =================================== */
-.sneak-peek-header {
-  max-width: var(--grid-max-width);
-  /* Removed margin: 0 auto to anchor left */
-  padding: 0 var(--grid-px);
-  margin-bottom: var(--section-header-mb);
-}
-
-/* ===================================
-   RESPONSIVE
-   =================================== */
 @media (max-width: 768px) {
+  .sneak-peek {
+    padding: 0 !important; /* Force edge-to-edge for the Portfolio section */
+  }
+
   .sneak-peek-header {
-    padding: 0 var(--grid-px-mobile);
+    padding: var(--section-py-mobile) var(--grid-px-mobile); /* Keep text padded, but collage full-bleed */
   }
 
+  /* Force the entire collage into a single perfect square with NO gaps */
   .sneak-peek-collage {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    aspect-ratio: 1 / 1;
+    width: 100%; /* Edge-to-edge */
+    margin: 0;
+    gap: 0; /* Zero gaps between photos */
+    height: auto;
+    min-height: auto;
+  }
+
+  .collage-hero {
+    grid-column: 1 / 3;
+    grid-row: 1 / 3;
+    width: 100%;
+    height: 100%;
+    flex: none;
+  }
+
+  .collage-side {
+    display: contents;
+  }
+
+  .collage-cell {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Hierarchy Logic within the Square */
+  .side-cell-0 {
+    grid-column: 1 / 3;
+    grid-row: 3 / 4;
+  }
+
+  .side-cell-1 {
+    grid-column: 3 / 4;
+    grid-row: 1 / 2;
+  }
+
+  .side-cell-2 {
+    grid-column: 3 / 4;
+    grid-row: 2 / 3;
+  }
+
+  .side-cell-3 {
+    grid-column: 3 / 4;
+    grid-row: 3 / 4;
+  }
+
+  /* Hide any overflow images */
+  .side-cell-4, .side-cell-5, .side-cell-6 {
     display: none;
-  }
-
-  .sneak-peek-mobile {
-    display: block;
-  }
-
-  .sneak-peek-footer {
-    padding: 28px 0;
   }
 }
