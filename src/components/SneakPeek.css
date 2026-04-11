@@ -200,9 +200,23 @@
 }
 
 /* ===================================
+   HEADER ALIGNMENT
+   =================================== */
+.sneak-peek-header {
+  max-width: var(--grid-max-width);
+  /* Removed margin: 0 auto to anchor left */
+  padding: 0 var(--grid-px);
+  margin-bottom: 24px;
+}
+
+/* ===================================
    RESPONSIVE
    =================================== */
 @media (max-width: 768px) {
+  .sneak-peek-header {
+    padding: 0 var(--grid-px-mobile);
+  }
+
   .sneak-peek-collage {
     display: none;
   }

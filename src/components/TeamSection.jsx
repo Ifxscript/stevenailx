@@ -21,7 +21,7 @@ function TeamSection() {
     <section className="team-section" id="team">
       <div className="team-container">
         <header className="team-header">
-          <h2 className="team-title">{team.title}</h2>
+          <p className="section-heading">{team.title}</p>
         </header>
 
         <div className="team-row">

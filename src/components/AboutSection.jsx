@@ -22,7 +22,7 @@ const AboutSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="about-heading">{about.heading}</h2>
+            <h2 className="section-heading">{about.heading}</h2>
             <p className="about-text">{about.description}</p>
             
             <div className="about-map-container">
@@ -50,7 +50,7 @@ const AboutSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <h2 className="opening-heading">{about.openingTitle}</h2>
+            <h2 className="section-heading">{about.openingTitle}</h2>
             <div className="opening-list">
               {about.hours.map((day, index) => {
                 const isToday = index === currentDayIndex;

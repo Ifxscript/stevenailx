@@ -4,9 +4,9 @@
 }
 
 .about-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 48px;
+  max-width: var(--grid-max-width);
+  /* Removed margin: 0 auto to anchor left */
+  padding: 0 var(--grid-px);
 }
 
 .about-grid {
@@ -15,15 +15,8 @@
   gap: 80px;
 }
 
-/* Headings */
-.about-heading,
-.opening-heading {
-  font-family: var(--font-body);
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--color-brown);
-  margin-bottom: 24px;
-}
+/* Headings are now handled by global .section-heading in index.css */
+
 
 /* About Text */
 .about-text {
@@ -138,16 +131,11 @@
   }
 
   .about-container {
-    padding: 0 24px;
+    padding: 0 var(--grid-px-mobile);
   }
 
   .about-grid {
     gap: 60px;
-  }
-
-  .about-heading,
-  .opening-heading {
-    font-size: 1.5rem;
   }
 
   .about-map-container {

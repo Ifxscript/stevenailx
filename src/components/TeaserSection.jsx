@@ -40,7 +40,7 @@ function TeaserSection({ id, title, data, footerLink, footerText, type = 'servic
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <p>{title}</p>
+        <p className="section-heading">{title}</p>
       </motion.div>
 
       <div className="services-cards-grid" ref={gridRef}>

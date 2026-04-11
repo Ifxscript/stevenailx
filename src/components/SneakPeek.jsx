@@ -55,7 +55,7 @@ function SneakPeek({ data, title, exploreLabel }) {
       {/* Header with dynamic title */}
       {title && (
         <div className="sneak-peek-header">
-          <p className="sneak-peek-caption">{title}</p>
+          <p className="section-heading">{title}</p>
         </div>
       )}
 

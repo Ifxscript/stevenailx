@@ -1,0 +1,83 @@
+/* Wrapper sits in the document flow, acting as the 'natural slot' for the bar */
+.sticky-bar-wrapper {
+  width: 100%;
+  height: 80px; /* Precise height to match the bar */
+  position: relative;
+  margin-top: 60px; /* Healthier gap from the previous section */
+}
+
+.mobile-sticky-bar {
+  width: 100%;
+  background-color: #ffffff !important; /* Solid opaque white as requested */
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  z-index: 900; /* Stays beneath Navbar (1000) */
+  padding: 16px 24px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  opacity: 1 !important; /* Always fully opaque */
+  transition: box-shadow 0.3s ease;
+}
+
+.mobile-sticky-bar.floating {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  box-shadow: 0 -4px 25px rgba(0, 0, 0, 0.08); /* Soft shadow while floating */
+}
+
+/* When docked, it simply sits within the placeholder and scrolls with the page */
+.mobile-sticky-bar.docked {
+  position: relative;
+  box-shadow: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.08); /* Subtle separator when docked */
+}
+
+.sticky-bar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.sticky-bar-left .services-count {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: #666666;
+  letter-spacing: -0.01em;
+}
+
+.sticky-book-btn {
+  display: inline-block;
+  background-color: var(--color-burgundy);
+  color: var(--color-white);
+  padding: 12px 32px;
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(120, 31, 25, 0.15);
+}
+
+.sticky-book-btn:active {
+  transform: scale(0.96);
+}
+
+/* Desktop: Hide the sticky bar and its wrapper */
+@media (min-width: 1025px) {
+  .sticky-bar-wrapper {
+    display: none;
+  }
+}
+
+/* Ensure visibility on all mobile devices */
+@media (max-width: 1024px) {
+  .mobile-sticky-bar {
+    display: flex;
+    visibility: visible;
+  }
+}

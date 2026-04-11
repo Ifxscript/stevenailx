@@ -10,7 +10,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 48px;
+  padding: 18px var(--grid-px);
   background-color: transparent;
   transition: background-color 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease;
   transform: translate3d(0,0,0);
@@ -248,7 +248,7 @@
    =================================== */
 @media (max-width: 768px) {
   .navbar {
-    padding: 16px 24px;
+    padding: 16px var(--grid-px-mobile);
   }
 
   /* Stabilize header when menu is open */

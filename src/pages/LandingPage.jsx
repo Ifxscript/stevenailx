@@ -6,6 +6,7 @@ import TeamSection from '../components/TeamSection';
 import ReviewsSection from '../components/ReviewsSection';
 import AboutSection from '../components/AboutSection';
 import Footer from '../components/Footer';
+import MobileStickyBar from '../components/MobileStickyBar';
 import { useLandingPage } from '../context/LandingPageContext';
 
 const LandingPage = () => {
@@ -42,6 +43,8 @@ const LandingPage = () => {
       <ReviewsSection />
 
       <AboutSection />
+
+      <MobileStickyBar />
 
       <Footer />
     </div>

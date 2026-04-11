@@ -14,6 +14,11 @@
   --font-heading: 'Playfair Display', Georgia, serif;
   --font-body: 'DM Sans', 'Segoe UI', Roboto, sans-serif;
 
+  /* Grid System Variables */
+  --grid-max-width: 1200px;
+  --grid-px: 48px;
+  --grid-px-mobile: 24px;
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -63,6 +68,23 @@ a {
   color: inherit;
 }
 
+.section-heading {
+  font-family: var(--font-body);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-brown);
+  margin-bottom: 24px;
+  text-transform: none;
+  letter-spacing: normal;
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .section-heading {
+    font-size: 1.2rem;
+  }
+}
+
 ul {
   list-style: none;
 }
@@ -104,9 +126,9 @@ img {
   align-items: center;
   justify-content: center;
   /* Puts everything in the dead center */
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 48px;
+  max-width: var(--grid-max-width);
+  /* Removed margin: 0 auto */
+  padding: 0 var(--grid-px);
   width: 100%;
   position: relative;
   z-index: 1;
@@ -221,7 +243,7 @@ img {
 
   .hero-container {
     flex-direction: column;
-    padding: 0 24px;
+    padding: 0 var(--grid-px-mobile);
     text-align: center;
   }
 
@@ -323,20 +345,14 @@ img {
 
 .services-teaser-caption {
   width: 100%;
-  max-width: 1200px;
-  padding-left: 32px;
-  /* Fixed tight padding aligned with cards */
+  max-width: var(--grid-max-width);
+  padding-left: var(--grid-px); /* Standardized grid alignment */
   text-align: left;
   margin-bottom: 24px;
 }
 
 .services-teaser-caption p {
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  letter-spacing: 0.35em;
-  font-weight: 500;
-  color: var(--color-brown);
-  opacity: 0.6;
+  /* Handled by .section-heading */
 }
 
 .services-cards-grid {
@@ -349,7 +365,7 @@ img {
   width: 100vw;
   max-width: 100%;
   overflow-x: auto;
-  padding: 0 48px;
+  padding: 0 var(--grid-px);
   /* Increased side padding for Web view */
   margin-bottom: 40px;
   scrollbar-width: none;
@@ -371,14 +387,14 @@ img {
   }
 
   .services-teaser-caption {
-    padding-left: 20px;
+    padding-left: var(--grid-px-mobile); /* Standardized grid alignment */
     margin-bottom: 20px;
   }
 
   .services-cards-grid {
     display: flex;
     overflow-x: auto;
-    padding: 0 20px;
+    padding: 0 var(--grid-px-mobile); /* Standardized grid alignment */
     gap: 16px;
     width: 100%;
     max-width: 100vw;
@@ -441,9 +457,9 @@ img {
 }
 
 .footer-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 48px;
+  max-width: var(--grid-max-width);
+  /* Removed margin: 0 auto to anchor left */
+  padding: 0 var(--grid-px);
   position: relative;
   z-index: 2;
 }
@@ -623,7 +639,7 @@ img {
   }
 
   .footer-container {
-    padding: 0 32px;
+    padding: 0 var(--grid-px-mobile);
   }
 
   .footer-main {

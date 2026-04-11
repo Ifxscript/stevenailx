@@ -4,9 +4,9 @@
 }
 
 .team-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 48px;
+  max-width: var(--grid-max-width);
+  /* Removed margin: 0 auto to anchor left */
+  padding: 0 var(--grid-px);
 }
 
 .team-header {
@@ -14,16 +14,8 @@
   text-align: left;
 }
 
-.team-title {
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  letter-spacing: 0.35em;
-  font-weight: 500;
-  color: var(--color-brown);
-  opacity: 0.6;
-  text-transform: uppercase;
-  margin: 0;
-}
+/* .team-title is now handled by .section-heading in index.css */
+
 
 .team-row {
   display: flex;
@@ -129,7 +121,7 @@
   }
 
   .team-container {
-    padding: 0 24px;
+    padding: 0 var(--grid-px-mobile);
   }
 
   .team-header {

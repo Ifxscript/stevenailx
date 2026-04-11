@@ -94,7 +94,7 @@ function ReviewsSection() {
     <section className="reviews-section" id="reviews">
       <div className="reviews-container">
         <header className="reviews-header">
-          <h2 className="reviews-title">{reviews.title}</h2>
+          <h2 className="reviews-title section-heading">{reviews.title}</h2>
           
           <div className="overall-rating">
             <div className="overall-stars">

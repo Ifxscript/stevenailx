@@ -52,8 +52,8 @@ export const landingPageData = {
     ],
   },
   services: {
-    title: "DISCOVER THE ARTISTRY",
-    subtitle: "BEYOND THE NAILS",
+    title: "Trending nail art",
+    subtitle: "Other services",
     items: [
       { id: 1, title: 'Classic Luxe', description: 'Timeless elegance with meticulous care, shaping, and a flawless polished finish.', image: imgClassic, link: '/services#classic' },
       { id: 2, title: 'Custom Nail Art', description: 'A masterpiece on every finger-completely bespoke designs that reflect your style.', image: imgArt, link: '/services#art' },
@@ -66,7 +66,7 @@ export const landingPageData = {
     ]
   },
   gallery: {
-    title: "Sneak Peek",
+    title: "Portfolio",
     exploreLabel: "Explore More",
     items: [
       { id: 1, image: imgArt, title: 'Bespoke Art' },
@@ -78,13 +78,13 @@ export const landingPageData = {
     ]
   },
   team: {
-    title: "TEAM",
+    title: "Team",
     members: [
       { id: 1, name: 'Steve Nail', role: 'Lead Artist & Founder', image: null },
     ]
   },
   reviews: {
-    title: "REVIEWS",
+    title: "Reviews",
     seeAllLabel: "See All Reviews",
     items: [
       { id: 1, name: 'Victoria G.', rating: 5, comment: 'An amazing experience. Professionalism and skill from start to finish.', status: 'approved', date: '2024-04-09T18:09:00' },
