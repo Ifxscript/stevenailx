@@ -1,0 +1,78 @@
+.section-tabs-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 54px;
+  background-color: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 1060; /* Higher than Navbar */
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.section-tabs-scroll {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 0 16px;
+  gap: 24px;
+  align-items: center;
+}
+
+.section-tabs-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-item {
+  position: relative;
+  background: none;
+  border: none;
+  color: var(--color-brown);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  padding: 16px 4px;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.tab-item.active {
+  color: var(--color-burgundy);
+  font-weight: 700;
+}
+
+.tab-underline {
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: var(--color-burgundy);
+  border-radius: 2px 2px 0 0;
+}
+
+/* Base state: hide on desktop */
+@media (min-width: 769px) {
+  .section-tabs-container {
+    display: none;
+  }
+}
+
+/* Ensure mobile header swap works */
+@media (max-width: 768px) {
+  /* Increase tab container height slightly for better touch targets */
+  .section-tabs-container {
+    height: 52px;
+  }
+}

@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import './SneakPeek.css';
 
-const MAX_IMAGES = 10;
+const MAX_IMAGES = 5;
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -21,7 +21,7 @@ const itemVariants = {
   }
 };
 
-function SneakPeek({ data, title, exploreLabel }) {
+function SneakPeek({ data, title, exploreLabel, onExplore }) {
   const images = (data || []).slice(0, MAX_IMAGES);
   const count = images.length;
 
@@ -40,7 +40,7 @@ function SneakPeek({ data, title, exploreLabel }) {
         </div>
       )}
 
-      {/* ---- Universal Editorial Collage (Previously Desktop Only) ---- */}
+      {/* ---- Universal Editorial Collage ---- */}
       <motion.div
         className="sneak-peek-collage"
         variants={containerVariants}
@@ -59,19 +59,21 @@ function SneakPeek({ data, title, exploreLabel }) {
                 key={item.id}
                 className={`collage-cell side-cell-${i}`}
                 variants={itemVariants}
+                onClick={onExplore} /* Clicking any teaser image also opens the gallery */
+                style={{ cursor: 'pointer' }}
               >
                 <img src={item.image} alt={item.title} loading="lazy" />
               </motion.div>
-            ))}
+             ))}
           </div>
         )}
       </motion.div>
 
       {/* ---- Explore More Button ---- */}
       <div className="section-footer">
-        <Link to="/gallery" className="btn-explore">
+        <button onClick={onExplore} className="btn-explore">
           see more &gt;
-        </Link>
+        </button>
       </div>
     </section>
   );

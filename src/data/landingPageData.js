@@ -12,8 +12,8 @@ const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=Hi%20SteveNailX!%20
 
 export const landingPageData = {
   brand: {
-    name: "Steve Nail X",
-    logo: "STEVE NAIL X",
+    name: "SteveNailX",
+    logo: "STEVENAILX",
     logoImage: logoImg,
     tagline: "Luxury meets artistry.",
     description: "Where luxury meets artistry. We don't just do nails; we curate confidence and celebrate beauty in every meticulous detail.",
@@ -69,12 +69,16 @@ export const landingPageData = {
     title: "Portfolio",
     exploreLabel: "Explore More",
     items: [
-      { id: 1, image: imgArt, title: 'Bespoke Art' },
-      { id: 2, image: imgClassic, title: 'Classic Luxe' },
-      { id: 3, image: imgGel, title: 'Gel Series' },
-      { id: 4, image: landingImageOne, title: 'Manicure' },
-      { id: 5, image: landingImageTwo, title: 'Styling' },
-      { id: 6, image: imgArt, title: 'Minimalist' },
+      { id: 1, image: imgArt, title: 'Bespoke Art', category: 'art' },
+      { id: 2, image: imgClassic, title: 'Classic Luxe', category: 'nails' },
+      { id: 3, image: imgGel, title: 'Gel Series', category: 'nails' },
+      { id: 4, image: landingImageOne, title: 'Manicure', category: 'nails' },
+      { id: 5, image: landingImageTwo, title: 'Styling', category: 'hair' },
+      { id: 6, image: imgArt, title: 'Minimalist', category: 'art' },
+      { id: 7, image: imgClassic, title: 'Volume Lashes', category: 'lashes' },
+      { id: 8, image: imgGel, title: 'Bridal Makeup', category: 'makeup' },
+      { id: 9, image: landingImageOne, title: 'Aesthetic Art', category: 'art' },
+      { id: 10, image: landingImageTwo, title: 'Braid Style', category: 'hair' },
     ]
   },
   team: {
@@ -124,9 +128,10 @@ export const landingPageData = {
         title: "Navigation",
         links: [
           { label: "Home", href: "#home" },
-          { label: "Our Story", href: "#about" },
           { label: "Services", href: "#services" },
-          { label: "Gallery", href: "/gallery" }
+          { label: "Gallery", href: "/gallery" },
+          { label: "Reviews", href: "#reviews" },
+          { label: "Our Story", href: "#about" }
         ]
       },
       {

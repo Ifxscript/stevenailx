@@ -5,20 +5,40 @@ import { useLandingPage } from '../context/LandingPageContext';
 import './Navbar.css';
 import logo from '../assets/IMG_8009-removebg-preview.png';
 
-function Navbar() {
+function Navbar({ onOpenPortfolio }) {
   const { brand, footer } = useLandingPage();
   const [scrolled, setScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isNavHidden, setIsNavHidden] = useState(false);
 
   // Extract navigation links from footer data to ensure consistency
-  const navLinks = footer.navColumns.find(c => c.title === "Navigation")?.links || [];
+  const navLinks = footer?.navColumns?.find(c => c.title === "Navigation")?.links || [];
   // Extract WhatsApp link from socials
-  const whatsappLink = footer.navColumns.find(c => c.title === "Socials")?.links.find(l => l.label === "WhatsApp")?.href || "#";
+  const whatsappLink = footer?.navColumns?.find(c => c.title === "Socials")?.links?.find(l => l.label === "WhatsApp")?.href || "#";
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 5);
+      const scrollY = window.scrollY;
+      setScrolled(scrollY > 5);
+
+      if (window.innerWidth <= 768) {
+        const heroSection = document.getElementById('home');
+        const footerSection = document.querySelector('footer');
+        
+        if (heroSection) {
+          const heroRect = heroSection.getBoundingClientRect();
+          const footerRect = footerSection?.getBoundingClientRect();
+          
+          const pastHero = heroRect.bottom <= 80;
+          const reachedFooter = footerRect ? footerRect.top <= (window.innerHeight - 50) : false;
+          
+          setIsNavHidden(pastHero && !reachedFooter);
+        }
+      } else {
+        setIsNavHidden(false);
+      }
     };
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -33,10 +53,20 @@ function Navbar() {
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
+  const handleLinkClick = (e, link) => {
+    if (link.label === "Gallery" && onOpenPortfolio) {
+      e.preventDefault();
+      onOpenPortfolio();
+      setIsMenuOpen(false);
+    } else {
+      setIsMenuOpen(false);
+    }
+  };
+
   return (
     <>
       <motion.nav 
-        className={`navbar ${scrolled ? 'scrolled' : ''} ${isMenuOpen ? 'menu-open' : ''}`} 
+        className={`navbar ${scrolled ? 'scrolled' : ''} ${isMenuOpen ? 'menu-open' : ''} ${isNavHidden ? 'nav-hidden' : ''}`} 
         id="navbar"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -52,7 +82,13 @@ function Navbar() {
         <ul className="navbar-links">
           {navLinks.map((link) => (
             <li key={link.label}>
-              <a className="navbar-link" href={link.href}>{link.label}</a>
+              <a 
+                className="navbar-link" 
+                href={link.href}
+                onClick={(e) => handleLinkClick(e, link)}
+              >
+                {link.label}
+              </a>
             </li>
           ))}
         </ul>
@@ -101,7 +137,7 @@ function Navbar() {
                         key={link.label} 
                         href={link.href} 
                         className="card-link-item"
-                        onClick={() => setIsMenuOpen(false)}
+                        onClick={(e) => handleLinkClick(e, link)}
                       >
                         <span className="link-label">{link.label}</span>
                         <ChevronRight size={20} className="link-arrow" />

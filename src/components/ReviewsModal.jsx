@@ -61,18 +61,27 @@ const ReviewsModal = ({ isOpen, onClose, reviews, averageRating, totalReviews })
 
   return (
     <motion.div 
-      className="reviews-modal-overlay"
+      className="catalog-overlay"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
       <motion.div 
-        className="reviews-modal-content"
+        className="catalog-backdrop"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+      />
+
+      <motion.div 
+        className="catalog-sheet reviews-modal-sheet"
         initial={{ y: '100%' }}
         animate={{ y: 0 }}
         exit={{ y: '100%' }}
         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
       >
+        <div className="sheet-handle" onClick={onClose} />
         {/* Header */}
         <header className="modal-header">
           <button className="modal-back-btn" onClick={onClose}>

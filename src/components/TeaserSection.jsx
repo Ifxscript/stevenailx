@@ -25,13 +25,13 @@ const cardVariants = {
   })
 };
 
-function TeaserSection({ id, title, data, footerLink, footerText, type = 'service' }) {
+function TeaserSection({ id, title, data, footerLink, footerText, onSeeMore, type = 'service' }) {
   const sectionRef = useRef(null);
   const gridRef = useRef(null);
   useHorizontalScroll(sectionRef, gridRef);
 
   return (
-    <section id={id} className="services-teaser" ref={sectionRef}>
+    <section id={id} className={`services-teaser ${id}-teaser`} ref={sectionRef}>
       <motion.div 
         className="services-teaser-caption"
         variants={titleVariants}
@@ -54,7 +54,7 @@ function TeaserSection({ id, title, data, footerLink, footerText, type = 'servic
         ))}
       </div>
 
-      {footerLink && (
+      {(footerLink || onSeeMore) && (
         <motion.div 
           className="section-footer"
           initial={{ opacity: 0, y: 10 }}
@@ -62,9 +62,15 @@ function TeaserSection({ id, title, data, footerLink, footerText, type = 'servic
           viewport={{ once: true }}
           transition={{ delay: 0.3, duration: 0.8 }}
         >
-          <Link to={footerLink} className="btn-explore">
-            see more &gt;
-          </Link>
+          {onSeeMore ? (
+            <button onClick={onSeeMore} className="btn-explore">
+              {footerText || 'see more >'}
+            </button>
+          ) : (
+            <Link to={footerLink} className="btn-explore">
+              {footerText || 'see more >'}
+            </Link>
+          )}
         </motion.div>
       )}
     </section>

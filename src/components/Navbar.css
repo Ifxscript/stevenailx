@@ -12,7 +12,7 @@
   justify-content: space-between;
   padding: 18px var(--grid-px);
   background-color: transparent;
-  transition: background-color 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease;
+  transition: background-color 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease, opacity 0.4s ease;
   transform: translate3d(0,0,0);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
@@ -273,5 +273,14 @@
   /* Hide hamburger when drawer is open */
   .navbar.menu-open .navbar-mobile-toggle {
     display: none;
+  }
+
+  /* Slide Navbar off-screen when SectionTabs are active */
+  .navbar.nav-hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden; /* Prevent bleed-through and interaction */
+    pointer-events: none;
+    transition: transform 0.4s ease, opacity 0.4s ease, visibility 0.4s ease;
   }
 }

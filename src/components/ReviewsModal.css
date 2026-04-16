@@ -1,22 +1,9 @@
-.reviews-modal-overlay {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(4px);
-  z-index: 1000;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-}
+/* Shell Styling inherited from ServiceCatalogModal */
+/* (Overlay, Backdrop, and Sheet are handled globally or in catalog-sheet) */
 
-.reviews-modal-content {
-  background-color: #ffffff;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
+.reviews-modal-sheet {
+  max-width: 1200px !important;
+  /* Preserve the wider layout for reviews */
 }
 
 /* Header */
@@ -24,9 +11,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 48px;
+  padding: 0 48px 16px;
+  /* Adjusted air for handle */
   border-bottom: 1px solid #f0f0f0;
-  background-color: #ffffff;
 }
 
 .modal-back-btn,
@@ -49,7 +36,7 @@
 }
 
 .modal-title {
-  font-family: var(--font-heading);
+  font-family: var(--font-body);
   font-size: 1.8rem;
   font-weight: 700;
   color: var(--color-brown);
@@ -332,7 +319,8 @@
     font-size: 1.5rem;
   }
 
-  .filter-section, .trust-card {
+  .filter-section,
+  .trust-card {
     padding: 20px;
   }
 }
