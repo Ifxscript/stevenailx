@@ -1,22 +1,18 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLandingPage } from '../context/LandingPageContext';
+import { useBooking } from '../context/BookingContext';
 import './MobileStickyBar.css';
 
 const MobileStickyBar = () => {
-  const { services, footer } = useLandingPage();
+  const { totalServicesCount, footer } = useLandingPage();
+  const { openBookingDrawer } = useBooking();
   const [isFloating, setIsFloating] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
   const wrapperRef = useRef(null);
   
-  // Calculate total services count
-  const totalServices = (services?.items?.length || 0) + (services?.otherItems?.length || 0);
-  
   // Extract WhatsApp link from socials for consistency
-  const whatsappLink = footer?.navColumns
-    ?.find(col => col.title === "Socials")
-    ?.links?.find(link => link.label === "WhatsApp")?.href || "#";
-
+  
   useEffect(() => {
     // Entrance logic - show after a short delay
     const timer = setTimeout(() => setIsVisible(true), 800);
@@ -68,18 +64,16 @@ const MobileStickyBar = () => {
             <div className="sticky-bar-content">
               <div className="sticky-bar-left">
                 <span className="services-count">
-                  {totalServices} services available
+                  {totalServicesCount} services available
                 </span>
               </div>
               <div className="sticky-bar-right">
-                <a 
-                  href={whatsappLink} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
+                <button 
                   className="sticky-book-btn"
+                  onClick={openBookingDrawer}
                 >
                   Book now
-                </a>
+                </button>
               </div>
             </div>
           </motion.div>

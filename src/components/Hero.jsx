@@ -1,15 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useLandingPage } from '../context/LandingPageContext';
+import { useBooking } from '../context/BookingContext';
 
 const TEXT_LIMITS = {
   desktop: {
-    heading: { maxLines: 3, maxCharsPerLine: 24, totalChars: 72 },
-    subheading: { maxLines: 3, maxCharsPerLine: 44, totalChars: 132 },
+    heading: { maxLines: 2, maxCharsPerLine: 40, totalChars: 80 },
+    subheading: { maxLines: 2, maxCharsPerLine: 60, totalChars: 120 },
   },
   mobile: {
-    heading: { maxLines: 4, maxCharsPerLine: 22, totalChars: 88 },
-    subheading: { maxLines: 4, maxCharsPerLine: 36, totalChars: 144 },
+    heading: { maxLines: 2, maxCharsPerLine: 30, totalChars: 60 },
+    subheading: { maxLines: 2, maxCharsPerLine: 44, totalChars: 88 },
   },
 };
 
@@ -88,6 +89,7 @@ const imageVariants = {
 
 function Hero() {
   const { hero } = useLandingPage();
+  const { openBookingDrawer } = useBooking();
   const slides = useMemo(() => hero.slides || [], [hero.slides]);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(() =>
@@ -112,8 +114,6 @@ function Hero() {
   }, []);
 
   const activeSlide = slides[activeImageIndex] || null;
-  const ctaPrimary = activeSlide?.ctaPrimary;
-  const ctaSecondary = activeSlide?.ctaSecondary;
   const limits = isMobile ? TEXT_LIMITS.mobile : TEXT_LIMITS.desktop;
   const safeHeading = truncateWithLineControl(activeSlide?.heading, limits.heading);
   const safeSubheading = truncateWithLineControl(activeSlide?.subheading, limits.subheading);
@@ -144,35 +144,25 @@ function Hero() {
             )}
           </AnimatePresence>
           
-          {activeSlide && (
-            <motion.div 
-              className="hero-buttons" 
-              variants={itemVariants}
-              initial="hidden"
-              animate="visible"
+          <motion.div 
+            className="hero-buttons" 
+            variants={itemVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <button
+              className="btn-primary"
+              onClick={openBookingDrawer}
             >
-              {ctaPrimary && (
-                <a
-                  href={ctaPrimary.href}
-                  target={ctaPrimary.external ? '_blank' : undefined}
-                  rel={ctaPrimary.external ? 'noopener noreferrer' : undefined}
-                  className="btn-primary"
-                >
-                  Book Appointment
-                </a>
-              )}
-              {ctaSecondary && (
-                <a
-                  href={ctaSecondary.href}
-                  target={ctaSecondary.external ? '_blank' : undefined}
-                  rel={ctaSecondary.external ? 'noopener noreferrer' : undefined}
-                  className="btn-secondary"
-                >
-                  View Services
-                </a>
-              )}
-            </motion.div>
-          )}
+              Book Appointment
+            </button>
+            <a
+              href="#services"
+              className="btn-secondary"
+            >
+              View Services
+            </a>
+          </motion.div>
         </div>
 
         <div className="hero-image-wrapper">

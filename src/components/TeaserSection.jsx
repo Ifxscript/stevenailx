@@ -43,7 +43,7 @@ function TeaserSection({ id, title, data, footerLink, footerText, onSeeMore, typ
       </motion.div>
 
       <div className="services-cards-grid" ref={gridRef}>
-        {data.map((item, index) => (
+        {(data || []).map((item, index) => (
           <Card 
             key={item.id} 
             {...item} 

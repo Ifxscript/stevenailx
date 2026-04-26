@@ -14,7 +14,7 @@ const Footer = () => {
 
           {/* Columns Section */}
           <div className="footer-columns">
-            {footer.navColumns.map((column, idx) => (
+            {(footer?.navColumns || []).map((column, idx) => (
               <div key={idx} className="footer-column">
                 <h3>{column.title}</h3>
                 <ul>

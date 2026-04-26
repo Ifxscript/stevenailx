@@ -103,7 +103,7 @@ img {
 /* Hero */
 .hero {
   padding-top: 100px;
-  padding-bottom: 20px;
+  padding-bottom: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -138,12 +138,12 @@ img {
   color: var(--color-brown);
   line-height: 1.1;
   margin-bottom: 20px;
-  min-height: auto; /* Removed rigid limit */
+  min-height: calc(2 * 3rem * 1.1); /* Lock 2-line height */
   white-space: pre-line;
   overflow-wrap: anywhere;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -154,11 +154,12 @@ img {
   color: var(--color-brown);
   margin-bottom: 32px;
   line-height: 1.6;
+  min-height: calc(2 * 1.1rem * 1.6); /* Lock 2-line height */
   white-space: pre-line;
   overflow-wrap: anywhere;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -181,6 +182,8 @@ img {
   text-align: center;
   border-radius: 50px;
   font-weight: 500;
+  border: none;
+  outline: none;
   transition: transform 0.2s ease, background-color 0.3s ease;
   display: inline-block;
   cursor: pointer;
@@ -200,6 +203,7 @@ img {
   text-align: center;
   border-radius: 50px;
   font-weight: 500;
+  outline: none;
   transition: all 0.3s ease;
   display: inline-block;
   cursor: pointer;
@@ -213,14 +217,18 @@ img {
 .hero-image-wrapper {
   display: flex;
   justify-content: flex-start;
+  align-items: center;
   position: relative;
   margin-left: -140px;
-  /* Increased overlap for sophisticated zine feel */
   z-index: 5;
+  width: 500px;
+  height: 600px;
+  flex-shrink: 0;
 }
 
 .hero-image {
-  max-height: 75vh;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   -webkit-mask-image: radial-gradient(ellipse 150% 100% at top, black 60%, transparent 95%);
   mask-image: radial-gradient(ellipse 150% 100% at top, black 60%, transparent 95%);
@@ -233,8 +241,8 @@ img {
 
 @media (max-width: 768px) {
   .hero {
-    padding-top: 100px;
-    padding-bottom: 30px;
+    padding-top: 90px;
+    padding-bottom: 10px;
     min-height: auto;
     align-items: flex-start;
   }
@@ -247,22 +255,25 @@ img {
 
   .hero-text {
     margin-bottom: 0px;
+    flex: none; /* Stop the massive 550px vertical stretching */
   }
 
   .hero-text h1 {
     font-size: 2.2rem;
     margin-bottom: 12px;
     line-height: 1.1;
-    -webkit-line-clamp: 4;
-    line-clamp: 4;
+    min-height: calc(2 * 2.2rem * 1.1); /* Lock 2 lines mobile */
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
   }
 
   .hero-text p {
     font-size: 0.95rem;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
     line-height: 1.4;
-    -webkit-line-clamp: 4;
-    line-clamp: 4;
+    min-height: calc(2 * 0.95rem * 1.4); /* Lock 2 lines mobile */
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
   }
 
   .hero-copy-block {
@@ -271,7 +282,10 @@ img {
 
   .hero-image-wrapper {
     margin-left: 0;
+    margin-top: 24px; /* Normal spacing now that the 550px block is gone */
     justify-content: center;
+    width: 100%;
+    height: 320px;
   }
 
   .hero-buttons {
@@ -279,25 +293,23 @@ img {
     width: 100%;
     justify-content: center;
     gap: 12px;
+    position: relative;
+    z-index: 10; /* Keep buttons clickable above the image */
   }
 
-  .hero-buttons a {
-    width: 154px; /* Slightly smaller for mobile grid */
-    flex: none; /* Remove stretch */
+  .hero-buttons a,
+  .hero-buttons button {
+    width: 154px;
+    flex: none;
     padding: 12px 0;
     font-size: 0.85rem;
     text-align: center;
   }
 
-  .hero-image-wrapper {
-    margin-left: 0;
-    justify-content: center;
-    margin-top: -320px;
-    /* Forcefully pulls the image up behind the text block */
-  }
-
   .hero-image {
-    max-height: 45vh;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
 }
 
@@ -361,16 +373,24 @@ img {
 }
 
 .services-cards-grid {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 320px;
-  gap: 40px;
+  display: flex;
+  gap: 24px;
   width: 100%;
   overflow-x: auto;
   padding: 0 var(--grid-px);
-  margin-bottom: 0px; /* Legacy margin removed for consistency */
+  margin-bottom: 0px;
   scrollbar-width: none;
   scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  cursor: grab;
+}
+
+.services-cards-grid:active {
+  cursor: grabbing;
+}
+
+.services-cards-grid::-webkit-scrollbar {
+  display: none;
 }
 
 /* Minimalist Explore Link (Editorial Style) */
@@ -443,19 +463,17 @@ img {
 
   .hero-text h1 {
     font-size: 1.6rem;
+    min-height: calc(2 * 1.6rem * 1.1);
   }
 
   .hero-text p {
     font-size: 0.88rem;
     margin-bottom: 18px;
+    min-height: calc(2 * 0.88rem * 1.4);
   }
 
   .hero-image-wrapper {
-    margin-top: -52vh;
-  }
-
-  .hero-image {
-    max-height: 34vh;
+    height: 260px;
   }
 }
 

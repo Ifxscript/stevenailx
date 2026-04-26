@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import './Card.css';
 
@@ -6,7 +5,6 @@ function Card({
   title, 
   description, 
   image, 
-  link, 
   index, 
   variants, 
   type = 'service' 
@@ -22,7 +20,7 @@ function Card({
       viewport={{ once: true, margin: "-50px" }}
       custom={index}
     >
-      <Link to={link || '#'} className="card-link-wrapper">
+      <div className="card-link-wrapper" style={{ cursor: 'default' }}>
         <div className="card-image">
           <img src={image} alt={title || 'Gallery item'} />
         </div>
@@ -33,7 +31,7 @@ function Card({
             {description && <p className="card-description">{description}</p>}
           </div>
         )}
-      </Link>
+      </div>
     </motion.div>
   );
 }

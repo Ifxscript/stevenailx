@@ -26,7 +26,16 @@ const AboutSection = () => {
             <p className="about-text">{about.description}</p>
             
             <div className="about-map-container">
-              <img src={about.mapImage} alt="Salon Location Map" className="about-map-image" />
+              <iframe
+                title="Salon Location Map"
+                src="https://maps.google.com/maps?q=Saham+Plaza,+behind+New+Banex,+Shop+A20+Upstairs,+Abuja,+Nigeria&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                width="100%"
+                height="100%"
+                style={{ border: 0, display: 'block' }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
             </div>
             
             <div className="about-address-container">
@@ -52,7 +61,7 @@ const AboutSection = () => {
           >
             <h2 className="section-heading">{about.openingTitle}</h2>
             <div className="opening-list">
-              {about.hours.map((day, index) => {
+              {(about?.hours || []).map((day, index) => {
                 const isToday = index === currentDayIndex;
                 const isClosed = !day.isOpen;
                 

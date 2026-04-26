@@ -59,6 +59,8 @@
   font-weight: 700;
   font-size: 0.9rem;
   text-decoration: none;
+  border: none;
+  outline: none;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(120, 31, 25, 0.15);
 }

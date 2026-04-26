@@ -1,12 +1,20 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { useBooking } from '../context/BookingContext';
+import { Menu, X, ChevronRight, User } from 'lucide-react';
 import { useLandingPage } from '../context/LandingPageContext';
+import UserDashboardModal from './UserDashboardModal';
+import UserAvatar from './UserAvatar';
 import './Navbar.css';
 import logo from '../assets/IMG_8009-removebg-preview.png';
 
 function Navbar({ onOpenPortfolio }) {
   const { brand, footer } = useLandingPage();
+  const { currentUser, isAdmin, loginAsClient, logout, isDashboardOpen, setIsDashboardOpen, openDashboard } = useAuth();
+  const { openBookingDrawer } = useBooking();
+    
   const [scrolled, setScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNavHidden, setIsNavHidden] = useState(false);
@@ -14,8 +22,7 @@ function Navbar({ onOpenPortfolio }) {
   // Extract navigation links from footer data to ensure consistency
   const navLinks = footer?.navColumns?.find(c => c.title === "Navigation")?.links || [];
   // Extract WhatsApp link from socials
-  const whatsappLink = footer?.navColumns?.find(c => c.title === "Socials")?.links?.find(l => l.label === "WhatsApp")?.href || "#";
-
+  
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
@@ -63,6 +70,24 @@ function Navbar({ onOpenPortfolio }) {
     }
   };
 
+  const handleAccountClick = async () => {
+    if (currentUser) {
+      if (window.innerWidth >= 768) {
+        setIsMenuOpen(false);
+        openDashboard('upcoming');
+      } else {
+        // Handled directly inside the mobile drawer mapping
+      }
+    } else {
+      try {
+        await loginAsClient();
+        setIsMenuOpen(false);
+      } catch (error) {
+        console.error("Login failed:", error);
+      }
+    }
+  };
+
   return (
     <>
       <motion.nav 
@@ -93,10 +118,23 @@ function Navbar({ onOpenPortfolio }) {
           ))}
         </ul>
 
-        {/* Desktop Book Now */}
-        <a className="navbar-book-btn navbar-book-btn-desktop" href={whatsappLink} target="_blank" rel="noopener noreferrer">
-          Book Now
-        </a>
+        {/* Desktop Actions */}
+        <div className="navbar-actions-desktop">
+          <button 
+            className="navbar-account-btn" 
+            onClick={handleAccountClick} 
+            aria-label={currentUser ? "My Bookings" : "Sign in"}
+          >
+            <User size={20} />
+          </button>
+          
+          <button 
+            className="navbar-book-btn navbar-book-btn-desktop" 
+            onClick={openBookingDrawer}
+          >
+            Book Now
+          </button>
+        </div>
 
         {/* Mobile Hamburger Button */}
         <button 
@@ -119,50 +157,122 @@ function Navbar({ onOpenPortfolio }) {
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           >
             <div className="drawer-content">
-              <button 
-                className="drawer-close-btn" 
-                onClick={toggleMenu}
-                aria-label="Close menu"
-              >
-                <X size={24} />
-              </button>
-
-              <h2 className="drawer-header">Menu</h2>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px' }}>
+                <button 
+                  onClick={toggleMenu}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-brown)', padding: '8px' }}
+                  aria-label="Close menu"
+                >
+                  <X size={28} />
+                </button>
+              </div>
               
-              <div className="drawer-sections">
-                <div className="drawer-card">
-                  <div className="card-links">
-                    {navLinks.map((link) => (
-                      <a 
-                        key={link.label} 
-                        href={link.href} 
-                        className="card-link-item"
-                        onClick={(e) => handleLinkClick(e, link)}
-                      >
-                        <span className="link-label">{link.label}</span>
-                        <ChevronRight size={20} className="link-arrow" />
-                      </a>
-                    ))}
+              <div className="drawer-flat-list">
+                {/* User Avatar & Name at top */}
+                {currentUser && (
+                  <div className="drawer-user-row">
+                    <UserAvatar user={currentUser} className="drawer-flat-avatar" />
+                    <span className="drawer-flat-name">{currentUser.displayName || 'Client'}</span>
                   </div>
-                </div>
+                )}
 
-                <div className="drawer-card book-card">
+                {/* Navigation Links */}
+                {navLinks.map((link) => (
                   <a 
-                    href={whatsappLink} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="card-link-item action-link"
-                    onClick={() => setIsMenuOpen(false)}
+                    key={link.label} 
+                    href={link.href} 
+                    className="drawer-flat-link"
+                    onClick={(e) => handleLinkClick(e, link)}
                   >
-                    <span className="link-label">Book an Appointment</span>
-                    <ChevronRight size={20} className="link-arrow" />
+                    <span>{link.label}</span>
+                    <ChevronRight size={18} className="drawer-flat-arrow" />
                   </a>
-                </div>
+                ))}
+
+                {/* Sign In for logged out users */}
+                {!currentUser && (
+                  <button 
+                    className="drawer-flat-link"
+                    style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit', color: 'inherit', fontSize: 'inherit' }}
+                    onClick={handleAccountClick}
+                  >
+                    <span>Sign In / Account</span>
+                    <ChevronRight size={18} className="drawer-flat-arrow" />
+                  </button>
+                )}
+
+                {/* Divider + Account links if logged in */}
+                {currentUser && (
+                  <>
+                    <div className="drawer-flat-divider" />
+                    <button 
+                      className="drawer-flat-link"
+                      style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit', color: 'inherit', fontSize: 'inherit' }}
+                      onClick={() => { setIsMenuOpen(false); openDashboard('settings'); }}
+                    >
+                      <span>Profile Settings</span>
+                      <ChevronRight size={18} className="drawer-flat-arrow" />
+                    </button>
+                    <button 
+                      className="drawer-flat-link"
+                      style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit', color: 'inherit', fontSize: 'inherit' }}
+                      onClick={() => { setIsMenuOpen(false); openDashboard('appointments'); }}
+                    >
+                      <span>My Appointments</span>
+                      <ChevronRight size={18} className="drawer-flat-arrow" />
+                    </button>
+
+                    {/* Admin Portal — only shown to admins */}
+                    {isAdmin && (
+                      <a 
+                        href="/admin" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="drawer-flat-link"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <span>Admin Portal</span>
+                        <ChevronRight size={18} className="drawer-flat-arrow" />
+                      </a>
+                    )}
+                  </>
+                )}
+
+                {/* Book Appointment for logged out users */}
+                {!currentUser && (
+                  <button 
+                    className="drawer-flat-link drawer-flat-cta"
+                    style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit' }}
+                    onClick={() => { setIsMenuOpen(false); openBookingDrawer(); }}
+                  >
+                    <span>Book an Appointment</span>
+                    <ChevronRight size={18} className="drawer-flat-arrow" />
+                  </button>
+                )}
+
+                {/* Logout at the bottom */}
+                {currentUser && (
+                  <>
+                    <div className="drawer-flat-divider" />
+                    <button 
+                      className="drawer-flat-link drawer-flat-logout"
+                      style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit' }}
+                      onClick={() => { logout(); setIsMenuOpen(false); }}
+                    >
+                      <span>Log Out</span>
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      <UserDashboardModal 
+        isOpen={isDashboardOpen} 
+        onClose={() => setIsDashboardOpen(false)} 
+      />
     </>
   );
 }

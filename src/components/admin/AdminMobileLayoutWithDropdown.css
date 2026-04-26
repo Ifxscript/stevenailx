@@ -1,0 +1,247 @@
+/* ══════════════════════════════════════════════════════
+   ADMIN MOBILE LAYOUT WITH DROPDOWN — Accordion System
+   Extends AdminMobileLayout.css base styles.
+   ══════════════════════════════════════════════════════ */
+
+/* ── Expandable Nav Group ── */
+.dropdown-nav-group {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.dropdown-nav-group:last-child {
+  border-bottom: none;
+}
+
+/* Override default bottom border — parent handles it */
+.dropdown-nav-group > .mobile-nav-item {
+  border-bottom: none;
+}
+
+/* ── Parent Row: has-children variant ── */
+.mobile-nav-item.has-children .nav-item-label {
+  font-weight: 800;
+}
+
+.mobile-nav-item.active:not(.has-children) {
+  background: rgba(74, 26, 38, 0.03);
+}
+
+/* ── Nav Item Actions (+ button & chevron container) ── */
+.nav-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* ── Plus / Add Button ── */
+.nav-add-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: 1.5px solid #F0EFEA;
+  background: #fff;
+  color: var(--hub-accent, #4a1a26);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.nav-add-btn:active {
+  transform: scale(0.9);
+  background: #F9F7F2;
+}
+
+.nav-add-btn.small {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+}
+
+/* ── Chevron Rotation ── */
+.nav-item-chevron {
+  color: #D6D1CA;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  flex-shrink: 0;
+}
+
+.nav-item-chevron.expanded {
+  transform: rotate(180deg);
+  color: var(--hub-accent, #4a1a26);
+}
+
+/* ── Children Container (expand / collapse) ── */
+.nav-children {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.32, 0.72, 0, 1),
+              opacity 0.3s ease;
+  opacity: 0;
+}
+
+.nav-children.expanded {
+  max-height: 600px; /* Large enough for any reasonable list */
+  opacity: 1;
+  overflow: visible;
+}
+
+/* ── Child Row ── */
+.mobile-nav-item.child-item {
+  padding-left: 64px; /* Indented past parent icon (44px icon + 16px gap + 4px base) */
+  border-bottom: none;
+  gap: 12px;
+}
+
+.mobile-nav-item.child-item .nav-item-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #6B5E5E;
+}
+
+.mobile-nav-item.child-item.active .nav-item-label {
+  color: var(--hub-accent, #4a1a26);
+  font-weight: 700;
+}
+
+/* Subtle left accent for active child */
+.mobile-nav-item.child-item.active {
+  background: rgba(74, 26, 38, 0.02);
+  border-left: 3px solid var(--hub-accent, #4a1a26);
+}
+
+/* ── Grandchild Row ── */
+.mobile-nav-item.grandchild-item {
+  padding-left: 84px; /* Further indent */
+  border-bottom: none;
+  gap: 10px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.mobile-nav-item.grandchild-item .nav-item-label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #8E8484;
+}
+
+.mobile-nav-item.grandchild-item.active .nav-item-label {
+  color: var(--hub-accent, #4a1a26);
+  font-weight: 700;
+}
+
+.mobile-nav-item.grandchild-item.active {
+  background: rgba(74, 26, 38, 0.02);
+}
+
+/* ── Nested Children (grandchild container) ── */
+.nav-children.nested {
+  border-left: 1px solid rgba(0, 0, 0, 0.04);
+  margin-left: 72px;
+}
+
+/* ── Subgroup Separator ── */
+.dropdown-nav-subgroup {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.02);
+}
+
+.dropdown-nav-subgroup:last-child {
+  border-bottom: none;
+}
+
+/* ── Inline Editing ── */
+.nav-item-edit-textarea {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--hub-accent, #4a1a26);
+  border-radius: 0;
+  padding: 4px 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--hub-accent, #4a1a26);
+  width: 100%;
+  max-width: 200px;
+  outline: none;
+  box-shadow: none;
+  resize: none;
+  line-height: 1.2;
+  font-family: inherit;
+}
+
+/* ── Action Menu & Save Button ── */
+.action-menu-wrapper {
+  position: relative;
+}
+
+.nav-action-btn.more-btn {
+  color: rgba(0, 0, 0, 0.4);
+  padding: 6px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-action-btn.more-btn:hover {
+  color: var(--hub-accent, #4a1a26);
+  background: rgba(74, 26, 38, 0.05);
+}
+
+.nav-action-btn.save-btn {
+  background: transparent;
+  color: var(--hub-accent, #4a1a26);
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 6px 12px;
+  border: none;
+}
+
+.action-menu-dropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 4px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 24px rgba(74, 26, 38, 0.12);
+  border-radius: 12px;
+  padding: 6px;
+  z-index: 100;
+  min-width: 150px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.action-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  font-size: 0.9rem;
+  color: #555;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.action-menu-item:hover {
+  background: rgba(0, 0, 0, 0.03);
+  color: var(--hub-accent, #4a1a26);
+}
+
+.action-menu-item.delete {
+  color: #D34343;
+}
+
+.action-menu-item.delete:hover {
+  background: rgba(211, 67, 67, 0.08);
+}

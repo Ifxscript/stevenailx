@@ -1,0 +1,174 @@
+/* ── ADMIN MEDIA TILE: FLEXIBLE SLOT SYSTEM ── */
+
+.admin-media-tile-root {
+  width: 200px !important;
+  height: auto !important; 
+  min-height: 140px;
+  flex: 0 0 200px !important;
+  display: flex;
+  flex-direction: column;
+  background: transparent; /* TRANSPARENT BACKING */
+  border-radius: 0;
+  overflow: hidden;
+  box-shadow: none; /* REMOVED SHADOW */
+  border: none; /* REMOVED BORDER */
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.admin-media-tile-root:active {
+  transform: scale(0.98);
+}
+
+.amt-preview-wrap {
+  width: 100%;
+  height: 140px !important; /* FIXED IMAGE ANCHOR */
+  position: relative;
+  background-color: #F9F7F2;
+  overflow: hidden;
+}
+
+.amt-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Status Badging */
+.amt-status-pill {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 4px 8px;
+  border-radius: 100px;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.6rem;
+  font-weight: 800;
+  z-index: 5;
+}
+
+.amt-status-live { color: #4a1a26; }
+
+/* Action Overlay */
+.amt-action-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(74, 26, 38, 0.35);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.amt-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.amt-action-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.amt-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.amt-edit { background: #fff; color: #4a1a26; }
+.amt-delete { background: #e53935; color: #fff; }
+
+/* Mobile Hint */
+.amt-mobile-hint {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4a1a26;
+  z-index: 5;
+}
+
+/* Content Area */
+.amt-content-area {
+  padding: 12px 0; /* REMOVED HORIZONTAL PADDING */
+  background: transparent; /* TRANSPARENT */
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.amt-title {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #4a1a26;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.amt-subtitle {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #8E8484;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.amt-description {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #666;
+  line-height: 1.4;
+  margin: 4px 0 0 0;
+}
+
+/* ── UNIVERSAL MOBILE GRID ── */
+.amt-universal-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  padding: 10px;
+  width: 100%;
+}
+
+/* ── 2-COLUMN MOBILE GRID ── */
+.amt-2col-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+}
+
+.amt-2col-grid .admin-media-tile-root {
+  width: 100% !important;
+  flex: unset !important;
+}
+
+.amt-2col-grid .amt-preview-wrap {
+  height: 120px !important;
+}

@@ -2,8 +2,7 @@
 /* (Overlay, Backdrop, and Sheet are handled globally or in catalog-sheet) */
 
 .reviews-modal-sheet {
-  max-width: 1200px !important;
-  /* Preserve the wider layout for reviews */
+  /* Inherit 100vw full screen styling from catalog-sheet on desktop */
 }
 
 /* Header */
@@ -50,11 +49,13 @@
 }
 
 .modal-container {
-  max-width: 1200px;
+  max-width: none; /* Full width inner container */
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr 400px;
   gap: 80px;
+  padding-left: 5vw;
+  padding-right: 5vw;
 }
 
 /* Review List Column */

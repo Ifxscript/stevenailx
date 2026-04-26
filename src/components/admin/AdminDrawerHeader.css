@@ -1,0 +1,68 @@
+.admin-drawer-header-root {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 16px 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+
+
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  background: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.15),
+      rgba(255, 255, 255, 0.05));
+}
+
+.admin-drawer-header-title {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #000;
+  /* High Contrast Black */
+  letter-spacing: -0.02em;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.admin-drawer-header-close {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #000;
+  transition: all 0.2s ease;
+}
+
+.admin-drawer-header-close:hover {
+  background: rgba(0, 0, 0, 0.1);
+  transform: scale(0.95);
+}
+
+.admin-drawer-header-close:active {
+  transform: scale(0.9);
+}
+
+/* Dark Mode Variant Support */
+.admin-drawer-header-root.variant-dark {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.admin-drawer-header-root.variant-dark .admin-drawer-header-title {
+  color: #fff;
+}
+
+.admin-drawer-header-root.variant-dark .admin-drawer-header-close {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}

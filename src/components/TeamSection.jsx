@@ -6,9 +6,8 @@ import './TeamSection.css';
 function TeamSection() {
   const { team, reviews } = useLandingPage();
   
-  // Combine context reviews with any submitted ones from localStorage
-  const localReviews = JSON.parse(localStorage.getItem('pending_reviews') || '[]');
-  const allReviews = [...reviews.items, ...localReviews].filter(r => r.status === 'approved');
+  // Only use approved reviews from the Firestore-backed context
+  const allReviews = (reviews?.items || []).filter(r => r.status === 'approved');
 
   const getAverageRating = (memberId) => {
     const memberReviews = allReviews.filter(r => r.memberId === memberId);
@@ -25,7 +24,7 @@ function TeamSection() {
         </header>
 
         <div className="team-row">
-          {team.members.map((member, index) => (
+          {(team?.members || []).map((member, index) => (
             <motion.div 
               key={member.id} 
               className="team-card"

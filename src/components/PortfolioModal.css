@@ -1,5 +1,5 @@
 .portfolio-sheet {
-  max-width: 1000px !important; /* Wider for gallery view */
+  /* Inherit 100vw full screen styling from catalog-sheet on desktop */
 }
 
 .portfolio-content {
@@ -128,5 +128,9 @@
 @media (min-width: 1024px) {
   .portfolio-grid {
     grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+  }
+  .portfolio-item {
+    border-radius: 8px; /* Sharper gallery look on desktop full-screen */
   }
 }

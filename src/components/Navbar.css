@@ -29,13 +29,13 @@
 .navbar-logo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   cursor: pointer;
 }
 
 .navbar-logo-monogram {
-  width: 42px;
-  height: 42px;
+  width: 28px;
+  height: 28px;
   background-color: var(--color-burgundy);
   mask: var(--logo-url) no-repeat center;
   -webkit-mask: var(--logo-url) no-repeat center;
@@ -88,12 +88,61 @@
   transition: width 0.3s ease;
 }
 
+.book-card {
+  margin-top: 10px;
+  background-color: var(--color-burgundy);
+  border: none;
+}
+
+.book-card .action-link {
+  color: var(--color-white-warm);
+}
+
 .navbar-link:hover {
   color: var(--color-burgundy);
 }
 
 .navbar-link:hover::after {
   width: 100%;
+}
+
+/* Actions Area (Desktop) */
+.navbar-actions-desktop {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .navbar-actions-desktop {
+    display: none;
+  }
+}
+
+.navbar-account-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--color-white-warm);
+  color: var(--color-burgundy);
+  border: 1px solid rgba(139, 58, 74, 0.15);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.navbar-account-btn:hover {
+  background-color: var(--color-burgundy);
+  color: var(--color-white-warm);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 58, 74, 0.15);
+}
+
+.navbar-account-btn:active {
+  transform: translateY(0);
 }
 
 /* Book Now Button (Desktop) */
@@ -149,7 +198,7 @@
   height: 100%;
   background-color: #ffffff;
   z-index: 1050;
-  padding: 100px 30px 40px;
+  padding: 24px 30px 40px;
   display: flex;
   flex-direction: column;
 }
@@ -283,4 +332,121 @@
     pointer-events: none;
     transition: transform 0.4s ease, opacity 0.4s ease, visibility 0.4s ease;
   }
+}
+
+/* User Profile Header (Option B) */
+.user-profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0 24px;
+  gap: 16px;
+  text-align: center;
+}
+
+.user-avatar-wrapper {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-avatar-hero {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #fff;
+  box-shadow: 0 0 0 2px var(--color-burgundy);
+  background-color: #fff;
+}
+
+.user-avatar-hero.fallback {
+  background-color: #f0f0f0;
+}
+
+.user-info-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.user-name-hero {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-brown, #3a2a2a);
+  letter-spacing: -0.02em;
+}
+
+/* ===================================
+   FLAT DRAWER DESIGN (no cards)
+   =================================== */
+.drawer-flat-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.drawer-user-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0 24px;
+}
+
+.drawer-flat-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background-color: #f0f0f0;
+}
+
+.drawer-flat-name {
+  font-family: var(--font-body);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-brown, #3a2a2a);
+}
+
+.drawer-flat-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 0;
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-brown, #3a2a2a);
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s;
+}
+
+.drawer-flat-link:active {
+  opacity: 0.6;
+}
+
+.drawer-flat-arrow {
+  color: #ccc;
+  flex-shrink: 0;
+}
+
+.drawer-flat-divider {
+  height: 1px;
+  background-color: #f0f0f0;
+  margin: 8px 0;
+}
+
+.drawer-flat-cta {
+  color: var(--color-burgundy);
+}
+
+.drawer-flat-logout {
+  color: #b0a8a0;
+  font-weight: 500;
 }

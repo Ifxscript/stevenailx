@@ -197,3 +197,8 @@ export const salonServices = {
     }
   ]
 };
+
+export const servicesCatalog = {
+  nails: nailServices,
+  salon: salonServices
+};

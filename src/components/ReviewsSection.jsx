@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star } from 'lucide-react';
+import { Star, ShieldCheck } from 'lucide-react';
 import { useLandingPage } from '../context/LandingPageContext';
 import ReviewsModal from './ReviewsModal';
 import './ReviewsSection.css';
@@ -37,14 +37,21 @@ const ReviewCard = ({ review }) => {
           {review.name.charAt(0)}
         </div>
         <div className="review-meta">
-          <h4 className="review-name">{review.name}</h4>
+          <div className="review-name-group">
+            <h4 className="review-name">{review.name}</h4>
+            {review.isVerified && (
+              <span className="verified-badge" title="Verified Client">
+                <ShieldCheck size={12} />
+              </span>
+            )}
+          </div>
           <span className="review-date">{formatDate(review.date)}</span>
         </div>
       </div>
       
       <div className="review-stars-individual">
         {[...Array(5)].map((_, i) => (
-          <Star key={i} size={14} fill={i < review.rating ? "#FFB800" : "none"} color={i < review.rating ? "#FFB800" : "#E0E0E0"} />
+          <Star key={i} size={18} fill={i < review.rating ? "#FFB800" : "none"} color={i < review.rating ? "#FFB800" : "#E0E0E0"} />
         ))}
       </div>
 
@@ -69,16 +76,14 @@ function ReviewsSection() {
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
 
   useEffect(() => {
-    // Load approved reviews: combine context data with local submissions
-    const localReviews = JSON.parse(localStorage.getItem('pending_reviews') || '[]');
-    const approvedContext = reviews.items.filter(r => r.status === 'approved');
-    const approvedLocal = localReviews.filter(r => r.status === 'approved');
-    setAllReviews([...approvedContext, ...approvedLocal]);
+    // Only approved reviews appear on the landing page
+    const approved = (reviews?.items || []).filter(r => r.status === 'approved');
+    setAllReviews(approved);
 
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [reviews.items]);
+  }, [reviews?.items]);
 
   const totalReviews = allReviews.length;
   const averageRating = totalReviews > 0 

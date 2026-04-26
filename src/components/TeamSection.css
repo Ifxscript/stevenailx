@@ -19,9 +19,18 @@
 
 .team-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: 80px;
+  flex-wrap: nowrap;
+  gap: 60px;
   justify-content: flex-start;
+  overflow-x: auto;
+  padding-bottom: 24px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.team-row::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/Opera */
 }
 
 .team-card {
@@ -30,6 +39,7 @@
   align-items: center;
   text-align: center;
   width: 150px; /* Scaled down from 200px */
+  flex-shrink: 0;
 }
 
 /* Avatar Container for Badge Positioning */
@@ -132,8 +142,8 @@
 
 
   .team-row {
-    gap: 40px;
-    justify-content: center;
+    gap: 32px;
+    justify-content: flex-start;
   }
 
   .team-avatar-container {
