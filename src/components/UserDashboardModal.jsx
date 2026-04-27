@@ -39,62 +39,72 @@ const DashboardBookingRow = ({ booking, onCancel, onReview }) => {
   const isCancelled = booking.status === 'cancelled';
   const isCompleted = booking.status === 'completed' || (!isUpcoming && !isCancelled);
 
+  const totalPrice = booking.services?.reduce((sum, s) => sum + parseInt(s.price || 0), 0) || 0;
+
   const handleContactSteve = () => {
     const msg = `Hi Steve, I'd like to discuss rescheduling my appointment on ${booking.date} at ${booking.timeSlot}.`;
     const whatsappUrl = `${CONFIG.whatsappBaseUrl}?text=${encodeURIComponent(msg)}`;
-    window.open(whatsappUrl, '_blank');
+    // Use window.location for better mobile reliability (prevents popup blockers)
+    window.location.href = whatsappUrl;
     setMenuOpen(false);
   };
 
   return (
     <div className={`ref-booking-card ${isCancelled ? 'cancelled' : ''}`}>
-      <div className="ref-date-col">
-        <span className="ref-day-name">{dayName}</span>
-        <span className="ref-day-num">{dayNumber}</span>
-      </div>
-
-      <div className="ref-info-col">
-        <div className="ref-meta-row">
-          <div className="ref-meta-item">
-            <Clock size={14} />
-            <span>{booking.timeSlot}</span>
-          </div>
-          <div className="ref-meta-item">
-            <MapPin size={14} />
-            <span>In-Studio</span>
-          </div>
-        </div>
-        <div className="ref-service-name">
-          {booking.services?.map(s => s.name).join(', ') || 'Nail Service'}
-        </div>
-      </div>
-
-      <div className="ref-action-col">
-        <button className={`ref-edit-btn ${menuOpen ? 'active' : ''}`} onClick={() => setMenuOpen(!menuOpen)}>
-          <span>Edit</span>
-          {menuOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-        </button>
-
-        {menuOpen && (
-          <>
-            <div className="dropdown-overlay-fixed" onClick={() => setMenuOpen(false)} />
-            <div className="dropdown-menu">
-              <button className="dropdown-item" onClick={handleContactSteve}>
-                <MessageCircle size={16} /> Contact to Reschedule
-              </button>
-              {isCompleted && !isReviewed && (
-                <button className="dropdown-item" onClick={() => { onReview(booking); setMenuOpen(false); }}>
-                  <Star size={16} fill="#f59e0b" color="#f59e0b" /> Leave Review
-                </button>
-              )}
-              {!isCancelled && isUpcoming && (
-                <button className="dropdown-item danger" onClick={() => { onCancel(booking); setMenuOpen(false); }}>
-                  <XCircle size={16} /> Cancel Appointment
-                </button>
-              )}
+      <div className="booking-card-main">
+        {/* Top Row: Date/Time & Status */}
+        <div className="booking-header-row">
+          <div className="booking-date-group">
+            <span className="booking-day">{dayName}, {dayNumber}</span>
+            <div className="booking-time-chip">
+              <Clock size={12} />
+              <span>{booking.timeSlot}</span>
             </div>
-          </>
-        )}
+          </div>
+          <div className={`booking-status-tag ${booking.status || 'upcoming'}`}>
+            {booking.status || 'Upcoming'}
+          </div>
+        </div>
+
+        {/* Middle Row: Service Name */}
+        <div className="booking-body-row">
+          <h4 className="booking-service-title">
+            {booking.services?.map(s => s.name).join(', ') || 'Nail Service'}
+          </h4>
+        </div>
+
+        {/* Bottom Row: Price & Actions */}
+        <div className="booking-footer-row">
+          <div className="booking-price-tag">
+            ₦{totalPrice.toLocaleString()}
+          </div>
+          
+          <div className="booking-actions-group">
+            {/* ONLY show Edit/Actions for upcoming bookings */}
+            {isUpcoming && !isCancelled && (
+              <>
+                <button className={`ref-edit-btn ${menuOpen ? 'active' : ''}`} onClick={() => setMenuOpen(!menuOpen)}>
+                  <span>Edit</span>
+                  {menuOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                </button>
+
+                {menuOpen && (
+                  <>
+                    <div className="dropdown-overlay-fixed" onClick={() => setMenuOpen(false)} />
+                    <div className="dropdown-menu">
+                      <button className="dropdown-item" onClick={handleContactSteve}>
+                        <MessageCircle size={16} /> Contact to Reschedule
+                      </button>
+                      <button className="dropdown-item danger" onClick={() => { onCancel(booking); setMenuOpen(false); }}>
+                        <XCircle size={16} /> Cancel Appointment
+                      </button>
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Prominent review banner for completed, unreviewed bookings */}
@@ -361,13 +371,19 @@ const UserDashboardModal = ({ isOpen, onClose }) => {
                           <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'linear-gradient(135deg, #f9f0f3 0%, #fdf6f0 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
                             <CalendarHeart size={36} color="var(--color-burgundy, #8b1d41)" style={{ opacity: 0.6 }} />
                           </div>
-                          <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--color-brown, #3a2a2a)', margin: '0 0 8px' }}>No appointments yet</h3>
-                          <p style={{ fontSize: '0.9rem', color: '#999', margin: '0 0 24px', lineHeight: 1.5 }}>Your upcoming and past appointments will appear here once you book.</p>
+                          <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--color-brown, #3a2a2a)', margin: '0 0 8px' }}>
+                            {subTab === 'upcoming' ? 'No upcoming appointments' : 'No past appointments'}
+                          </h3>
+                          <p style={{ fontSize: '0.9rem', color: '#999', margin: '0 0 24px', lineHeight: 1.5 }}>
+                            {subTab === 'upcoming' 
+                              ? 'Your scheduled appointments will appear here.' 
+                              : 'Your visit history will appear here once you complete a booking.'}
+                          </p>
                           <button 
                             className="book-first-cta"
                             onClick={() => { onClose(); openBookingDrawer(); }}
                           >
-                            Book Your First Appointment
+                            Book Appointment
                           </button>
                         </div>
                       </div>

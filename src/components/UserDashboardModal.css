@@ -404,11 +404,11 @@
 
 .ref-booking-card {
   display: flex;
-  align-items: center;
-  gap: 32px;
-  padding: 20px 0;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px 0;
   border-bottom: 1px solid #f0f0f0;
-  transition: background 0.2s;
+  transition: all 0.2s ease;
 }
 
 .ref-booking-card:last-child {
@@ -444,86 +444,147 @@
   box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
 }
 
-/* Date Column */
-.ref-date-col {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  min-width: 60px;
+.ref-booking-card.cancelled {
+  opacity: 0.6;
 }
 
-.ref-day-name {
+.booking-card-main {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+/* Header Row: Date & Status */
+.booking-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.booking-date-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.booking-day {
   font-size: 1rem;
   font-weight: 700;
-  color: var(--color-burgundy);
-  /* Brand Accent */
-  line-height: 1;
+  color: var(--color-brown);
 }
 
-.ref-day-num {
-  font-size: 2.2rem;
-  font-weight: 800;
-  color: #222;
-  line-height: 1.1;
-  margin-top: 2px;
-}
-
-/* Info Column */
-.ref-info-col {
-  flex: 1;
+.booking-time-chip {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.ref-meta-row {
-  display: flex;
-  gap: 20px;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
   color: #666;
 }
 
-.ref-meta-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.95rem;
-  font-weight: 500;
-}
-
-.ref-meta-item svg {
+.booking-time-chip svg {
   color: var(--color-burgundy);
-  /* Brand Accent */
 }
 
-.ref-service-name {
+.booking-status-tag {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.booking-status-tag.upcoming {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.booking-status-tag.completed {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.booking-status-tag.cancelled {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+/* Body Row: Service Title */
+.booking-body-row {
+  width: 100%;
+}
+
+.booking-service-title {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #333;
+  color: #222;
+  line-height: 1.4;
+  margin: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
-/* Action Column */
-.ref-action-col {
-  position: relative;
+/* Footer Row: Price & Actions */
+.booking-footer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.booking-price-tag {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-burgundy);
+}
+
+.booking-actions-group {
+  display: flex;
+  gap: 8px;
+  position: relative; /* CRITICAL for absolute positioning of the menu */
 }
 
 .ref-edit-btn {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 16px;
+  gap: 8px;
+  padding: 8px 14px;
   background-color: #fff;
   border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 0.9rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
   font-weight: 600;
   color: #444;
   cursor: pointer;
   transition: all 0.2s;
+  position: relative;
+  z-index: 2060; /* HIGHER than the overlay shield */
 }
 
 .ref-edit-btn:hover {
-  background-color: #f9f9f9;
+  background-color: #f5f5f5;
   border-color: #d0d0d0;
+}
+
+.ref-edit-btn.active {
+  background-color: #fafafa;
+  border-color: var(--color-burgundy);
+  color: var(--color-burgundy);
+}
+
+/* Desktop Refinement */
+@media (min-width: 769px) {
+  .booking-card-main {
+    gap: 16px;
+  }
+  
+  .booking-service-title {
+    font-size: 1.2rem;
+  }
 }
 
 /* Sidebar Navigation Action (Desktop) */
@@ -592,18 +653,18 @@
 /* Edit Dropdown Fixes */
 .dropdown-menu {
   position: absolute;
-  top: calc(100% + 12px);
+  top: calc(100% + 8px);
   right: 0;
   background: white;
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
   border: 1px solid #eee;
-  width: 240px;
+  width: 220px;
   z-index: 2100;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  padding: 8px;
+  padding: 6px;
 }
 
 .dropdown-item {
