@@ -41,19 +41,21 @@
 .nav-item-icon {
   width: 44px;
   height: 44px;
-  background: #F9F7F2; /* Subtle, neutral background like some desktop elements */
+  background: #F9F7F2; 
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--hub-accent);
+  opacity: 0.8; /* Subtle icon presence */
 }
 
 .nav-item-label {
   flex: 1;
   font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--hub-accent);
+  font-weight: 400; /* Lighter weight for modern feel */
+  color: rgba(74, 26, 38, 0.7); /* Muted burgundy */
+  letter-spacing: -0.01em;
 }
 
 .nav-item-arrow {
@@ -146,7 +148,7 @@
 
 .hub-layout-wrapper .drawer-title-group h3 {
   font-size: 1.15rem;
-  font-weight: 800;
+  font-weight: 600; /* Reduced from 800 for lighter feel */
   color: var(--hub-accent);
   margin: 0;
 }
@@ -154,6 +156,7 @@
 .hub-layout-wrapper .drawer-title-group p {
   font-size: 0.85rem;
   color: var(--hub-subtext);
+  opacity: 0.6; /* More subtle */
   margin: 2px 0 0;
 }
 
