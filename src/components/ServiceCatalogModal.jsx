@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ArrowRight } from 'lucide-react';
+import { useBooking } from '../context/BookingContext';
 import './ServiceCatalogModal.css';
 
 const formatPrice = (price) => {
@@ -20,6 +21,7 @@ const formatRange = (from, to) => {
 };
 
 function ServiceCatalogModal({ isOpen, onClose, catalog }) {
+  const { openBookingWithService, bookingData } = useBooking();
   const [activeCategory, setActiveCategory] = useState(null);
   const scrollContainerRef = useRef(null);
   const navRef = useRef(null);
@@ -90,6 +92,26 @@ function ServiceCatalogModal({ isOpen, onClose, catalog }) {
     setTimeout(() => {
       isManualScrolling.current = false;
     }, 800);
+  };
+
+  const handleBook = (item, section) => {
+    // Close this modal first
+    onClose();
+    
+    // Prepare service object
+    const service = {
+      name: item.name,
+      price: parseFloat(item.price) || parseFloat(item.price_from) || 0,
+      duration: 30,
+      category: section?.title || ''
+    };
+    
+    // Start booking flow with this service
+    openBookingWithService(service);
+  };
+
+  const isItemSelected = (name) => {
+    return bookingData?.services.some(s => s.name === name);
   };
 
   if (!isOpen || !catalog) return null;
@@ -167,7 +189,12 @@ function ServiceCatalogModal({ isOpen, onClose, catalog }) {
                               {item.price_note ? item.price_note : 
                                (item.price ? formatPrice(item.price) : formatRange(item.price_from, item.price_to))}
                             </span>
-                            <button className="btn-book-dummy">Book</button>
+                            <button 
+                              className={`btn-book-action ${isItemSelected(item.name) ? 'selected' : ''}`} 
+                              onClick={() => handleBook(item, section)}
+                            >
+                              {isItemSelected(item.name) ? 'Selected' : 'Book'}
+                            </button>
                           </div>
                         </div>
                       ))}

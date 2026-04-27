@@ -64,7 +64,7 @@
 }
 
 .manager-header h2 {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 4px;
 }
@@ -133,7 +133,7 @@
 }
 
 .cat-title-group h3 {
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   font-weight: 700;
 }
 
@@ -672,7 +672,7 @@
   }
 
   .m-summary-header h3 {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     font-weight: 800;
     color: var(--color-brown, #4a1a26);
     margin: 0;
@@ -693,7 +693,7 @@
   }
 
   .m-primary-value {
-    font-size: 4.5rem;
+    font-size: 3.2rem;
     font-weight: 800;
     color: var(--color-burgundy, #8b1d41);
     line-height: 1;
@@ -731,7 +731,7 @@
   }
 
   .m-metric-value {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     font-weight: 800;
     color: var(--color-brown, #4a1a26);
     line-height: 1;
@@ -1347,7 +1347,7 @@
 }
 
 .welcome-banner h2 {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 4px;
 }
@@ -1382,7 +1382,7 @@
 }
 
 .stat-value {
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--color-brown);
 }
@@ -1502,7 +1502,7 @@
 
 .ab-name {
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--color-brown);
 }
 
@@ -1561,7 +1561,7 @@
 }
 
 .ab-total {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--color-brown);
 }

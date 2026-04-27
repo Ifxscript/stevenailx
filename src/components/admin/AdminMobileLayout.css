@@ -51,7 +51,7 @@
 
 .nav-item-label {
   flex: 1;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: var(--hub-accent);
 }
@@ -145,7 +145,7 @@
 }
 
 .hub-layout-wrapper .drawer-title-group h3 {
-  font-size: 1.3rem;
+  font-size: 1.15rem;
   font-weight: 800;
   color: var(--hub-accent);
   margin: 0;

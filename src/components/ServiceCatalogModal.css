@@ -212,16 +212,35 @@
   color: var(--color-brown);
 }
 
-.btn-book-dummy {
-  background: none;
+.btn-book-action {
+  background-color: #fff;
   border: 1.5px solid #eee;
   padding: 6px 16px;
   border-radius: 12px;
   font-family: var(--font-body);
   font-size: 0.8rem;
   font-weight: 600;
-  color: #999;
-  cursor: default;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-book-action:hover {
+  border-color: var(--color-burgundy);
+  color: var(--color-burgundy);
+  background-color: rgba(139, 29, 65, 0.02);
+  transform: translateY(-1px);
+}
+
+.btn-book-action:active {
+  transform: translateY(0);
+  background-color: rgba(139, 29, 65, 0.05);
+}
+
+.btn-book-action.selected {
+  background-color: var(--color-burgundy);
+  border-color: var(--color-burgundy);
+  color: white;
 }
 
 .catalog-footer-hint {

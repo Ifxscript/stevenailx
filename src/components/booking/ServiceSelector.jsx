@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { db } from '../../lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { useBooking } from '../../context/BookingContext';
@@ -9,6 +9,7 @@ function ServiceSelector() {
   const [catalog, setCatalog] = useState({});
   const [loading, setLoading] = useState(true);
   const [expandedCats, setExpandedCats] = useState({});
+  const serviceRefs = useRef({});
 
   useEffect(() => {
     const fetchCatalog = async () => {
@@ -28,6 +29,38 @@ function ServiceSelector() {
     };
     fetchCatalog();
   }, []);
+
+  // Auto-scroll logic
+  useEffect(() => {
+    if (!loading && bookingData.services.length > 0) {
+      const selectedSvc = bookingData.services[0];
+      
+      // 1. Find which category this service belongs to in the catalog
+      let targetCatId = null;
+      Object.entries(catalog).forEach(([catId, catData]) => {
+        catData.services?.forEach(svc => {
+          svc.sections?.forEach(section => {
+            if (section.items?.some(item => item.name === selectedSvc.name)) {
+              targetCatId = catId;
+            }
+          });
+        });
+      });
+
+      // 2. Expand that category
+      if (targetCatId) {
+        setExpandedCats(prev => ({ ...prev, [targetCatId]: true }));
+        
+        // 3. Scroll to the element after a short delay for render
+        setTimeout(() => {
+          const el = serviceRefs.current[selectedSvc.name];
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 300);
+      }
+    }
+  }, [loading, catalog, bookingData.services]);
 
   const toggleCat = (id) => {
     setExpandedCats(prev => ({ ...prev, [id]: !prev[id] }));
@@ -90,6 +123,7 @@ function ServiceSelector() {
                   return (
                     <button
                       key={item.id}
+                      ref={el => serviceRefs.current[item.name] = el}
                       className={`booking-service-item ${selected ? 'selected' : ''}`}
                       onClick={() => onToggle(item, section)}
                     >

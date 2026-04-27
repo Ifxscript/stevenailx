@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { db } from '../../lib/firebase';
-import { doc, getDoc, collection, getDocs, query } from 'firebase/firestore';
+import { doc, getDoc, collection, getDocs, query, onSnapshot } from 'firebase/firestore';
 import { useMobile } from '../../hooks/useMobile';
 import { 
   BarChart3, Settings, Image as ImageIcon, ListOrdered, LogOut, 
@@ -129,15 +129,15 @@ function DashboardOverview() {
             ? (approvedReviews.reduce((sum, r) => sum + (r.rating || 0), 0) / approvedReviews.length).toFixed(1)
             : '0.0';
           
-          setStats({
+          setStats(prev => ({
+            ...prev,
             services: (d.services?.items?.length || 0) + (d.services?.otherItems?.length || 0),
             portfolio: d.gallery?.items?.length || 0,
             reviews: allReviews.length,
             team: d.team?.members?.length || 0,
             avgRating,
-          });
+          }));
 
-          // Sort reviews by ID or implicit date (assuming higher ID is newer)
           setRecentReviews([...allReviews].reverse().slice(0, 3));
           setRecentPhotos((d.gallery?.items || []).slice(0, 4));
         }
@@ -146,113 +146,100 @@ function DashboardOverview() {
       }
     };
 
-    const fetchBookings = async () => {
-      try {
-        const q = query(collection(db, 'bookings'));
-        const snapshot = await getDocs(q);
-        const bookings = [];
-        snapshot.forEach(d => bookings.push(d.data()));
+    fetchStats();
 
-        // Also fetch users and count bookings
-        try {
-          const usersQ = query(collection(db, 'users'));
-          const usersSnap = await getDocs(usersQ);
-          const usersList = [];
-          usersSnap.forEach(d => {
-            const data = d.data();
-            // Count bookings for this user
-            const userBookings = bookings.filter(b => b.clientId === d.id);
-            usersList.push({
-              id: d.id,
-              ...data,
-              bookingCount: userBookings.length,
-              signupDate: data.createdAt?.toDate ? data.createdAt.toDate() : new Date(data.createdAt || Date.now())
+    let bookingsData = [];
+    let usersData = [];
+
+    const processCombinedData = () => {
+      // Update Recent Users List
+      const usersList = usersData.map(u => {
+        const userBookings = bookingsData.filter(b => b.clientId === u.id);
+        return {
+          ...u,
+          bookingCount: userBookings.length,
+          signupDate: u.createdAt?.toDate ? u.createdAt.toDate() : new Date(u.createdAt || Date.now())
+        };
+      });
+      usersList.sort((a, b) => b.signupDate - a.signupDate);
+      setRecentUsers(usersList.slice(0, 5));
+
+      // Update Booking Stats
+      const now = new Date();
+      const currentMonth = now.getMonth();
+      const currentYear = now.getFullYear();
+      const dayOfWeek = now.getDay() || 7;
+      const weekStart = new Date(now);
+      weekStart.setDate(now.getDate() - dayOfWeek + 1);
+      weekStart.setHours(0, 0, 0, 0);
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekStart.getDate() + 6);
+      weekEnd.setHours(23, 59, 59, 999);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      let upcomingWeekCount = 0;
+      let thisMonthCount = 0;
+      let lastMonthCount = 0;
+      let pendingCount = 0;
+      const serviceCounts = {};
+
+      bookingsData.forEach(b => {
+        if (!b.date) return;
+        const bDate = new Date(b.date);
+        bDate.setHours(0, 0, 0, 0);
+        if (b.status === 'pending') pendingCount++;
+        if (bDate >= today && bDate <= weekEnd && b.status !== 'cancelled' && b.status !== 'completed') {
+          upcomingWeekCount++;
+        }
+        if (bDate.getFullYear() === currentYear && bDate.getMonth() === currentMonth) {
+          thisMonthCount++;
+          if (b.services) {
+            b.services.forEach(s => {
+              serviceCounts[s.name] = (serviceCounts[s.name] || 0) + 1;
             });
-          });
-          
-          // Sort by most recent signup and take top 5
-          usersList.sort((a, b) => b.signupDate - a.signupDate);
-          setRecentUsers(usersList.slice(0, 5));
-        } catch (err) {
-          console.error("Users fetch error in dashboard:", err);
+          }
+        } else if (bDate.getFullYear() === currentYear && bDate.getMonth() === currentMonth - 1) {
+          lastMonthCount++;
+        } else if (currentMonth === 0 && bDate.getFullYear() === currentYear - 1 && bDate.getMonth() === 11) {
+          lastMonthCount++;
         }
+      });
 
-        const now = new Date();
-        const currentMonth = now.getMonth();
-        const currentYear = now.getFullYear();
-        
-        // Calculate week boundaries (Monday to Sunday)
-        const dayOfWeek = now.getDay() || 7; // 1 (Mon) to 7 (Sun)
-        const weekStart = new Date(now);
-        weekStart.setDate(now.getDate() - dayOfWeek + 1);
-        weekStart.setHours(0, 0, 0, 0);
-        const weekEnd = new Date(weekStart);
-        weekEnd.setDate(weekStart.getDate() + 6);
-        weekEnd.setHours(23, 59, 59, 999);
-
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        let upcomingWeekCount = 0;
-        let thisMonthCount = 0;
-        let lastMonthCount = 0;
-        let pendingCount = 0;
-        const serviceCounts = {};
-
-        bookings.forEach(b => {
-          if (!b.date) return;
-          const bDate = new Date(b.date);
-          bDate.setHours(0, 0, 0, 0);
-          
-          // Pending confirmations
-          if (b.status === 'pending') {
-            pendingCount++;
-          }
-
-          // Upcoming this week (not cancelled/completed)
-          if (bDate >= today && bDate <= weekEnd && b.status !== 'cancelled' && b.status !== 'completed') {
-            upcomingWeekCount++;
-          }
-
-          // Month trends
-          if (bDate.getFullYear() === currentYear && bDate.getMonth() === currentMonth) {
-            thisMonthCount++;
-            if (b.services) {
-              b.services.forEach(s => {
-                serviceCounts[s.name] = (serviceCounts[s.name] || 0) + 1;
-              });
-            }
-          } else if (bDate.getFullYear() === currentYear && bDate.getMonth() === currentMonth - 1) {
-            lastMonthCount++;
-          } else if (currentMonth === 0 && bDate.getFullYear() === currentYear - 1 && bDate.getMonth() === 11) {
-            lastMonthCount++;
-          }
-        });
-
-        let topService = '—';
-        let maxCount = 0;
-        for (const [sName, count] of Object.entries(serviceCounts)) {
-          if (count > maxCount) {
-            maxCount = count;
-            topService = sName;
-          }
+      let topService = '—';
+      let maxCount = 0;
+      for (const [sName, count] of Object.entries(serviceCounts)) {
+        if (count > maxCount) {
+          maxCount = count;
+          topService = sName;
         }
-
-        setBookingsStats({
-          upcomingWeek: upcomingWeekCount,
-          thisMonth: thisMonthCount,
-          lastMonth: lastMonthCount,
-          pending: pendingCount,
-          topService: topService
-        });
-
-      } catch (err) {
-        console.error("Bookings fetch error:", err);
       }
+
+      setBookingsStats({
+        upcomingWeek: upcomingWeekCount,
+        thisMonth: thisMonthCount,
+        lastMonth: lastMonthCount,
+        pending: pendingCount,
+        topService: topService
+      });
+
+      setStats(prev => ({ ...prev, totalUsers: usersData.length }));
     };
 
-    fetchStats();
-    fetchBookings();
+    const unsubBookings = onSnapshot(query(collection(db, 'bookings')), (snap) => {
+      bookingsData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      processCombinedData();
+    });
+
+    const unsubUsers = onSnapshot(query(collection(db, 'users')), (snap) => {
+      usersData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      processCombinedData();
+    });
+
+    return () => {
+      unsubBookings();
+      unsubUsers();
+    };
   }, []);
 
   const trend = () => {
@@ -336,6 +323,13 @@ function DashboardOverview() {
             <div className="insight-info">
               <h4>Total Reviews</h4>
               <div className="value">{stats?.reviews ?? '—'}</div>
+            </div>
+          </Link>
+          <Link to="/admin/users" className="insight-card sage">
+            <div className="insight-icon"><Users size={24} /></div>
+            <div className="insight-info">
+              <h4>Total Users</h4>
+              <div className="value">{stats?.totalUsers ?? '—'}</div>
             </div>
           </Link>
           <div className="insight-card burgundy">

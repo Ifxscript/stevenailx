@@ -117,7 +117,7 @@
 .user-name {
   font-weight: 700;
   color: var(--color-brown, #3a2a2a);
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   margin-bottom: 4px;
 }
 
@@ -214,7 +214,7 @@
 }
 
 .drawer-name {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 800;
   color: var(--color-brown, #3a2a2a);
   margin-bottom: 2px;
@@ -258,7 +258,7 @@
 }
 
 .section-title {
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   font-weight: 800;
   color: var(--color-brown, #3a2a2a);
   margin-bottom: 16px;

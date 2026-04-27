@@ -12,6 +12,8 @@ import HubActionPill from './HubActionPill';
 
 // ── Sub-Component for the Booking List ──
 function BookingList({ list, activeSectionId, onUpdateStatus, openPopup, closePopup }) {
+  const todayStr = new Date().toISOString().split('T')[0];
+
   const getWhatsAppLink = (booking) => {
     const msg = `Hi ${booking.clientName}! This is SteveNailX regarding your appointment on ${formatDisplayDate(booking.date)} at ${formatDisplayTime(booking.timeSlot)}.`;
     return `https://wa.me/${booking.clientPhone?.replace(/[^\d]/g, '') || ''}?text=${encodeURIComponent(msg)}`;
@@ -89,11 +91,11 @@ function BookingList({ list, activeSectionId, onUpdateStatus, openPopup, closePo
           <div key={b.docId || b.id} className="hub-field-card hub-hover-group" style={{ padding: '24px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4a1a26', fontWeight: 800, fontSize: '1.2rem' }}>
+                <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4a1a26', fontWeight: 800, fontSize: '1rem' }}>
                   {b.clientName?.charAt(0).toUpperCase()}
                 </div>
                 <div>
-                  <h4 style={{ fontWeight: 800, color: '#4a1a26', marginBottom: '2px' }}>{b.clientName}</h4>
+                  <h4 style={{ fontSize: '1rem', fontWeight: 800, color: '#4a1a26', marginBottom: '2px' }}>{b.clientName}</h4>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '0.85rem', color: '#8E8484' }}>
                     <a href={`tel:${b.clientPhone}`} style={{ display: 'flex', alignItems: 'center', gap: '4px', textDecoration: 'none', color: 'inherit' }}><Smartphone size={12} /> {b.clientPhone}</a>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Clock size={12} /> {formatDisplayTime(b.timeSlot)}</span>
@@ -107,14 +109,16 @@ function BookingList({ list, activeSectionId, onUpdateStatus, openPopup, closePo
                 fontWeight: 800, 
                 textTransform: 'uppercase',
                 letterSpacing: '0.05em',
-                backgroundColor: b.status === 'confirmed' ? '#E1E8DE' : 
-                                 b.status === 'completed' ? '#E6E9F9' : 
-                                 b.status === 'cancelled' ? '#FEE2E2' : '#F9F0D9',
-                color: b.status === 'confirmed' ? '#4F5E49' : 
-                       b.status === 'completed' ? '#4D547F' : 
-                       b.status === 'cancelled' ? '#991B1B' : '#7A693F'
+                backgroundColor: b.status === 'completed' ? '#E6E9F9' : 
+                                 b.status === 'cancelled' ? '#FEE2E2' : 
+                                 (b.date < todayStr ? '#FDE68A' : (b.status === 'confirmed' ? '#E1E8DE' : '#F9F0D9')),
+                color: b.status === 'completed' ? '#4D547F' : 
+                       b.status === 'cancelled' ? '#991B1B' : 
+                       (b.date < todayStr ? '#92400E' : (b.status === 'confirmed' ? '#4F5E49' : '#7A693F'))
               }}>
-                {b.status}
+                {b.status === 'completed' || b.status === 'cancelled' 
+                  ? b.status 
+                  : (b.date < todayStr ? 'missed' : b.status)}
               </span>
             </div>
 
@@ -182,7 +186,9 @@ function BookingList({ list, activeSectionId, onUpdateStatus, openPopup, closePo
 function BookingsManager() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeSectionId, setActiveSectionId] = useState('all');
+  const [activeSectionId, setActiveSectionId] = useState('upcoming');
+
+  const todayStr = new Date().toISOString().split('T')[0];
 
   useEffect(() => { fetchBookings(); }, []);
 
@@ -227,28 +233,40 @@ function BookingsManager() {
 
   const sections = [
     { 
-      id: 'all', 
-      label: 'All Bookings', 
-      description: 'Unified view of all appointments across all statuses.',
-      icon: <LayoutList size={20} />,
-      status: `${bookings.length} Total`,
-      component: <BookingList list={bookings} activeSectionId="All" onUpdateStatus={updateStatus} />
-    },
-    { 
-      id: 'confirmed', 
-      label: 'Confirmed', 
-      description: 'Active appointments waiting for service.',
+      id: 'upcoming', 
+      label: 'Upcoming', 
+      description: 'Appointments scheduled for today or in the future.',
       icon: <CalendarCheck size={20} />,
-      status: `${confirmedCount} Active`,
-      component: <BookingList list={bookings.filter(b => b.status === 'confirmed')} activeSectionId="Confirmed" onUpdateStatus={updateStatus} />
+      status: `${bookings.filter(b => b.date >= todayStr && b.status !== 'cancelled' && b.status !== 'completed').length} Active`,
+      component: <BookingList 
+        list={bookings.filter(b => b.date >= todayStr && b.status !== 'cancelled' && b.status !== 'completed')} 
+        activeSectionId="Upcoming" 
+        onUpdateStatus={updateStatus} 
+      />
     },
     { 
       id: 'completed', 
       label: 'Completed', 
       description: 'Successfully serviced appointments.',
       icon: <CheckCircle2 size={20} />,
-      status: 'Archived',
-      component: <BookingList list={bookings.filter(b => b.status === 'completed')} activeSectionId="Completed" onUpdateStatus={updateStatus} />
+      status: 'Archive',
+      component: <BookingList 
+        list={bookings.filter(b => b.status === 'completed')} 
+        activeSectionId="Completed" 
+        onUpdateStatus={updateStatus} 
+      />
+    },
+    { 
+      id: 'missed', 
+      label: 'Missed', 
+      description: 'Past appointments that were never marked as completed.',
+      icon: <Clock size={20} />,
+      status: 'Review Required',
+      component: <BookingList 
+        list={bookings.filter(b => b.date < todayStr && b.status !== 'cancelled' && b.status !== 'completed')} 
+        activeSectionId="Missed" 
+        onUpdateStatus={updateStatus} 
+      />
     },
     { 
       id: 'cancelled', 
@@ -256,7 +274,11 @@ function BookingsManager() {
       description: 'Declined or revoked appointment requests.',
       icon: <XCircle size={20} />,
       status: 'Void',
-      component: <BookingList list={bookings.filter(b => b.status === 'cancelled')} activeSectionId="Cancelled" onUpdateStatus={updateStatus} />
+      component: <BookingList 
+        list={bookings.filter(b => b.status === 'cancelled')} 
+        activeSectionId="Cancelled" 
+        onUpdateStatus={updateStatus} 
+      />
     }
   ];
 

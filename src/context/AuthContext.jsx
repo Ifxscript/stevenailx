@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { db } from '../lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { 
   onAuthStateChanged, 
   sendSignInLinkToEmail,
@@ -68,10 +68,40 @@ export const AuthProvider = ({ children }) => {
     handleMagicLink();
 
     // 3. Auth State Listener
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
       setIsAdmin(user ? adminEmails.includes(user.email) || FALLBACK_ADMINS.includes(user.email) : false);
       setLoading(false);
+      
+      if (user) {
+        // Sync user to Firestore users collection
+        const userRef = doc(db, 'users', user.uid);
+        try {
+          const snap = await getDoc(userRef);
+          const userData = {
+            uid: user.uid,
+            email: user.email,
+            name: user.displayName,
+            photoURL: user.photoURL,
+            lastLogin: new Date().toISOString()
+          };
+          
+          if (!snap.exists()) {
+            userData.createdAt = new Date().toISOString();
+            await setDoc(userRef, userData);
+          } else {
+            // Update last login
+            await setDoc(userRef, { 
+              lastLogin: userData.lastLogin,
+              // Refresh photo/name in case they changed
+              name: userData.name,
+              photoURL: userData.photoURL
+            }, { merge: true });
+          }
+        } catch (err) {
+          console.error("Error syncing user to Firestore:", err);
+        }
+      }
     });
 
     return unsubscribe;

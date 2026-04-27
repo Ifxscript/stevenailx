@@ -20,8 +20,27 @@ export const BookingProvider = ({ children }) => {
     document.body.style.overflow = 'hidden';
   };
 
+  const openBookingWithService = (service) => {
+    setCurrentStep(0);
+    setBookingData({ 
+      services: [{ 
+        ...service, 
+        id: `svc-${Date.now()}-${Math.random()}`,
+        duration: service.duration || 30 // Ensure duration exists
+      }], 
+      guests: [], 
+      date: null, 
+      timeSlot: null, 
+      notes: '' 
+    });
+    setIsDrawerOpen(true);
+    document.body.style.overflow = 'hidden';
+  };
+
   const closeBookingDrawer = () => {
     setIsDrawerOpen(false);
+    setCurrentStep(0);
+    setBookingData({ services: [], guests: [], date: null, timeSlot: null, notes: '' });
     document.body.style.overflow = '';
   };
 
@@ -108,6 +127,7 @@ export const BookingProvider = ({ children }) => {
       currentStep,
       bookingData,
       openBookingDrawer,
+      openBookingWithService,
       closeBookingDrawer,
       nextStep,
       prevStep,

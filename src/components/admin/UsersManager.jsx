@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { db } from '../../lib/firebase';
-import { collection, getDocs, query } from 'firebase/firestore';
+import { collection, getDocs, query, onSnapshot } from 'firebase/firestore';
 import { 
   Loader2, Search, Calendar, ChevronRight, X, User, Phone, Mail, Clock, CalendarCheck, Filter
 } from 'lucide-react';
@@ -177,55 +177,47 @@ function UsersList({ users, isMobile, openPopup, closePopup, isLoading }) {
 
 function UsersManager() {
   const isMobile = useMobile();
-  const [users, setUsers] = useState([]);
+  const [bookings, setBookings] = useState([]);
+  const [rawUsers, setRawUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchUsersAndBookings();
+    setIsLoading(true);
+    
+    const unsubBookings = onSnapshot(query(collection(db, 'bookings')), (snap) => {
+      const bList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      setBookings(bList);
+    });
+
+    const unsubUsers = onSnapshot(query(collection(db, 'users')), (snap) => {
+      const uList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      setRawUsers(uList);
+      setIsLoading(false);
+    });
+
+    return () => {
+      unsubBookings();
+      unsubUsers();
+    };
   }, []);
 
-  const fetchUsersAndBookings = async () => {
-    setIsLoading(true);
-    try {
-      // 1. Fetch bookings
-      const bookingsQ = query(collection(db, 'bookings'));
-      const bookingsSnap = await getDocs(bookingsQ);
-      const bookingsList = [];
-      bookingsSnap.forEach(d => bookingsList.push({ id: d.id, ...d.data() }));
-
-      // 2. Fetch users
-      const usersQ = query(collection(db, 'users'));
-      const usersSnap = await getDocs(usersQ);
-      const usersList = [];
-      
-      usersSnap.forEach(d => {
-        const data = d.data();
-        // Get all bookings for this user
-        const userBookings = bookingsList.filter(b => b.clientId === d.id);
-        
-        // Sort user bookings by date descending
-        userBookings.sort((a, b) => {
-          const dateA = new Date(`${a.date}T${(a.timeSlot || '').split(' - ')[0] || '00:00'}`);
-          const dateB = new Date(`${b.date}T${(b.timeSlot || '').split(' - ')[0] || '00:00'}`);
-          return dateB - dateA;
-        });
-
-        usersList.push({
-          id: d.id,
-          ...data,
-          bookings: userBookings,
-          bookingCount: userBookings.length,
-          signupDate: data.createdAt?.toDate ? data.createdAt.toDate() : new Date(data.createdAt || Date.now())
-        });
+  const users = useMemo(() => {
+    return rawUsers.map(u => {
+      const userBookings = bookings.filter(b => b.clientId === u.id);
+      userBookings.sort((a, b) => {
+        const dateA = new Date(`${a.date}T${(a.timeSlot || '').split(' - ')[0] || '00:00'}`);
+        const dateB = new Date(`${b.date}T${(b.timeSlot || '').split(' - ')[0] || '00:00'}`);
+        return dateB - dateA;
       });
 
-      setUsers(usersList);
-    } catch (err) {
-      console.error("Error fetching users/bookings:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      return {
+        ...u,
+        bookings: userBookings,
+        bookingCount: userBookings.length,
+        signupDate: u.createdAt?.toDate ? u.createdAt.toDate() : new Date(u.createdAt || Date.now())
+      };
+    });
+  }, [rawUsers, bookings]);
 
   const sections = [
     {
