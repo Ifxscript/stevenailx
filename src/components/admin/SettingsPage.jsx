@@ -30,6 +30,7 @@ function SettingsPage() {
   const [newAdminEmail, setNewAdminEmail] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [confirmDeleteEmail, setConfirmDeleteEmail] = useState(null);
 
   useEffect(() => {
     if (isMobile) {
@@ -84,10 +85,13 @@ function SettingsPage() {
   };
 
   const removeAdminEmail = (email) => {
-    if (email === currentUser?.email) return;
-    if (window.confirm("Remove access?")) {
-      setAdminEmails(prev => prev.filter(e => e !== email));
-    }
+    const targetEmail = email.trim().toLowerCase();
+    const currentEmail = currentUser?.email?.trim().toLowerCase();
+    
+    if (targetEmail === currentEmail) return;
+    
+    setAdminEmails(prev => prev.filter(e => e.trim().toLowerCase() !== targetEmail));
+    setConfirmDeleteEmail(null);
   };
 
   const securityComponent = (
@@ -125,10 +129,46 @@ function SettingsPage() {
                 <span style={{ fontWeight: 600, color: '#4a1a26' }}>{email}</span>
                 {email === currentUser?.email && <span style={{ fontSize: '0.6rem', background: 'rgba(79, 94, 73, 0.08)', color: '#4F5E49', padding: '2px 8px', borderRadius: '100px', fontWeight: 800 }}>YOU</span>}
               </div>
-              {email !== currentUser?.email && (
-                <button onClick={() => removeAdminEmail(email)} style={{ background: 'transparent', border: 'none', color: '#8E8484', cursor: 'pointer' }}>
-                  <Trash2 size={16} />
-                </button>
+              {email.trim().toLowerCase() !== currentUser?.email?.trim().toLowerCase() && (
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  {confirmDeleteEmail === email ? (
+                    <>
+                      <button 
+                        type="button"
+                        onClick={() => removeAdminEmail(email)} 
+                        style={{ background: '#e53935', color: '#fff', border: 'none', borderRadius: '8px', padding: '6px 12px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
+                      >
+                        Confirm
+                      </button>
+                      <button 
+                        type="button"
+                        onClick={() => setConfirmDeleteEmail(null)} 
+                        style={{ background: '#f0f0f0', color: '#666', border: 'none', borderRadius: '8px', padding: '6px 12px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
+                      >
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <button 
+                      type="button"
+                      onClick={() => setConfirmDeleteEmail(email)} 
+                      style={{ 
+                        background: 'transparent', 
+                        border: 'none', 
+                        color: '#8E8484', 
+                        cursor: 'pointer',
+                        padding: '8px',
+                        margin: '-8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                      aria-label="Remove admin"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  )}
+                </div>
               )}
             </div>
           ))}
@@ -201,10 +241,45 @@ function SettingsPage() {
                 <span style={{ fontWeight: 600, color: '#4a1a26', fontSize: '0.9rem' }}>{email}</span>
                 {email === currentUser?.email && <span style={{ fontSize: '0.55rem', background: 'rgba(79, 94, 73, 0.08)', color: '#4F5E49', padding: '2px 6px', borderRadius: '100px', fontWeight: 800 }}>YOU</span>}
               </div>
-              {email !== currentUser?.email && (
-                <button onClick={() => removeAdminEmail(email)} style={{ background: 'transparent', border: 'none', color: '#8E8484', cursor: 'pointer' }}>
-                  <Trash2 size={14} />
-                </button>
+              {email.trim().toLowerCase() !== currentUser?.email?.trim().toLowerCase() && (
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  {confirmDeleteEmail === email ? (
+                    <div style={{ display: 'flex', gap: '4px' }}>
+                      <button 
+                        type="button"
+                        onClick={() => removeAdminEmail(email)} 
+                        style={{ background: '#e53935', color: '#fff', border: 'none', borderRadius: '20px', padding: '6px 12px', fontSize: '0.7rem', fontWeight: 800, cursor: 'pointer', textTransform: 'uppercase' }}
+                      >
+                        Remove
+                      </button>
+                      <button 
+                        type="button"
+                        onClick={() => setConfirmDeleteEmail(null)} 
+                        style={{ background: '#f0f0f0', color: '#666', border: 'none', borderRadius: '20px', padding: '6px 12px', fontSize: '0.7rem', fontWeight: 800, cursor: 'pointer', textTransform: 'uppercase' }}
+                      >
+                        No
+                      </button>
+                    </div>
+                  ) : (
+                    <button 
+                      type="button"
+                      onClick={() => setConfirmDeleteEmail(email)} 
+                      style={{ 
+                        background: 'transparent', 
+                        border: 'none', 
+                        color: '#8E8484', 
+                        cursor: 'pointer',
+                        padding: '10px',
+                        margin: '-10px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  )}
+                </div>
               )}
             </div>
           ))}
