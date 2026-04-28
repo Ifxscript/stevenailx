@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { db } from '../../lib/firebase';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, collection, getDocs } from 'firebase/firestore';
 import { useAuth } from '../../context/AuthContext';
 import { 
   Plus,
@@ -28,9 +28,12 @@ function SettingsPage() {
   const [activeSectionId, setActiveSectionId] = useState(null);
   const [adminEmails, setAdminEmails] = useState([]);
   const [newAdminEmail, setNewAdminEmail] = useState('');
+  const [marketerEmails, setMarketerEmails] = useState([]);
+  const [newMarketerEmail, setNewMarketerEmail] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [confirmDeleteEmail, setConfirmDeleteEmail] = useState(null);
+  const [confirmDeleteMarketerEmail, setConfirmDeleteMarketerEmail] = useState(null);
 
   useEffect(() => {
     setActiveSectionId('security');
@@ -48,7 +51,9 @@ function SettingsPage() {
       if (docSnap.exists()) {
         const security = docSnap.data().security || {};
         const roster = security.adminEmails || ['ianekwe7@gmail.com'];
+        const mRoster = security.marketerEmails || [];
         setAdminEmails(roster.filter(email => email && email.trim() !== ''));
+        setMarketerEmails(mRoster.filter(email => email && email.trim() !== ''));
       }
     } catch (err) {
       console.error(err);
@@ -61,12 +66,39 @@ function SettingsPage() {
     setSaving(true);
     try {
       const docRef = doc(db, 'site_content', 'landing_page');
+      
+      // 1. Update the security roster doc
       await updateDoc(docRef, {
-        'security.adminEmails': adminEmails.filter(e => e && e.trim() !== '')
+        'security.adminEmails': adminEmails.filter(e => e && e.trim() !== ''),
+        'security.marketerEmails': marketerEmails.filter(e => e && e.trim() !== '')
       });
-      alert("✅ Security updated.");
-    } catch {
-      alert("Failed to save.");
+
+      // 2. Sync roles to individual user documents for all marketers
+      // (This ensures UsersManager and other components see the role immediately)
+      const usersRef = collection(db, 'users');
+      const allUsersSnap = await getDocs(usersRef);
+      
+      const batchPromises = allUsersSnap.docs.map(async (userDoc) => {
+        const userData = userDoc.data();
+        const email = userData.email?.toLowerCase();
+        if (!email) return;
+
+        const isMarketer = marketerEmails.includes(email);
+        const currentRole = userData.role;
+
+        if (isMarketer && currentRole !== 'marketer') {
+          await updateDoc(userDoc.ref, { role: 'marketer' });
+        } else if (!isMarketer && currentRole === 'marketer') {
+          await updateDoc(userDoc.ref, { role: null });
+        }
+      });
+
+      await Promise.all(batchPromises);
+      
+      alert("✅ Security updated and roles synchronized.");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save security settings.");
     } finally {
       setSaving(false);
     }
@@ -88,6 +120,20 @@ function SettingsPage() {
     
     setAdminEmails(prev => prev.filter(e => e.trim().toLowerCase() !== targetEmail));
     setConfirmDeleteEmail(null);
+  };
+
+  const addMarketerEmail = () => {
+    const trimmed = newMarketerEmail.trim().toLowerCase();
+    if (!trimmed || !trimmed.includes('@')) return;
+    if (marketerEmails.includes(trimmed)) return;
+    setMarketerEmails(prev => [...prev, trimmed]);
+    setNewMarketerEmail('');
+  };
+
+  const removeMarketerEmail = (email) => {
+    const targetEmail = email.trim().toLowerCase();
+    setMarketerEmails(prev => prev.filter(e => e.trim().toLowerCase() !== targetEmail));
+    setConfirmDeleteMarketerEmail(null);
   };
 
   const securityComponent = (
@@ -180,7 +226,77 @@ function SettingsPage() {
           />
           <button className="action-btn save" onClick={addAdminEmail}>
             <Plus size={18} />
-            <span>Invite</span>
+            <span>Invite Admin</span>
+          </button>
+        </div>
+
+        <div style={{ height: '1px', background: 'rgba(0,0,0,0.06)', margin: '48px 0' }} />
+
+        <label className="field-label" style={{ marginBottom: '24px' }}>
+          <span>Authorised Marketer Roster</span>
+          <small>Marketers have limited access (Blog Editor only).</small>
+        </label>
+
+        <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '40px' }}>
+          {marketerEmails.map(email => (
+            <div key={email} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 0', borderBottom: '1px solid rgba(0,0,0,0.03)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <CheckCircle2 size={16} color="#8B3A4A" opacity={0.4} />
+                <span style={{ fontWeight: 600, color: '#4a1a26' }}>{email}</span>
+              </div>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                {confirmDeleteMarketerEmail === email ? (
+                  <>
+                    <button 
+                      type="button"
+                      onClick={() => removeMarketerEmail(email)} 
+                      style={{ background: '#e53935', color: '#fff', border: 'none', borderRadius: '8px', padding: '6px 12px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
+                    >
+                      Confirm
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={() => setConfirmDeleteMarketerEmail(null)} 
+                      style={{ background: '#f0f0f0', color: '#666', border: 'none', borderRadius: '8px', padding: '6px 12px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
+                    >
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <button 
+                    type="button"
+                    onClick={() => setConfirmDeleteMarketerEmail(email)} 
+                    style={{ 
+                      background: 'transparent', 
+                      border: 'none', 
+                      color: '#8E8484', 
+                      cursor: 'pointer',
+                      padding: '8px',
+                      margin: '-8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <input 
+            className="hub-input" 
+            placeholder="New marketer email..." 
+            value={newMarketerEmail}
+            onChange={(e) => setNewMarketerEmail(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && addMarketerEmail()}
+          />
+          <button className="action-btn save" onClick={addMarketerEmail}>
+            <Plus size={18} />
+            <span>Invite Marketer</span>
           </button>
         </div>
       </div>
@@ -291,6 +407,76 @@ function SettingsPage() {
             style={{ fontSize: '0.9rem' }}
           />
           <button className="action-btn save" onClick={addAdminEmail} style={{ padding: '0 16px' }}>
+            <Plus size={16} />
+          </button>
+        </div>
+
+        <div style={{ height: '1px', background: 'rgba(0,0,0,0.06)', margin: '32px 0' }} />
+
+        <label className="field-label" style={{ marginBottom: '16px' }}>
+          <span>Authorised Marketer Roster</span>
+          <small>Marketers have limited access.</small>
+        </label>
+
+        <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '24px' }}>
+          {marketerEmails.map(email => (
+            <div key={email} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid rgba(0,0,0,0.03)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <CheckCircle2 size={14} color="#8B3A4A" opacity={0.4} />
+                <span style={{ fontWeight: 600, color: '#4a1a26', fontSize: '0.9rem' }}>{email}</span>
+              </div>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                {confirmDeleteMarketerEmail === email ? (
+                  <div style={{ display: 'flex', gap: '4px' }}>
+                    <button 
+                      type="button"
+                      onClick={() => removeMarketerEmail(email)} 
+                      style={{ background: '#e53935', color: '#fff', border: 'none', borderRadius: '20px', padding: '6px 12px', fontSize: '0.7rem', fontWeight: 800, cursor: 'pointer', textTransform: 'uppercase' }}
+                    >
+                      Remove
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={() => setConfirmDeleteMarketerEmail(null)} 
+                      style={{ background: '#f0f0f0', color: '#666', border: 'none', borderRadius: '20px', padding: '6px 12px', fontSize: '0.7rem', fontWeight: 800, cursor: 'pointer', textTransform: 'uppercase' }}
+                    >
+                      No
+                    </button>
+                  </div>
+                ) : (
+                  <button 
+                    type="button"
+                    onClick={() => setConfirmDeleteMarketerEmail(email)} 
+                    style={{ 
+                      background: 'transparent', 
+                      border: 'none', 
+                      color: '#8E8484', 
+                      cursor: 'pointer',
+                      padding: '10px',
+                      margin: '-10px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <input 
+            className="hub-input" 
+            placeholder="Invite marketer..." 
+            value={newMarketerEmail}
+            onChange={(e) => setNewMarketerEmail(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && addMarketerEmail()}
+            style={{ fontSize: '0.9rem' }}
+          />
+          <button className="action-btn save" onClick={addMarketerEmail} style={{ padding: '0 16px' }}>
             <Plus size={16} />
           </button>
         </div>

@@ -229,9 +229,10 @@
   height: 100%;
   background-color: #ffffff;
   z-index: 2500;
-  padding: 24px 30px 40px;
+  padding: 10px 25px 15px;
   display: flex;
   flex-direction: column;
+  overflow: hidden; /* Ensure no scrolling */
 }
 
 .admin-drawer-content {
@@ -249,8 +250,8 @@
 .admin-drawer-user-row {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 12px 0 24px;
+  gap: 12px;
+  padding: 4px 0 10px;
 }
 
 .admin-drawer-flat-avatar-wrap {
@@ -259,8 +260,8 @@
 
 .admin-drawer-flat-avatar,
 .admin-drawer-flat-avatar-placeholder {
-  width: 48px;
-  height: 48px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -276,11 +277,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 
 .admin-drawer-flat-name {
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: #3a2a2a;
 }
@@ -289,9 +290,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 15px 0;
+  padding: 8px 0;
   text-decoration: none;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: #3a2a2a;
   -webkit-tap-highlight-color: transparent;
@@ -314,7 +315,7 @@
 .admin-drawer-flat-divider {
   height: 1px;
   background-color: #f0f0f0;
-  margin: 8px 0;
+  margin: 4px 0;
 }
 
 .admin-drawer-flat-logout {

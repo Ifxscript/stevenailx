@@ -19,16 +19,16 @@ function AdminSidebar({ isOpen, onClose, currentUser, onLogout }) {
   }, [currentUser?.photoURL]);
 
   const navItems = [
-    { label: 'Overview', path: '/admin', icon: <BarChart3 size={20} /> },
-    { label: 'Site Content', path: '/admin/content', icon: <Home size={20} /> },
-    { label: 'Services & Prices', path: '/admin/services', icon: <ListOrdered size={20} /> },
-    { label: 'Bookings', path: '/admin/bookings', icon: <CalendarCheck size={20} /> },
-    { label: 'Portfolio', path: '/admin/portfolio', icon: <ImageIcon size={20} /> },
-    { label: 'Reviews', path: '/admin/reviews', icon: <MessageSquare size={20} /> },
-    { label: 'Users', path: '/admin/users', icon: <User size={20} /> },
-    { label: 'Team', path: '/admin/team', icon: <Users size={20} /> },
-    { label: 'Availability', path: '/admin/availability', icon: <Clock size={20} /> },
-    { label: 'Settings', path: '/admin/settings', icon: <Settings size={20} /> },
+    { label: 'Overview', path: '/admin', icon: <BarChart3 size={18} /> },
+    { label: 'Site Content', path: '/admin/content', icon: <Home size={18} /> },
+    { label: 'Services & Prices', path: '/admin/services', icon: <ListOrdered size={18} /> },
+    { label: 'Bookings', path: '/admin/bookings', icon: <CalendarCheck size={18} /> },
+    { label: 'Portfolio', path: '/admin/portfolio', icon: <ImageIcon size={18} /> },
+    { label: 'Reviews', path: '/admin/reviews', icon: <MessageSquare size={18} /> },
+    { label: 'Users', path: '/admin/users', icon: <User size={18} /> },
+    { label: 'Team', path: '/admin/team', icon: <Users size={18} /> },
+    { label: 'Availability', path: '/admin/availability', icon: <Clock size={18} /> },
+    { label: 'Settings', path: '/admin/settings', icon: <Settings size={18} /> },
   ];
 
   // Mobile Full-Screen Drawer (matches main site)
@@ -96,7 +96,7 @@ function AdminSidebar({ isOpen, onClose, currentUser, onLogout }) {
                   onClick={onLogout}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <span style={{ color: '#ff5252' }}><LogOut size={20} /></span>
+                    <span style={{ color: '#ff5252' }}><LogOut size={18} /></span>
                     <span>Sign Out</span>
                   </div>
                 </button>

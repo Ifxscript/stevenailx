@@ -25,6 +25,7 @@ export const AuthProvider = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [userRole, setUserRole] = useState(null);
   const [adminEmails, setAdminEmails] = useState(FALLBACK_ADMINS);
+  const [marketerEmails, setMarketerEmails] = useState([]);
 
   // 1. Fetch live admin roster once on mount
   useEffect(() => {
@@ -35,11 +36,15 @@ export const AuthProvider = ({ children }) => {
         if (docSnap.exists()) {
           const security = docSnap.data().security || {};
           const liveAdmins = security.adminEmails || [];
+          const liveMarketers = security.marketerEmails || [];
+          
           // Ensure fallback is ALWAYS included for safety without mutating the source
           const finalAdmins = liveAdmins.includes(FALLBACK_ADMINS[0]) 
             ? liveAdmins 
             : [...liveAdmins, FALLBACK_ADMINS[0]];
+            
           setAdminEmails(finalAdmins);
+          setMarketerEmails(liveMarketers);
         }
       } catch (err) {
         console.error("Error fetching admin roster:", err);
@@ -72,7 +77,10 @@ export const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
       const isAdminUser = user ? adminEmails.includes(user.email) || FALLBACK_ADMINS.includes(user.email) : false;
+      const isMarketerUser = user ? marketerEmails.includes(user.email) : false;
+      
       setIsAdmin(isAdminUser);
+      if (isMarketerUser) setUserRole('marketer');
       
       if (user) {
         // Sync user to Firestore users collection
@@ -119,13 +127,14 @@ export const AuthProvider = ({ children }) => {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
     const isAdminUser = adminEmails.includes(result.user.email) || FALLBACK_ADMINS.includes(result.user.email);
+    const isMarketerUser = marketerEmails.includes(result.user.email);
     
     // Check if user has a marketer role in Firestore
-    let role = null;
+    let role = isMarketerUser ? 'marketer' : null;
     try {
       const userSnap = await getDoc(doc(db, 'users', result.user.uid));
       if (userSnap.exists()) {
-        role = userSnap.data().role || null;
+        role = userSnap.data().role || role;
       }
     } catch (e) {
       console.error('Error reading user role:', e);

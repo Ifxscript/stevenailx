@@ -192,7 +192,10 @@ function UsersList({ users, isMobile, openPopup, closePopup, isLoading }) {
                   <div className="user-details">
                     <div className="user-name">{user.displayName || user.name || 'Unknown User'}</div>
                     <div className="user-email">{user.email}</div>
-                    <div className="user-booking-badge">{user.bookingCount} BOOKING{user.bookingCount !== 1 ? 'S' : ''}</div>
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginTop: '4px' }}>
+                      <div className="user-booking-badge">{user.bookingCount} BOOKING{user.bookingCount !== 1 ? 'S' : ''}</div>
+                      {user.role && <div className="user-role-badge">{user.role.toUpperCase()}</div>}
+                    </div>
                   </div>
                 </div>
                 

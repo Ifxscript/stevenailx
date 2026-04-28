@@ -187,6 +187,19 @@
   letter-spacing: 0.05em;
 }
 
+.user-role-badge {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 3px 8px;
+  background-color: rgba(139, 58, 74, 0.1);
+  color: var(--color-burgundy, #8b3a4a);
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+
 .user-row-right {
   display: flex;
   align-items: center;
