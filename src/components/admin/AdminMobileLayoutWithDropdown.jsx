@@ -173,14 +173,6 @@ const AdminMobileLayoutWithDropdown = ({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Sync drawer with external activeSectionId
-  useEffect(() => {
-    if (isMobile && activeSectionId) {
-      setDrawerOpen(true);
-    } else if (isMobile && !activeSectionId) {
-      setDrawerOpen(false);
-    }
-  }, [activeSectionId, isMobile]);
 
   // ── State Handlers ──
 

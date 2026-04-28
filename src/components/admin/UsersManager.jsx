@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { db } from '../../lib/firebase';
 import { collection, getDocs, query, onSnapshot } from 'firebase/firestore';
 import { 
@@ -13,6 +13,18 @@ import './UsersManager.css';
 function UsersList({ users, isMobile, openPopup, closePopup, isLoading }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('recent'); // 'recent' or 'bookings'
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const filterRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setIsFilterOpen(false);
+      }
+    };
+    if (isFilterOpen) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isFilterOpen]);
 
   const filteredUsers = useMemo(() => {
     let result = [...users];
@@ -123,13 +135,34 @@ function UsersList({ users, isMobile, openPopup, closePopup, isLoading }) {
             />
           </div>
           
-          <button 
-            className="users-filter-icon-btn"
-            onClick={() => setSortBy(prev => prev === 'recent' ? 'bookings' : 'recent')}
-            aria-label={`Sorted by ${sortBy === 'recent' ? 'Most Recent' : 'Most Bookings'}`}
-          >
-            <Filter size={20} />
-          </button>
+          <div className="users-filter-wrapper" ref={filterRef}>
+            <button 
+              className="users-filter-icon-btn"
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              aria-label="Open sorting menu"
+            >
+              <Filter size={20} />
+            </button>
+
+            {isFilterOpen && (
+              <div className="users-filter-dropdown">
+                <button 
+                  className={`filter-option ${sortBy === 'recent' ? 'active' : ''}`}
+                  onClick={() => { setSortBy('recent'); setIsFilterOpen(false); }}
+                >
+                  <span>Most Recent</span>
+                  {sortBy === 'recent' && <CalendarCheck size={14} />}
+                </button>
+                <button 
+                  className={`filter-option ${sortBy === 'bookings' ? 'active' : ''}`}
+                  onClick={() => { setSortBy('bookings'); setIsFilterOpen(false); }}
+                >
+                  <span>Most Bookings</span>
+                  {sortBy === 'bookings' && <CalendarCheck size={14} />}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -181,6 +214,10 @@ function UsersManager() {
   const [rawUsers, setRawUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const [popup, setPopup] = useState({ isOpen: false, content: null });
+  const openPopup = (content) => setPopup({ isOpen: true, content });
+  const closePopup = () => setPopup({ isOpen: false, content: null });
+
   useEffect(() => {
     setIsLoading(true);
     
@@ -229,23 +266,44 @@ function UsersManager() {
           users={users} 
           isMobile={isMobile}
           isLoading={isLoading}
+          openPopup={openPopup}
+          closePopup={closePopup}
         />
       )
     }
   ];
 
   return (
-    <AdminMobileLayout
-      title="Users"
-      description="Manage signed-up users and view their complete booking history."
-      sections={sections}
-      activeSectionId="directory"
-      onSectionChange={() => {}}
-      hasChanges={false}
-      onSave={() => {}}
-      onDiscard={() => {}}
-      isSaving={false}
-    />
+    <div className="manager-container">
+      {isMobile ? (
+        <div style={{ padding: '0', paddingBottom: '100px' }}>
+          <UsersList 
+            users={users} 
+            isMobile={isMobile}
+            isLoading={isLoading}
+            openPopup={openPopup}
+            closePopup={closePopup}
+          />
+          <div className={`hub-popup-overlay ${popup.isOpen ? 'open' : ''}`} onClick={closePopup}>
+            <div className="hub-popup-card" onClick={e => e.stopPropagation()}>
+              {popup.content}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <AdminMobileLayout
+          title="Users"
+          description="Manage signed-up users and view their complete booking history."
+          sections={sections}
+          activeSectionId="directory"
+          onSectionChange={() => {}}
+          hasChanges={false}
+          onSave={() => {}}
+          onDiscard={() => {}}
+          isSaving={false}
+        />
+      )}
+    </div>
   );
 }
 

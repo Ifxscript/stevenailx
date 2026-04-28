@@ -19,8 +19,13 @@ function LoginPage() {
     try {
       setError('');
       setGoogleLoading(true);
-      await loginWithGoogle();
-      navigate('/admin');
+      const result = await loginWithGoogle();
+      // Role-based redirect
+      if (result.role === 'marketer' && !result.isAdminUser) {
+        navigate('/blog-editor');
+      } else {
+        navigate('/admin');
+      }
     } catch (err) {
       setError(err.message || 'Unauthorized access.');
       console.error(err);

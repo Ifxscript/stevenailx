@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [userRole, setUserRole] = useState(null);
   const [adminEmails, setAdminEmails] = useState(FALLBACK_ADMINS);
 
   // 1. Fetch live admin roster once on mount
@@ -70,8 +71,8 @@ export const AuthProvider = ({ children }) => {
     // 3. Auth State Listener
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
-      setIsAdmin(user ? adminEmails.includes(user.email) || FALLBACK_ADMINS.includes(user.email) : false);
-      setLoading(false);
+      const isAdminUser = user ? adminEmails.includes(user.email) || FALLBACK_ADMINS.includes(user.email) : false;
+      setIsAdmin(isAdminUser);
       
       if (user) {
         // Sync user to Firestore users collection
@@ -90,6 +91,9 @@ export const AuthProvider = ({ children }) => {
             userData.createdAt = new Date().toISOString();
             await setDoc(userRef, userData);
           } else {
+            // Read role from existing doc
+            const existingData = snap.data();
+            setUserRole(existingData.role || null);
             // Update last login
             await setDoc(userRef, { 
               lastLogin: userData.lastLogin,
@@ -101,21 +105,39 @@ export const AuthProvider = ({ children }) => {
         } catch (err) {
           console.error("Error syncing user to Firestore:", err);
         }
+      } else {
+        setUserRole(null);
       }
+      setLoading(false);
     });
 
     return unsubscribe;
   }, [adminEmails]); // Only re-run auth listener tag when roster is fetched or updated
 
-  // Admin login — Google popup with whitelist check
+  // Admin/Marketer login — Google popup with role check
   const loginWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
-    if (!adminEmails.includes(result.user.email) && !FALLBACK_ADMINS.includes(result.user.email)) {
-      await signOut(auth);
-      throw new Error("You are not authorized to access the admin dashboard.");
+    const isAdminUser = adminEmails.includes(result.user.email) || FALLBACK_ADMINS.includes(result.user.email);
+    
+    // Check if user has a marketer role in Firestore
+    let role = null;
+    try {
+      const userSnap = await getDoc(doc(db, 'users', result.user.uid));
+      if (userSnap.exists()) {
+        role = userSnap.data().role || null;
+      }
+    } catch (e) {
+      console.error('Error reading user role:', e);
     }
-    return result;
+    
+    if (!isAdminUser && role !== 'marketer') {
+      await signOut(auth);
+      throw new Error("You are not authorized to access this portal.");
+    }
+    
+    setUserRole(role);
+    return { ...result, role, isAdminUser };
   };
 
   // Client login — Google popup, no whitelist (anyone can book)
@@ -148,6 +170,8 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider value={{ 
       currentUser, 
       isAdmin, 
+      userRole,
+      isMarketer: userRole === 'marketer',
       isClient: !!currentUser && !isAdmin,
       isDashboardOpen,
       setIsDashboardOpen,

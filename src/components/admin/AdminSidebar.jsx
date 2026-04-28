@@ -4,11 +4,14 @@ import {
   BarChart3, Settings, Image as ImageIcon, ListOrdered, LogOut, 
   Home, ChevronRight, X, Star, Users, MessageSquare, CalendarCheck, Clock, User
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useMobile } from '../../hooks/useMobile';
 import logoImg from '../../assets/IMG_8009-removebg-preview.png';
 import './AdminSidebar.css';
 
 function AdminSidebar({ isOpen, onClose, currentUser, onLogout }) {
   const location = useLocation();
+  const isMobile = useMobile();
   const [imgError, setImgError] = useState(false);
 
   useEffect(() => {
@@ -28,6 +31,84 @@ function AdminSidebar({ isOpen, onClose, currentUser, onLogout }) {
     { label: 'Settings', path: '/admin/settings', icon: <Settings size={20} /> },
   ];
 
+  // Mobile Full-Screen Drawer (matches main site)
+  if (isMobile) {
+    return (
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            className="admin-mobile-drawer-overlay"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="admin-drawer-content">
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px' }}>
+                <button 
+                  onClick={onClose}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-brown)', padding: '8px' }}
+                  aria-label="Close menu"
+                >
+                  <X size={28} />
+                </button>
+              </div>
+              
+              <div className="admin-drawer-flat-list">
+                {/* User Avatar & Name at top */}
+                <div className="admin-drawer-user-row">
+                  <div className="admin-drawer-flat-avatar-wrap">
+                    {currentUser?.photoURL && !imgError ? (
+                      <img src={currentUser.photoURL} alt="" className="admin-drawer-flat-avatar" onError={() => setImgError(true)} />
+                    ) : (
+                      <div className="admin-drawer-flat-avatar-placeholder">
+                        {currentUser?.displayName?.charAt(0) || currentUser?.email?.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                  <span className="admin-drawer-flat-name">{currentUser?.displayName || "Anekwe Ifeanyi"}</span>
+                </div>
+
+                <div className="admin-drawer-flat-divider" />
+
+                {/* Navigation Links */}
+                {navItems.map((item) => (
+                  <Link 
+                    key={item.path} 
+                    to={item.path}
+                    className={`admin-drawer-flat-link ${location.pathname === item.path ? 'active' : ''}`}
+                    onClick={onClose}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <span style={{ color: location.pathname === item.path ? 'var(--color-burgundy)' : '#888' }}>
+                        {item.icon}
+                      </span>
+                      <span>{item.label}</span>
+                    </div>
+                    <ChevronRight size={18} className="admin-drawer-flat-arrow" />
+                  </Link>
+                ))}
+
+                <div className="admin-drawer-flat-divider" />
+
+                <button 
+                  className="admin-drawer-flat-link admin-drawer-flat-logout"
+                  onClick={onLogout}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <span style={{ color: '#ff5252' }}><LogOut size={20} /></span>
+                    <span>Sign Out</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    );
+  }
+
+  // Desktop Burgundy Sidebar
   return (
     <aside className={`admin-sidebar ${isOpen ? 'open' : ''}`}>
       <div className="sidebar-header">
@@ -35,7 +116,6 @@ function AdminSidebar({ isOpen, onClose, currentUser, onLogout }) {
           <img src={logoImg} alt="" className="brand-logo-img-small" />
           <span className="brand-text">STEVENAILX</span>
         </div>
-        <button className="close-sidebar-btn" onClick={onClose}><X size={24} /></button>
       </div>
 
       <div className="sidebar-user-highlight">

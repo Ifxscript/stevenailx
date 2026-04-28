@@ -33,12 +33,8 @@ function SettingsPage() {
   const [confirmDeleteEmail, setConfirmDeleteEmail] = useState(null);
 
   useEffect(() => {
-    if (isMobile) {
-      setActiveSectionId('unified_settings'); // Open drawer directly, no intermediate tile
-    } else {
-      setActiveSectionId('security');
-    }
-  }, [isMobile]);
+    setActiveSectionId('security');
+  }, []);
 
   useEffect(() => {
     fetchSecuritySettings();
@@ -308,16 +304,7 @@ function SettingsPage() {
     </div>
   );
 
-  const sections = isMobile ? [
-    {
-      id: 'unified_settings',
-      label: 'Settings',
-      description: 'Manage admin security, roster, and cloud connection.',
-      icon: <Lock size={20} />,
-      status: 'Engine',
-      component: unifiedMobileComponent
-    }
-  ] : [
+  const sections = [
     { 
       id: 'security', 
       label: 'Account & Security', 
@@ -347,17 +334,30 @@ function SettingsPage() {
 
   return (
     <div className="manager-container">
-      <AdminMobileLayout 
-        title="Settings"
-        description="Configure your administrative profile, security rosters, and cloud engine settings."
-        sections={sections}
-        activeSectionId={activeSectionId}
-        onSectionChange={setActiveSectionId}
-        onSave={handleSaveSecurity}
-        onDiscard={fetchSecuritySettings}
-        isSaving={saving}
-        hasChanges={true}
-      />
+      {isMobile ? (
+        <div style={{ padding: '0', paddingBottom: '100px' }}>
+          {unifiedMobileComponent}
+          <HubActionPill
+            onSave={handleSaveSecurity}
+            onDiscard={fetchSecuritySettings}
+            isSaving={saving}
+            hasChanges={true}
+            saveLabel="Save Changes"
+          />
+        </div>
+      ) : (
+        <AdminMobileLayout 
+          title="Settings"
+          description="Configure your administrative profile, security rosters, and cloud engine settings."
+          sections={sections}
+          activeSectionId={activeSectionId}
+          onSectionChange={setActiveSectionId}
+          onSave={handleSaveSecurity}
+          onDiscard={fetchSecuritySettings}
+          isSaving={saving}
+          hasChanges={true}
+        />
+      )}
     </div>
   );
 }

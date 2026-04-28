@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import SectionTabs from '../components/SectionTabs';
 import Hero from '../components/Hero';
@@ -19,6 +20,31 @@ const LandingPage = () => {
   const [isNailCatalogOpen, setIsNailCatalogOpen] = useState(false);
   const [isSalonCatalogOpen, setIsSalonCatalogOpen] = useState(false);
   const [isPortfolioOpen, setIsPortfolioOpen] = useState(false);
+  const location = useLocation();
+  
+  // Handle Gallery Modal from other pages
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('gallery') === 'open') {
+      setIsPortfolioOpen(true);
+      // Clean up the URL without refreshing
+      window.history.replaceState({}, '', location.pathname + location.hash);
+    }
+  }, [location]);
+
+  // Handle Hash Scrolling for cross-page navigation
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace('#', '');
+      const element = document.getElementById(id);
+      if (element) {
+        // Delay slightly to allow the page to settle
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+    }
+  }, [location.hash]);
 
   // Safety guard for loading state
   if (!services || !gallery) return null;

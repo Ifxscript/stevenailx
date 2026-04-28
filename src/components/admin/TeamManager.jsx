@@ -55,8 +55,7 @@ function TeamGrid({
             <div 
               key={member.id || idx} 
               className="hub-field-card hub-hover-group" 
-              style={{ padding: '24px', cursor: isMobile ? 'pointer' : 'default' }}
-              onClick={isMobile ? () => onEdit(member, actualIdx, props) : undefined}
+              style={{ padding: '24px', cursor: 'default' }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                 <div className="team-photo-area" style={{ position: 'relative', width: '80px', height: '80px', flexShrink: 0 }}>
@@ -68,8 +67,8 @@ function TeamGrid({
                     </div>
                   )}
                   <button 
-                    onClick={() => onEdit(member, actualIdx, props)}
-                    className="reveal-on-hover"
+                    onClick={(e) => { e.stopPropagation(); onEdit(member, actualIdx, props); }}
+                    className={isMobile ? "" : "reveal-on-hover"}
                     style={{ position: 'absolute', bottom: -5, right: -5, width: '28px', height: '28px', borderRadius: '50%', backgroundColor: '#fff', border: '1.5px solid #eee', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#4a1a26', zIndex: 10, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
                   >
                     <Edit3 size={14} />
@@ -105,9 +104,9 @@ function TeamManager() {
   const [isEditing, setIsEditing] = useState(false);
   const [editingIndex, setEditingIndex] = useState(null);
 
-  const [popup, setPopup] = useState({ isOpen: false, content: null });
-  const openPopup = (content) => setPopup({ isOpen: true, content });
-  const closePopup = () => setPopup({ isOpen: false, content: null });
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const openPopup = () => setIsPopupOpen(true);
+  const closePopup = () => setIsPopupOpen(false);
 
   useEffect(() => { fetchTeam(); }, []);
 
@@ -179,60 +178,16 @@ function TeamManager() {
           activeSectionId="roster" 
           isMobile={isMobile}
           onDelete={deleteMember}
-          onAdd={(props) => {
+          onAdd={() => {
             setIsEditing(false);
             setDraftMember({ name: "", role: "Nail Artist", image: null });
-            props.openPopup(
-              <AdminUploadLayout
-                initialImage={null}
-                onUploadSuccess={(url) => setDraftMember(prev => ({ ...prev, image: url }))}
-                onSave={() => confirmAddMember(props.closePopup)}
-                onDiscard={props.closePopup}
-                saveLabel="Add Member"
-              >
-                <input 
-                  className="aul-field"
-                  placeholder="Professional Name"
-                  value={draftMember.name}
-                  onChange={(e) => setDraftMember(prev => ({ ...prev, name: e.target.value }))}
-                />
-                <input 
-                  className="aul-field"
-                  placeholder="Professional Role"
-                  value={draftMember.role}
-                  onChange={(e) => setDraftMember(prev => ({ ...prev, role: e.target.value }))}
-                />
-              </AdminUploadLayout>,
-              "Add Member"
-            );
+            openPopup();
           }}
-          onEdit={(member, idx, props) => {
+          onEdit={(member, idx) => {
             setIsEditing(true);
             setEditingIndex(idx);
             setDraftMember({ ...member });
-            props.openPopup(
-              <AdminUploadLayout
-                initialImage={member.image}
-                onUploadSuccess={(url) => setDraftMember(prev => ({ ...prev, image: url }))}
-                onSave={() => confirmAddMember(props.closePopup)}
-                onDiscard={props.closePopup}
-                saveLabel="Update Member"
-              >
-                <input 
-                  className="aul-field"
-                  placeholder="Professional Name"
-                  value={draftMember.name}
-                  onChange={(e) => setDraftMember(prev => ({ ...prev, name: e.target.value }))}
-                />
-                <input 
-                  className="aul-field"
-                  placeholder="Professional Role"
-                  value={draftMember.role}
-                  onChange={(e) => setDraftMember(prev => ({ ...prev, role: e.target.value }))}
-                />
-              </AdminUploadLayout>,
-              "Update Member"
-            );
+            openPopup();
           }}
         />
       )
@@ -250,59 +205,16 @@ function TeamManager() {
           activeSectionId={role} 
           isMobile={isMobile}
           onDelete={deleteMember}
-          onAdd={(props) => {
+          onAdd={() => {
             setIsEditing(false);
             setDraftMember({ name: "", role: role, image: null });
-            props.openPopup(
-              <AdminUploadLayout
-                initialImage={null}
-                onUploadSuccess={(url) => setDraftMember(prev => ({ ...prev, image: url }))}
-                onSave={() => confirmAddMember(props.closePopup)}
-                onDiscard={props.closePopup}
-                saveLabel="Add Member"
-              >
-                <input 
-                  className="aul-field"
-                  placeholder="Professional Name"
-                  value={draftMember.name}
-                  onChange={(e) => setDraftMember(prev => ({ ...prev, name: e.target.value }))}
-                />
-                <input 
-                  className="aul-field"
-                  placeholder="Professional Role"
-                  value={draftMember.role}
-                  onChange={(e) => setDraftMember(prev => ({ ...prev, role: e.target.value }))}
-                />
-              </AdminUploadLayout>,
-              "Add Member"
-            );
+            openPopup();
           }}
-          onEdit={(member, idx, props) => {
+          onEdit={(member, idx) => {
             setIsEditing(true);
             setEditingIndex(idx);
             setDraftMember({ ...member });
-            props.openPopup(
-              <AdminUploadLayout
-                initialImage={member.image}
-                onUploadSuccess={(url) => setDraftMember(prev => ({ ...prev, image: url }))}
-                onSave={() => confirmAddMember(props.closePopup)}
-                onDiscard={props.closePopup}
-                saveLabel="Update Member"
-              >
-                <input 
-                  className="aul-field"
-                  placeholder="Professional Name"
-                  value={draftMember.name}
-                  onChange={(e) => setDraftMember(prev => ({ ...prev, name: e.target.value }))}
-                />
-                <input 
-                  className="aul-field"
-                  placeholder="Professional Role"
-                  value={draftMember.role}
-                  onChange={(e) => setDraftMember(prev => ({ ...prev, role: e.target.value }))}
-                />
-              </AdminUploadLayout>
-            );
+            openPopup();
           }}
         />
       )
@@ -349,63 +261,40 @@ function TeamManager() {
             onAdd={() => {
               setIsEditing(false);
               setDraftMember({ name: "", role: "Nail Artist", image: null });
-              openPopup(
-                <AdminUploadLayout
-                  initialImage={null}
-                  onUploadSuccess={(url) => setDraftMember(prev => ({ ...prev, image: url }))}
-                  onSave={() => confirmAddMember(closePopup)}
-                  onDiscard={closePopup}
-                  saveLabel="Add Member"
-                >
-                  <input 
-                    className="aul-field"
-                    placeholder="Professional Name"
-                    value={draftMember.name}
-                    onChange={(e) => setDraftMember(prev => ({ ...prev, name: e.target.value }))}
-                  />
-                  <input 
-                    className="aul-field"
-                    placeholder="Professional Role"
-                    value={draftMember.role}
-                    onChange={(e) => setDraftMember(prev => ({ ...prev, role: e.target.value }))}
-                  />
-                </AdminUploadLayout>
-              );
+              openPopup();
             }}
             onEdit={(member, idx) => {
               setIsEditing(true);
               setEditingIndex(idx);
               setDraftMember({ ...member });
-              openPopup(
-                <AdminUploadLayout
-                  initialImage={member.image}
-                  onUploadSuccess={(url) => setDraftMember(prev => ({ ...prev, image: url }))}
-                  onSave={() => confirmAddMember(closePopup)}
-                  onDiscard={closePopup}
-                  saveLabel="Update Member"
-                >
-                  <input 
-                    className="aul-field"
-                    placeholder="Professional Name"
-                    value={draftMember.name}
-                    onChange={(e) => setDraftMember(prev => ({ ...prev, name: e.target.value }))}
-                  />
-                  <input 
-                    className="aul-field"
-                    placeholder="Professional Role"
-                    value={draftMember.role}
-                    onChange={(e) => setDraftMember(prev => ({ ...prev, role: e.target.value }))}
-                  />
-                </AdminUploadLayout>
-              );
+              openPopup();
             }}
             openPopup={openPopup}
             closePopup={closePopup}
           />
 
-          <div className={`hub-popup-overlay ${popup.isOpen ? 'open' : ''}`} onClick={closePopup}>
+          <div className={`hub-popup-overlay ${isPopupOpen ? 'open' : ''}`} onClick={closePopup}>
             <div className="hub-popup-card" onClick={e => e.stopPropagation()}>
-              {popup.content}
+              <AdminUploadLayout
+                initialImage={isEditing ? draftMember.image : null}
+                onUploadSuccess={(url) => setDraftMember(prev => ({ ...prev, image: url }))}
+                onSave={() => confirmAddMember(closePopup)}
+                onDiscard={closePopup}
+                saveLabel={isEditing ? "Update Member" : "Add Member"}
+              >
+                <input 
+                  className="aul-field"
+                  placeholder="Professional Name"
+                  value={draftMember.name}
+                  onChange={(e) => setDraftMember(prev => ({ ...prev, name: e.target.value }))}
+                />
+                <input 
+                  className="aul-field"
+                  placeholder="Professional Role"
+                  value={draftMember.role}
+                  onChange={(e) => setDraftMember(prev => ({ ...prev, role: e.target.value }))}
+                />
+              </AdminUploadLayout>
             </div>
           </div>
 
@@ -418,17 +307,46 @@ function TeamManager() {
           />
         </div>
       ) : (
-        <AdminMobileLayout 
-          title="Team"
-          description="Manage your studio's professional team and work titles."
-          sections={sections}
-          activeSectionId={activeSectionId}
-          onSectionChange={setActiveSectionId}
-          onSave={handleSave}
-          onDiscard={fetchTeam}
-          isSaving={saving}
-          hasChanges={true}
-        />
+        <div style={{ position: 'relative' }}>
+          <AdminMobileLayout 
+            title="Team"
+            description="Manage your studio's professional team and work titles."
+            sections={sections}
+            activeSectionId={activeSectionId}
+            onSectionChange={setActiveSectionId}
+            onSave={handleSave}
+            onDiscard={fetchTeam}
+            isSaving={saving}
+            hasChanges={true}
+            openPopup={openPopup}
+            closePopup={closePopup}
+          />
+          
+          <div className={`hub-popup-overlay desktop ${isPopupOpen ? 'open' : ''}`} onClick={closePopup}>
+            <div className="hub-popup-card" onClick={e => e.stopPropagation()}>
+              <AdminUploadLayout
+                initialImage={isEditing ? draftMember.image : null}
+                onUploadSuccess={(url) => setDraftMember(prev => ({ ...prev, image: url }))}
+                onSave={() => confirmAddMember(closePopup)}
+                onDiscard={closePopup}
+                saveLabel={isEditing ? "Update Member" : "Add Member"}
+              >
+                <input 
+                  className="aul-field"
+                  placeholder="Professional Name"
+                  value={draftMember.name}
+                  onChange={(e) => setDraftMember(prev => ({ ...prev, name: e.target.value }))}
+                />
+                <input 
+                  className="aul-field"
+                  placeholder="Professional Role"
+                  value={draftMember.role}
+                  onChange={(e) => setDraftMember(prev => ({ ...prev, role: e.target.value }))}
+                />
+              </AdminUploadLayout>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

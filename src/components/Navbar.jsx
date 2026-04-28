@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useBooking } from '../context/BookingContext';
 import { Menu, X, ChevronRight, User } from 'lucide-react';
@@ -12,8 +12,10 @@ import logo from '../assets/IMG_8009-removebg-preview.png';
 
 function Navbar({ onOpenPortfolio }) {
   const { brand, footer } = useLandingPage();
-  const { currentUser, isAdmin, loginAsClient, logout, isDashboardOpen, setIsDashboardOpen, openDashboard } = useAuth();
+  const { currentUser, isAdmin, isMarketer, loginAsClient, logout, isDashboardOpen, setIsDashboardOpen, openDashboard } = useAuth();
   const { openBookingDrawer } = useBooking();
+  const navigate = useNavigate();
+  const location = useLocation();
     
   const [scrolled, setScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -61,9 +63,24 @@ function Navbar({ onOpenPortfolio }) {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   const handleLinkClick = (e, link) => {
-    if (link.label === "Gallery" && onOpenPortfolio) {
+    const isHomePage = location.pathname === '/';
+    const isAnchor = link.href.startsWith('#');
+
+    if (link.label === "Gallery") {
       e.preventDefault();
-      onOpenPortfolio();
+      if (onOpenPortfolio) {
+        onOpenPortfolio();
+      } else {
+        // We're on another page, navigate to home with query param
+        navigate('/?gallery=open');
+      }
+      setIsMenuOpen(false);
+      return;
+    }
+
+    if (!isHomePage && isAnchor) {
+      e.preventDefault();
+      navigate('/' + link.href);
       setIsMenuOpen(false);
     } else {
       setIsMenuOpen(false);
@@ -98,7 +115,17 @@ function Navbar({ onOpenPortfolio }) {
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
         {/* Logo */}
-        <div className="navbar-logo" onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setIsMenuOpen(false); }}>
+        <div 
+          className="navbar-logo" 
+          onClick={() => { 
+            if (location.pathname !== '/') {
+              navigate('/');
+            } else {
+              window.scrollTo({ top: 0, behavior: 'smooth' }); 
+            }
+            setIsMenuOpen(false); 
+          }}
+        >
           <div className="navbar-logo-monogram" style={{ '--logo-url': `url(${logo})` }}></div>
           <span className="navbar-logo-name">{brand.logo}</span>
         </div>
@@ -109,13 +136,35 @@ function Navbar({ onOpenPortfolio }) {
             <li key={link.label}>
               <a 
                 className="navbar-link" 
-                href={link.href}
+                href={location.pathname === '/' ? link.href : '/' + link.href}
                 onClick={(e) => handleLinkClick(e, link)}
               >
                 {link.label}
               </a>
             </li>
           ))}
+          <li>
+            <a 
+              className="navbar-link" 
+              href="/blog"
+              onClick={(e) => { setIsMenuOpen(false); }}
+            >
+              Blog
+            </a>
+          </li>
+          {(isAdmin || isMarketer) && (
+            <li>
+              <a 
+                className="navbar-link" 
+                href="/blog-editor"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => { setIsMenuOpen(false); }}
+              >
+                Blog Editor
+              </a>
+            </li>
+          )}
         </ul>
 
         {/* Desktop Actions */}
@@ -180,7 +229,7 @@ function Navbar({ onOpenPortfolio }) {
                 {navLinks.map((link) => (
                   <a 
                     key={link.label} 
-                    href={link.href} 
+                    href={location.pathname === '/' ? link.href : '/' + link.href}
                     className="drawer-flat-link"
                     onClick={(e) => handleLinkClick(e, link)}
                   >
@@ -188,6 +237,14 @@ function Navbar({ onOpenPortfolio }) {
                     <ChevronRight size={18} className="drawer-flat-arrow" />
                   </a>
                 ))}
+                <a 
+                  href="/blog" 
+                  className="drawer-flat-link"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <span>Blog</span>
+                  <ChevronRight size={18} className="drawer-flat-arrow" />
+                </a>
 
                 {/* Sign In for logged out users */}
                 {!currentUser && (
@@ -232,6 +289,20 @@ function Navbar({ onOpenPortfolio }) {
                         onClick={() => setIsMenuOpen(false)}
                       >
                         <span>Admin Portal</span>
+                        <ChevronRight size={18} className="drawer-flat-arrow" />
+                      </a>
+                    )}
+
+                    {/* Blog Editor Portal */}
+                    {(isAdmin || isMarketer) && (
+                      <a 
+                        href="/blog-editor" 
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="drawer-flat-link"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <span>Blog Editor</span>
                         <ChevronRight size={18} className="drawer-flat-arrow" />
                       </a>
                     )}

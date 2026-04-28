@@ -36,6 +36,11 @@ const Footer = () => {
                       )}
                     </li>
                   ))}
+                  {column.title === "Navigation" && (
+                    <li>
+                      <a href="/blog">Blog</a>
+                    </li>
+                  )}
                 </ul>
               </div>
             ))}

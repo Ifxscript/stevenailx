@@ -52,10 +52,10 @@
 
 .nav-item-label {
   flex: 1;
-  font-size: 0.95rem;
-  font-weight: 400; /* Lighter weight for modern feel */
-  color: rgba(74, 26, 38, 0.7); /* Muted burgundy */
-  letter-spacing: -0.01em;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #000000;
 }
 
 .nav-item-arrow {

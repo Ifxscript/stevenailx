@@ -32,14 +32,6 @@ const AdminMobileLayout = ({
 
 
 
-  // Sync drawer state with external activeSectionId for mobile
-  useEffect(() => {
-    if (isMobile && activeSectionId) {
-      setDrawerOpen(true);
-    } else if (isMobile && !activeSectionId) {
-      setDrawerOpen(false);
-    }
-  }, [activeSectionId, isMobile]);
 
   const handleTileClick = (sectionId) => {
     onSectionChange(sectionId);

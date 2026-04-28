@@ -11,6 +11,10 @@ import BookingDrawer from './components/booking/BookingDrawer';
 import LoginPage from './pages/admin/LoginPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import ProtectedRoute from './components/admin/ProtectedRoute';
+import BlogPage from './pages/BlogPage';
+import BlogPostPage from './pages/BlogPostPage';
+import BlogEditorPage from './pages/BlogEditorPage';
+import ProtectedBlogRoute from './components/blog/ProtectedBlogRoute';
 
 function App() {
   return (
@@ -26,6 +30,15 @@ function App() {
                 <Route path="/services" element={<ServicesPage />} />
                 <Route path="/gallery" element={<GalleryPage />} />
                 <Route path="/socials" element={<SocialsPage />} />
+                <Route path="/blog" element={<BlogPage />} />
+                <Route path="/blog/:id" element={<BlogPostPage />} />
+                
+                {/* Blog Editor Portal Route */}
+                <Route path="/blog-editor" element={
+                  <ProtectedBlogRoute>
+                    <BlogEditorPage />
+                  </ProtectedBlogRoute>
+                } />
                 
                 {/* Admin Dashboard Routes */}
                 <Route path="/admin/login" element={<LoginPage />} />
