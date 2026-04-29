@@ -240,6 +240,19 @@ const AdminMobileLayoutWithDropdown = ({
             const isExpanded = expandedIds.has(section.id);
             const isLeaf = !hasChildren && section.component;
 
+            // Helper to auto-expand parent when adding a child
+            const handleAddWithExpand = (id, onAddFn) => {
+              if (!onAddFn) return null;
+              return () => {
+                setExpandedIds(prev => {
+                  const next = new Set(prev);
+                  next.add(id);
+                  return next;
+                });
+                onAddFn();
+              };
+            };
+
             return (
               <div key={section.id} className="dropdown-nav-group">
                 {/* ── Parent Row ── */}
@@ -265,7 +278,7 @@ const AdminMobileLayoutWithDropdown = ({
 
                   <div className="nav-item-actions">
                     <ActionMenu 
-                      item={section} 
+                      item={{ ...section, onAdd: handleAddWithExpand(section.id, section.onAdd) }} 
                       isEditing={editingId === section.id}
                       onStartEdit={(id) => setEditingId(id)}
                       onStopEdit={() => setEditingId(null)}
@@ -308,7 +321,7 @@ const AdminMobileLayoutWithDropdown = ({
                             />
                             <div className="nav-item-actions">
                               <ActionMenu 
-                                item={child} 
+                                item={{ ...child, onAdd: handleAddWithExpand(child.id, child.onAdd) }} 
                                 isEditing={editingId === child.id}
                                 onStartEdit={(id) => setEditingId(id)}
                                 onStopEdit={() => setEditingId(null)}
@@ -341,7 +354,7 @@ const AdminMobileLayoutWithDropdown = ({
                                   />
                                   <div className="nav-item-actions">
                                     <ActionMenu 
-                                      item={grandchild} 
+                                      item={{ ...grandchild, onAdd: handleAddWithExpand(grandchild.id, grandchild.onAdd) }} 
                                       isEditing={editingId === grandchild.id}
                                       onStartEdit={(id) => setEditingId(id)}
                                       onStopEdit={() => setEditingId(null)}

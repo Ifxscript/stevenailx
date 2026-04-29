@@ -101,17 +101,16 @@ function PortfolioManager() {
   const isMobile = useMobile();
 
   const [items, setItems] = useState([]);
-  const [categories, setCategories] = useState(['nails', 'hair', 'lashes', 'art']);
+  const [originalItems, setOriginalItems] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [originalCategories, setOriginalCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeSection, setActiveSection] = useState({ type: 'category', id: 'all' });
 
-
   // Modal & Tag States
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUploadingDraft, setIsUploadingDraft] = useState(false);
-  const [isAddingTag, setIsAddingTag] = useState(false);
-  const [newTagName, setNewTagName] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [editingIndex, setEditingIndex] = useState(null);
 
@@ -135,8 +134,17 @@ function PortfolioManager() {
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         const data = docSnap.data().gallery || {};
-        setItems(data.items || []);
-        setCategories(data.categories || ['nails', 'hair', 'lashes', 'art']);
+        const fetchedItems = data.items || [];
+        const rawCats = data.categories || ['nails', 'hair', 'lashes', 'art'];
+        const fetchedCats = rawCats.map(cat => ({ 
+          id: cat.toLowerCase(), 
+          label: cat.charAt(0).toUpperCase() + cat.slice(1) 
+        }));
+
+        setItems(fetchedItems);
+        setOriginalItems(JSON.parse(JSON.stringify(fetchedItems)));
+        setCategories(fetchedCats);
+        setOriginalCategories(JSON.parse(JSON.stringify(fetchedCats)));
       }
     } catch (err) {
       console.error("Error fetching gallery:", err);
@@ -151,8 +159,10 @@ function PortfolioManager() {
       const docRef = doc(db, 'site_content', 'landing_page');
       await updateDoc(docRef, {
         'gallery.items': items,
-        'gallery.categories': categories
+        'gallery.categories': categories.filter(c => c.label.trim()).map(c => c.label.toLowerCase())
       });
+      setOriginalItems(JSON.parse(JSON.stringify(items)));
+      setOriginalCategories(JSON.parse(JSON.stringify(categories)));
       alert("✅ Portfolio updated successfully!");
     } catch (err) {
       console.error("Save error:", err);
@@ -162,17 +172,44 @@ function PortfolioManager() {
     }
   };
 
-  const handleAddTag = async () => {
-    if (!newTagName.trim()) return;
-    const cleanTag = newTagName.trim().toLowerCase();
-    if (categories.includes(cleanTag)) {
-      alert("This tag already exists.");
-      return;
-    }
+  const handleDiscardAll = () => {
+    setItems(JSON.parse(JSON.stringify(originalItems)));
+    setCategories(JSON.parse(JSON.stringify(originalCategories)));
+  };
 
-    setCategories(prev => [...prev, cleanTag]);
-    setNewTagName("");
-    setIsAddingTag(false);
+  const addCategoryTag = () => {
+    setCategories(prev => [
+      ...prev, 
+      { 
+        id: `new-${Date.now()}`, 
+        label: isMobile ? "" : "New Tag", 
+        isNew: isMobile 
+      }
+    ]);
+  };
+
+  const updateTagName = (id, newName) => {
+    setCategories(prev => prev.map(c => {
+      if (c.id === id) {
+        const oldLabel = c.label.toLowerCase();
+        const newLabel = newName.toLowerCase();
+        // Sync items if name changed
+        if (oldLabel && oldLabel !== newLabel) {
+          setItems(itemsPrev => itemsPrev.map(item => 
+            item.category === oldLabel ? { ...item, category: newLabel } : item
+          ));
+        }
+        return { ...c, label: newName, isNew: false };
+      }
+      return c;
+    }));
+  };
+
+  const deleteCategoryTag = (id, label) => {
+    if (!window.confirm(`Delete "${label}" category and all its photos?`)) return;
+    setCategories(prev => prev.filter(c => c.id !== id));
+    setItems(prev => prev.filter(item => item.category !== label.toLowerCase()));
+    if (activeSection.id === id) setActiveSection({ type: 'category', id: 'all' });
   };
 
   const confirmAddPhoto = (closePopupFn) => {
@@ -222,7 +259,7 @@ function PortfolioManager() {
         >
             <InlineCategoryDropdown
               value={item.category?.charAt(0).toUpperCase() + item.category?.slice(1)}
-              options={categories.map(c => c.charAt(0).toUpperCase() + c.slice(1))}
+              options={categories.map(c => c.label)}
               onSelect={(cat) => {
                 setDraftPhoto(prev => ({ ...prev, category: cat.toLowerCase() }));
                 const inputEl = document.getElementById('hidden-category-input');
@@ -287,7 +324,7 @@ function PortfolioManager() {
                   >
                       <InlineCategoryDropdown
                         value={draftPhoto.category.charAt(0).toUpperCase() + draftPhoto.category.slice(1)}
-                        options={categories.map(c => c.charAt(0).toUpperCase() + c.slice(1))}
+                        options={categories.map(c => c.label)}
                         onSelect={(cat) => {
                           setDraftPhoto({ ...draftPhoto, category: cat.toLowerCase() });
                           const inputEl = document.getElementById('hidden-category-input');
@@ -322,14 +359,24 @@ function PortfolioManager() {
       ) : (
         <div className="editor-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
           <div>
-            <h2 style={{ textTransform: 'capitalize' }}>{activeSection.id} Portfolio</h2>
+            {activeSection.id === 'all' ? (
+              <h2>All Portfolio</h2>
+            ) : (
+              <input 
+                className="hub-editable-title" 
+                style={{ fontSize: '1.4rem', fontWeight: 800, color: '#4a1a26', marginBottom: '4px' }} 
+                value={categories.find(c => c.id === activeSection.id)?.label || ""} 
+                onChange={(e) => updateTagName(activeSection.id, e.target.value)}
+                placeholder="Category Name" 
+              />
+            )}
             <p>Curate your professional gallery and cloud-hosted artwork.</p>
           </div>
           <AdminAddButton 
             label="Add New Work"
             onClick={() => {
               setIsEditing(false);
-              setDraftPhoto({ title: "", category: "nails", image: "" });
+              setDraftPhoto({ title: "", category: activeSection.id === 'all' ? "nails" : activeSection.id, image: "" });
               setIsModalOpen(true);
             }}
             style={{ borderRadius: '12px' }}
@@ -377,14 +424,20 @@ function PortfolioManager() {
       id: 'categories',
       label: 'Gallery Tags',
       icon: <ImageIcon size={20} />,
-      onAdd: () => setIsAddingTag(true),
+      onAdd: addCategoryTag,
       children: categories.map(cat => ({
-        id: cat.toLowerCase(),
-        label: cat.charAt(0).toUpperCase() + cat.slice(1),
+        id: cat.id,
+        label: cat.label,
+        isNew: cat.isNew,
+        onRename: (newName) => updateTagName(cat.id, newName),
+        onDelete: () => deleteCategoryTag(cat.id, cat.label),
         component: portfolioEditorCanvas
       }))
     }
   ];
+
+  const hasChanges = JSON.stringify(items) !== JSON.stringify(originalItems) || 
+                     JSON.stringify(categories) !== JSON.stringify(originalCategories);
 
   if (loading) {
     return (
@@ -421,35 +474,30 @@ function PortfolioManager() {
         <div className="hub-main-layout">
           {/* ── Sidebar ── */}
           <aside className="hub-sidebar" style={{ gap: '24px' }}>
+            {hasChanges && (
+              <HubActionPill 
+                onSave={saveGallery} 
+                onDiscard={handleDiscardAll} 
+                isSaving={saving} 
+              />
+            )}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#8E8484', textTransform: 'uppercase', letterSpacing: '0.05em', marginLeft: '12px', marginBottom: '4px' }}>Gallery Categories</span>
               <StudioDropdown
                 label="Portfolio Filter"
-                value={activeSection.id === 'all' ? 'All' : activeSection.id.charAt(0).toUpperCase() + activeSection.id.slice(1)}
-                options={['All', ...categories.map(c => c.charAt(0).toUpperCase() + c.slice(1))]}
+                value={activeSection.id === 'all' ? 'All' : categories.find(c => c.id === activeSection.id)?.label}
+                options={['All', ...categories.map(c => c.label)]}
                 icon={Layout}
-                onSelect={(cat) => setActiveSection({ type: 'category', id: cat.toLowerCase() })}
-                onAdd={() => setIsAddingTag(!isAddingTag)}
+                onSelect={(catLabel) => {
+                  if (catLabel === 'All') setActiveSection({ type: 'category', id: 'all' });
+                  else {
+                    const cat = categories.find(c => c.label === catLabel);
+                    setActiveSection({ type: 'category', id: cat.id });
+                  }
+                }}
+                onAdd={addCategoryTag}
                 mode="accordion"
               />
-
-              {isAddingTag && (
-                <div style={{ padding: '12px', background: '#fff', borderRadius: '16px', marginTop: '8px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)', border: '1px solid #F0EFEA' }}>
-                  <input
-                    className="hub-input"
-                    placeholder="New tag name..."
-                    autoFocus
-                    value={newTagName}
-                    onChange={(e) => setNewTagName(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleAddTag()}
-                    style={{ padding: '8px 12px', fontSize: '0.9rem' }}
-                  />
-                  <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
-                    <button className="action-btn save" style={{ flex: 1, padding: '6px', fontSize: '0.8rem' }} onClick={handleAddTag}>Add</button>
-                    <button className="action-btn discard" style={{ flex: 1, padding: '6px', fontSize: '0.8rem' }} onClick={() => setIsAddingTag(false)}>Cancel</button>
-                  </div>
-                </div>
-              )}
             </div>
           </aside>
 
@@ -469,9 +517,9 @@ function PortfolioManager() {
           else if (id && id !== 'categories') setActiveSection({ type: 'category', id });
         }}
         onSave={saveGallery}
-        onDiscard={fetchGallery}
+        onDiscard={handleDiscardAll}
         isSaving={saving}
-        hasChanges={true}
+        hasChanges={hasChanges}
       />
 
       {/* ── Studio Upload Modal ── */}
@@ -527,8 +575,11 @@ function PortfolioManager() {
                       <label className="field-label"><span>Gallery Tag</span></label>
                       <StudioDropdown
                         value={draftPhoto.category.charAt(0).toUpperCase() + draftPhoto.category.slice(1)}
-                        options={categories.map(c => c.charAt(0).toUpperCase() + c.slice(1))}
-                        onSelect={(cat) => setDraftPhoto({ ...draftPhoto, category: cat.toLowerCase() })}
+                        options={categories.map(c => c.label)}
+                        onSelect={(catLabel) => {
+                          const cat = categories.find(c => c.label === catLabel);
+                          setDraftPhoto({ ...draftPhoto, category: cat.label.toLowerCase() });
+                        }}
                         placeholder="Select Tag"
                         mode="menu"
                         allowSearch={false}
@@ -554,14 +605,15 @@ function PortfolioManager() {
         </div>
       )}
 
-      {/* ── Fixed Hub Action Bar ── */}
-      <HubActionPill
-        onSave={saveGallery}
-        onDiscard={fetchGallery}
-        isSaving={saving}
-        hasChanges={true}
-        saveLabel="Save Changes"
-      />
+      {/* ── Fixed Hub Action Bar (Desktop only, if changes exist) ── */}
+      {hasChanges && !isMobile && (
+        <HubActionPill
+          onSave={saveGallery}
+          onDiscard={handleDiscardAll}
+          isSaving={saving}
+          saveLabel="Save Changes"
+        />
+      )}
 
       {/* ── Mobile Popup Overlay ── */}
       <div className={`hub-popup-overlay ${popup.isOpen ? 'open' : ''}`} onClick={closePopup}>

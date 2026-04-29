@@ -696,6 +696,13 @@ function ServicesManager() {
       {!isMobile && (
         <div className="hub-main-layout">
           <aside className="hub-sidebar" style={{ gap: '24px' }}>
+            {hasChanges && (
+              <HubActionPill 
+                onSave={handleSaveAll} 
+                onDiscard={handleDiscardAll} 
+                isSaving={saving} 
+              />
+            )}
             <div>
               <NavPill
                 label="Homepage Teasers"
@@ -882,6 +889,16 @@ function ServicesManager() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* ── Fixed Hub Action Bar (Desktop only, if changes exist) ── */}
+      {hasChanges && !isMobile && (
+        <HubActionPill
+          onSave={handleSaveAll}
+          onDiscard={handleDiscardAll}
+          isSaving={saving}
+          saveLabel="Save Changes"
+        />
       )}
 
       {/* ── Mobile Popup Overlay ── */}
