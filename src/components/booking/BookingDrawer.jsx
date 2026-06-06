@@ -29,19 +29,11 @@ function BookingDrawer() {
   return (
     <AnimatePresence>
       {isDrawerOpen && (
-        <>
-          <motion.div
-            className="booking-backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={closeBookingDrawer}
-          />
           <motion.div
             className="booking-drawer"
-            initial={{ y: '100%' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100%' }}
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
           >
             {/* Header */}
@@ -98,7 +90,6 @@ function BookingDrawer() {
               </AnimatePresence>
             </div>
           </motion.div>
-        </>
       )}
     </AnimatePresence>
   );

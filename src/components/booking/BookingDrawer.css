@@ -2,69 +2,24 @@
    BOOKING DRAWER — Premium Booking Flow
    ══════════════════════════════════════════ */
 
-/* ── Backdrop & Drawer ── */
-.booking-backdrop {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  z-index: 1000;
-}
-
+/* ── Full-screen booking page ── */
 .booking-drawer {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  max-height: 92vh;
+  inset: 0;
   background-color: #fff;
-  border-radius: 24px 24px 0 0;
-  z-index: 1001;
+  z-index: 1200;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.12);
 }
 
 @media (min-width: 768px) {
-  .booking-drawer {
-    max-width: 520px;
-    left: auto;
-    right: 24px;
-    border-radius: 24px 24px 0 0;
-  }
-}
-
-@media (min-width: 1024px) {
-  .booking-backdrop {
-    background-color: #fff;
-  }
-
-  .booking-drawer {
-    max-width: none;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    height: 100vh;
-    max-height: 100vh;
-    border-radius: 0;
-    box-shadow: none;
-  }
-
-  .booking-header, .booking-progress {
-    max-width: 800px;
-    margin: 0 auto;
-    width: 100%;
-  }
-  
+  .booking-header,
+  .booking-progress,
   .booking-content {
-    max-width: 800px;
-    margin: 0 auto;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
     width: 100%;
-  }
-
-  .booking-header {
-    padding-top: 32px;
   }
 }
 
@@ -273,8 +228,6 @@
    ══════════════════════════════════════════ */
 
 .services-scroll {
-  max-height: 400px;
-  overflow-y: auto;
   margin: 0 -24px;
   padding: 0 24px;
 }
@@ -432,7 +385,6 @@
 }
 
 .guest-services {
-  max-height: 200px;
   overflow-y: auto;
 }
 
