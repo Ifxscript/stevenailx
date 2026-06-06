@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { X, ChevronRight, ArrowLeft } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import HubActionPill from './HubActionPill';
-import AdminDrawerHeader from './AdminDrawerHeader';
 import './AdminMobileLayout.css';
 
 /**
@@ -19,7 +18,6 @@ const AdminMobileLayout = ({
   activeSectionId,
   onSectionChange
 }) => {
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
 
   useEffect(() => {
@@ -35,13 +33,6 @@ const AdminMobileLayout = ({
 
   const handleTileClick = (sectionId) => {
     onSectionChange(sectionId);
-    if (isMobile) setDrawerOpen(true);
-  };
-
-  const closeDrawer = () => {
-    setDrawerOpen(false);
-    // Delay clearing the section slightly for transition smoothness
-    setTimeout(() => onSectionChange(null), 300);
   };
 
   const openPopup = (content) => setPopup({ isOpen: true, content });
@@ -115,32 +106,23 @@ const AdminMobileLayout = ({
             ))}
           </div>
 
-          {/* Layer 2: Bottom Drawer */}
-          <div className={`mobile-bottom-drawer ${drawerOpen ? 'open' : ''}`}>
-            <div className="drawer-overlay" onClick={closeDrawer} />
-            <div className="drawer-content">
-              {/* FLOATING GLASS HEADER */}
-              <AdminDrawerHeader
-                title={activeSection?.label}
-                onClose={closeDrawer}
-                className="drawer-header-overlay"
-              />
-
-              <div className="drawer-scroll-body" style={{ paddingTop: '68px' }}>
-                {renderedComponent}
-                {/* Extra space for floating action bar */}
-                <div style={{ height: '120px' }} />
-              </div>
-
-              <HubActionPill
-                onSave={onSave}
-                onDiscard={onDiscard}
-                isSaving={isSaving}
-                hasChanges={hasChanges}
-                variant="drawer"
-              />
+          <main className="hub-editor-card">
+            <div className="editor-header">
+              <h2>{activeSection?.label}</h2>
+              <p>{activeSection?.description}</p>
             </div>
-          </div>
+            <div className="hub-form-content">
+              {renderedComponent}
+            </div>
+          </main>
+
+          <HubActionPill
+            onSave={onSave}
+            onDiscard={onDiscard}
+            isSaving={isSaving}
+            hasChanges={hasChanges}
+            variant="fixed"
+          />
 
           {/* Layer 3: Popup Modal (managed within layout) */}
           <div className={`hub-popup-overlay ${popup.isOpen ? 'open' : ''}`} onClick={closePopup}>

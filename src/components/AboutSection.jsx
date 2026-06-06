@@ -4,7 +4,8 @@ import { useLandingPage } from '../context/LandingPageContext';
 import './AboutSection.css';
 
 const AboutSection = () => {
-  const { about } = useLandingPage();
+  const { about, studio } = useLandingPage();
+  const studioPhotos = studio?.photos || [];
   
   // Logic to find current day index (Monday = 0, Sunday = 6)
   const currentDayIndex = (new Date().getDay() + 6) % 7;
@@ -24,7 +25,24 @@ const AboutSection = () => {
           >
             <h2 className="section-heading">{about.heading}</h2>
             <p className="about-text">{about.description}</p>
-            
+
+            {studioPhotos.length > 0 && (
+              <div className="studio-collage">
+                <div className="studio-collage-hero">
+                  <img src={studioPhotos[0].image} alt="" loading="lazy" />
+                </div>
+                {studioPhotos.length > 1 && (
+                  <div className={`studio-collage-side studio-side-${studioPhotos.length - 1}`}>
+                    {studioPhotos.slice(1).map((photo, i) => (
+                      <div key={photo.id} className={`studio-collage-cell studio-side-cell-${i}`}>
+                        <img src={photo.image} alt="" loading="lazy" />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
             <div className="about-map-container">
               <iframe
                 title="Salon Location Map"

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronRight, ChevronDown, Plus, Edit2, MoreVertical, Trash2 } from 'lucide-react';
 import HubActionPill from './HubActionPill';
-import AdminDrawerHeader from './AdminDrawerHeader';
 import './AdminMobileLayout.css';
 import './AdminMobileLayoutWithDropdown.css';
 
@@ -156,7 +155,6 @@ const AdminMobileLayoutWithDropdown = ({
   hasChanges = true,
 }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const [expandedIds, setExpandedIds] = useState(new Set());
   const [popup, setPopup] = useState({ isOpen: false, content: null });
   const [editingId, setEditingId] = useState(null);
@@ -188,12 +186,6 @@ const AdminMobileLayoutWithDropdown = ({
 
   const handleLeafClick = (sectionId) => {
     onSectionChange(sectionId);
-    if (isMobile) setDrawerOpen(true);
-  };
-
-  const closeDrawer = () => {
-    setDrawerOpen(false);
-    setTimeout(() => onSectionChange(null), 300);
   };
 
   const openPopup = (content) => setPopup({ isOpen: true, content });
@@ -376,7 +368,7 @@ const AdminMobileLayoutWithDropdown = ({
         </div>
  
         {/* ═══ Main Page Actions ═══ */}
-        {hasChanges && !drawerOpen && (
+        {hasChanges && (
           <HubActionPill
             onSave={onSave}
             onDiscard={handleDiscard}
@@ -385,31 +377,15 @@ const AdminMobileLayoutWithDropdown = ({
             variant="fixed"
           />
         )}
-
-        {/* ═══ Layer 2: Bottom Drawer ═══ */}
-        <div className={`mobile-bottom-drawer ${drawerOpen ? 'open' : ''}`}>
-          <div className="drawer-overlay" onClick={closeDrawer} />
-          <div className="drawer-content">
-            <AdminDrawerHeader
-              title={activeSection?.label}
-              onClose={closeDrawer}
-              className="drawer-header-overlay"
-            />
-
-            <div className="drawer-scroll-body" style={{ paddingTop: '68px' }}>
-              {renderedComponent}
-              <div style={{ height: '120px' }} />
-            </div>
-
-            <HubActionPill
-              onSave={onSave}
-              onDiscard={handleDiscard}
-              isSaving={isSaving}
-              hasChanges={hasChanges}
-              variant="drawer"
-            />
+        <main className="hub-editor-card">
+          <div className="editor-header">
+            <h2>{activeSection?.label}</h2>
+            <p>{activeSection?.description}</p>
           </div>
-        </div>
+          <div className="hub-form-content">
+            {renderedComponent}
+          </div>
+        </main>
 
         {/* ═══ Layer 3: Popup Modal ═══ */}
         <div className={`hub-popup-overlay ${popup.isOpen ? 'open' : ''}`} onClick={closePopup}>

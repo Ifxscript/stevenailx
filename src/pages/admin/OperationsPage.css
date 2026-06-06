@@ -1,0 +1,62 @@
+.operations-page {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.admin-page-header {
+  margin-bottom: 32px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.admin-page-label {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: #8b3a4a;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.admin-page-title {
+  margin: 0;
+  font-size: clamp(2rem, 2.5vw, 2.6rem);
+  font-weight: 800;
+  color: #3a2a2a;
+  line-height: 1.05;
+}
+
+.admin-page-description {
+  margin-top: 16px;
+  color: #6f5d55;
+  max-width: 760px;
+  line-height: 1.75;
+}
+
+.admin-page-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.admin-page-section-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-page-section-heading h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #4a1a26;
+}
+
+.admin-page-section-heading p {
+  margin: 0;
+  color: #7f6a61;
+  font-size: 0.96rem;
+  max-width: 740px;
+}

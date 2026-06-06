@@ -4,98 +4,14 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { uploadToImgBB } from '../../lib/imgbb';
 import { useMobile } from '../../hooks/useMobile';
 import {
-  Plus, Trash2, Loader2, UploadCloud, Save,
-  Edit3, Check, X, ChevronRight, ChevronDown,
-  Search, Image as ImageIcon, Layout
+  Plus, Trash2, Loader2, Edit3, Layout
 } from 'lucide-react';
 
-import { StudioDropdown } from './StudioDropdown';
+// import { StudioDropdown } from './StudioDropdown';
 import HubActionPill from './HubActionPill';
 import AdminMediaTile from './AdminMediaTile';
 import AdminUploadLayout from './AdminUploadLayout';
-import AdminMobileLayoutWithDropdown from './AdminMobileLayoutWithDropdown';
 import AdminAddButton from './AdminAddButton';
-import AdminSectionDescription from './AdminSectionDescription';
-
-const InlineCategoryDropdown = ({ value, options, onSelect, placeholder }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [localValue, setLocalValue] = useState(value);
-
-  useEffect(() => {
-    setLocalValue(value);
-  }, [value]);
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', position: 'relative' }}>
-      <button 
-        className="aul-field" 
-        style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center', 
-          cursor: 'pointer',
-          textAlign: 'left'
-        }}
-        onClick={() => setIsOpen(!isOpen)}
-        type="button"
-      >
-        <span style={{ textTransform: 'capitalize' }}>{localValue || placeholder}</span>
-        <ChevronDown size={16} style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s', color: '#9e9690' }} />
-      </button>
-
-      {isOpen && (
-        <div style={{ 
-          position: 'absolute',
-          top: 'calc(100% + 8px)',
-          left: 0,
-          right: 0,
-          zIndex: 9999,
-          backgroundColor: '#FFFBF7',
-          borderRadius: '14px', 
-          boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-          border: '1px solid #F0EFEA',
-          overflow: 'hidden',
-          display: 'flex',
-          flexDirection: 'column'
-        }}>
-          {options.map((opt, i) => {
-            const isSelected = localValue?.toLowerCase() === opt.toLowerCase();
-            return (
-              <button
-                key={opt}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setLocalValue(opt);
-                  onSelect(opt);
-                  setIsOpen(false);
-                }}
-                type="button"
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  padding: '12px 16px',
-                  backgroundColor: isSelected ? 'rgba(139, 29, 65, 0.05)' : 'transparent',
-                  color: isSelected ? '#8B1D41' : '#4a1a26',
-                  fontWeight: isSelected ? 700 : 500,
-                  fontSize: '0.95rem',
-                  border: 'none',
-                  borderBottom: i < options.length - 1 ? '1px solid #F0EFEA' : 'none',
-                  textAlign: 'left',
-                  cursor: 'pointer'
-                }}
-              >
-                <span style={{ textTransform: 'capitalize' }}>{opt}</span>
-                {isSelected && <Check size={16} color="#8B1D41" />}
-              </button>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
-};
 
 function PortfolioManager() {
   const isMobile = useMobile();
@@ -106,7 +22,6 @@ function PortfolioManager() {
   const [originalCategories, setOriginalCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [activeSection, setActiveSection] = useState({ type: 'category', id: 'all' });
 
   // Modal & Tag States
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -209,21 +124,18 @@ function PortfolioManager() {
     if (!window.confirm(`Delete "${label}" category and all its photos?`)) return;
     setCategories(prev => prev.filter(c => c.id !== id));
     setItems(prev => prev.filter(item => item.category !== label.toLowerCase()));
-    if (activeSection.id === id) setActiveSection({ type: 'category', id: 'all' });
   };
 
-  const confirmAddPhoto = (closePopupFn) => {
-    if (!draftPhoto.image) return;
-
-    if (isEditing) {
-      setItems(prev => {
-        const newItems = [...prev];
-        newItems[editingIndex] = { ...draftPhoto };
-        return newItems;
-      });
-    } else {
-      setItems(prev => [...prev, { ...draftPhoto, id: Date.now() }]);
-    }
+  const confirmAddPhoto = (items, closePopupFn) => {
+    setItems(prev => {
+      const newItems = [...prev];
+      if (isEditing) {
+        newItems[editingIndex] = items[0];
+      } else {
+        newItems.push(...items);
+      }
+      return newItems;
+    });
 
     if (closePopupFn) closePopupFn();
     setIsModalOpen(false);
@@ -245,9 +157,12 @@ function PortfolioManager() {
     if (isMobile) {
       openPopup(
         <AdminUploadLayout
-          initialImage={item.image}
-          onUploadSuccess={(url) => setDraftPhoto(prev => ({ ...prev, image: url }))}
-          onSave={() => confirmAddPhoto(closePopup)}
+          initialItems={[item]}
+          itemConfigs={[
+            { name: 'title', placeholder: 'Work Title', type: 'text', defaultValue: item.title },
+            { name: 'category', placeholder: 'Select Tag', type: 'select', options: categories.map(c => ({ label: c.label, value: c.label.toLowerCase() })), defaultValue: item.category }
+          ]}
+          onSaveItems={(items) => confirmAddPhoto(items, closePopup)}
           onDiscard={() => {
             closePopup();
             setDraftPhoto({ title: "", category: "nails", image: "" });
@@ -255,24 +170,7 @@ function PortfolioManager() {
             setEditingIndex(null);
           }}
           saveLabel="Save Changes"
-          isSaving={saving}
-        >
-            <InlineCategoryDropdown
-              value={item.category?.charAt(0).toUpperCase() + item.category?.slice(1)}
-              options={categories.map(c => c.label)}
-              onSelect={(cat) => {
-                setDraftPhoto(prev => ({ ...prev, category: cat.toLowerCase() }));
-                const inputEl = document.getElementById('hidden-category-input');
-                if (inputEl) {
-                  const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
-                  nativeInputValueSetter.call(inputEl, cat.toLowerCase());
-                  inputEl.dispatchEvent(new Event('input', { bubbles: true }));
-                }
-              }}
-              placeholder="Select Tag"
-            />
-            <input type="text" name="category" id="hidden-category-input" style={{ display: 'none' }} defaultValue={item.category || 'nails'} />
-        </AdminUploadLayout>,
+        />,
         "Edit Portfolio Item"
       );
     } else {
@@ -283,158 +181,129 @@ function PortfolioManager() {
 
 
   const handleDraftUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
     setIsUploadingDraft(true);
     try {
-      const url = await uploadToImgBB(file);
-      setDraftPhoto(prev => ({ ...prev, image: url }));
+      if (files.length === 1) {
+        const url = await uploadToImgBB(files[0]);
+        setDraftPhoto(prev => ({ ...prev, image: url }));
+      } else {
+        const newPhotos = [];
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          const url = await uploadToImgBB(file);
+          let name = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+          name = name.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+          newPhotos.push({
+            id: Date.now() + i,
+            image: url,
+            title: name,
+            category: draftPhoto.category || "nails"
+          });
+        }
+        setItems(prev => [...prev, ...newPhotos]);
+        setIsModalOpen(false);
+        setDraftPhoto({ title: "", category: "nails", image: "" });
+      }
     } catch (err) {
       console.error("Upload error:", err);
+      alert("Failed to upload one or more images.");
     } finally {
       setIsUploadingDraft(false);
     }
   };
 
 
-  const filteredItems = activeSection.id === 'all'
-    ? items.map((item, index) => ({ ...item, globalIndex: index }))
-    : items.map((item, index) => ({ ...item, globalIndex: index })).filter(item => item.category === activeSection.id);
-
-  const portfolioEditorCanvas = (
-    <div className="hub-form-grid">
-      {isMobile ? (
-        <>
-          <AdminSectionDescription text="Curate your professional gallery and cloud-hosted artwork." />
-          <div style={{ marginBottom: '16px' }}>
-            <AdminAddButton 
-              label="Add New Work"
-              onClick={() => {
-                openPopup(
-                  <AdminUploadLayout
-                    initialImage={null}
-                    onUploadSuccess={(url) => setDraftPhoto(prev => ({ ...prev, image: url }))}
-                    onSave={() => confirmAddPhoto(closePopup)}
-                    onDiscard={() => {
-                      closePopup();
-                      setDraftPhoto({ title: "", category: "nails", image: "" });
-                    }}
-                    saveLabel="Add to Portfolio"
-                    isSaving={saving}
-                  >
-                      <InlineCategoryDropdown
-                        value={draftPhoto.category.charAt(0).toUpperCase() + draftPhoto.category.slice(1)}
-                        options={categories.map(c => c.label)}
-                        onSelect={(cat) => {
-                          setDraftPhoto({ ...draftPhoto, category: cat.toLowerCase() });
-                          const inputEl = document.getElementById('hidden-category-input');
-                          if (inputEl) {
-                            const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
-                            nativeInputValueSetter.call(inputEl, cat.toLowerCase());
-                            inputEl.dispatchEvent(new Event('input', { bubbles: true }));
-                          }
-                        }}
-                        placeholder="Select Tag"
-                      />
-                      <input type="text" name="category" id="hidden-category-input" style={{ display: 'none' }} defaultValue={draftPhoto.category || 'nails'} />
-                  </AdminUploadLayout>,
-                  "Add to Portfolio"
-                );
-              }}
-              style={{ borderRadius: '12px' }}
-            />
-          </div>
-          <div className="amt-2col-grid">
-            {filteredItems.map((item) => (
-              <AdminMediaTile
-                key={item.globalIndex}
-                image={item.image}
-                subtitle={item.category}
-                onEdit={() => handleEditPhoto(item, item.globalIndex)}
-                onDelete={() => handleDeletePhoto(item.globalIndex)}
-              />
-            ))}
-          </div>
-        </>
-      ) : (
-        <div className="editor-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+  const galleryEditorCanvas = (
+    <div style={{ display: 'grid', gap: '32px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px' }}>
           <div>
-            {activeSection.id === 'all' ? (
-              <h2>All Portfolio</h2>
-            ) : (
-              <input 
-                className="hub-editable-title" 
-                style={{ fontSize: '1.4rem', fontWeight: 800, color: '#4a1a26', marginBottom: '4px' }} 
-                value={categories.find(c => c.id === activeSection.id)?.label || ""} 
-                onChange={(e) => updateTagName(activeSection.id, e.target.value)}
-                placeholder="Category Name" 
-              />
-            )}
-            <p>Curate your professional gallery and cloud-hosted artwork.</p>
+            <h2 style={{ fontSize: '1.75rem', fontWeight: 800, margin: 0, color: '#4a1a26' }}>Full Portfolio Gallery</h2>
+            <p style={{ color: '#8E8484', margin: '8px 0 0' }}>Manage gallery tags and portfolio items in one scrollable page.</p>
           </div>
           <AdminAddButton 
             label="Add New Work"
             onClick={() => {
               setIsEditing(false);
-              setDraftPhoto({ title: "", category: activeSection.id === 'all' ? "nails" : activeSection.id, image: "" });
+              setDraftPhoto({ title: '', category: draftPhoto.category || 'nails', image: '' });
               setIsModalOpen(true);
             }}
             style={{ borderRadius: '12px' }}
           />
         </div>
-      )}
+      </div>
 
-      {!isMobile && (
-        <div className="hub-field-grid-desktop">
-          {filteredItems.map((item) => (
-            <div key={item.globalIndex} className="hub-field-card hub-hover-group" style={{ padding: '0', overflow: 'hidden', border: '1.5px solid #F0EFEA' }}>
+      <section style={{ background: '#fff', border: '1px solid #e8e8e8', borderRadius: '16px', padding: '24px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#4a1a26', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Layout size={20} /> Full Portfolio Gallery
+          </h2>
+          <button
+            onClick={addCategoryTag}
+            className="action-btn save"
+            style={{ padding: '10px 18px', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px' }}
+          >
+            <Plus size={16} /> Add Tag
+          </button>
+        </div>
+        <div style={{ display: 'grid', gap: '16px' }}>
+          {categories.map((cat) => (
+            <div key={cat.id} style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '12px', alignItems: 'center', padding: '16px', borderRadius: '12px', background: '#f9f9f9' }}>
+              <div>
+                <input
+                  type="text"
+                  value={cat.label}
+                  onChange={(e) => updateTagName(cat.id, e.target.value)}
+                  placeholder="Category label"
+                  style={{ width: '100%', padding: '12px 14px', borderRadius: '12px', border: '1px solid #e8e8e8', fontSize: '0.95rem', color: '#4a1a26' }}
+                />
+              </div>
+              <button
+                onClick={() => deleteCategoryTag(cat.id, cat.label)}
+                style={{ width: '100%', padding: '12px 14px', borderRadius: '12px', border: '1px solid #e8998e', background: 'transparent', color: '#e8998e', cursor: 'pointer', fontWeight: 700 }}
+              >
+                Delete
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section style={{ display: 'grid', gap: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px' }}>
+          <div>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0, color: '#4a1a26' }}>Portfolio Items</h3>
+            <p style={{ margin: '8px 0 0', color: '#8E8484' }}>All portfolio work is visible here. Edit or delete items directly.</p>
+          </div>
+          <span style={{ fontSize: '0.95rem', color: '#8E8484' }}>{items.length} item{items.length === 1 ? '' : 's'}</span>
+        </div>
+        <div className={isMobile ? 'amt-2col-grid' : 'hub-field-grid-desktop'}>
+          {items.map((item, index) => (
+            <div key={index} className={isMobile ? '' : 'hub-field-card hub-hover-group'} style={{ padding: 0, overflow: 'hidden', border: '1.5px solid #F0EFEA', borderRadius: '16px', background: '#fff' }}>
               <div className="item-preview" style={{ position: 'relative', width: '100%', aspectRatio: '1/1', background: '#f5f5f5' }}>
-                <img src={item.image} alt="Work" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <img src={item.image} alt={item.title || 'Work'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 <div className="reveal-on-hover" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(74, 26, 38, 0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', backdropFilter: 'blur(2px)', zIndex: 90 }}>
-                  <button onClick={(e) => { e.stopPropagation(); handleEditPhoto(item, item.globalIndex); }} style={{ width: '42px', height: '42px', borderRadius: '14px', background: '#fff', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4a1a26', cursor: 'pointer', zIndex: 99, position: 'relative' }}><Edit3 size={18} /></button>
-
-                  <button onClick={(e) => { e.stopPropagation(); handleDeletePhoto(item.globalIndex); }} style={{ width: '42px', height: '42px', borderRadius: '14px', background: '#fff', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#e53935', cursor: 'pointer', zIndex: 99, position: 'relative' }}><Trash2 size={18} /></button>
+                  <button onClick={(e) => { e.stopPropagation(); handleEditPhoto(item, index); }} style={{ width: '42px', height: '42px', borderRadius: '14px', background: '#fff', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4a1a26', cursor: 'pointer', zIndex: 99, position: 'relative' }}><Edit3 size={18} /></button>
+                  <button onClick={(e) => { e.stopPropagation(); handleDeletePhoto(index); }} style={{ width: '42px', height: '42px', borderRadius: '14px', background: '#fff', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#e53935', cursor: 'pointer', zIndex: 99, position: 'relative' }}><Trash2 size={18} /></button>
                 </div>
               </div>
 
               <div style={{ padding: '20px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     <span style={{ fontWeight: 800, fontSize: '1rem', color: '#4a1a26' }}>{item.title || 'Untitled'}</span>
                     <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#8E8484', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{item.category}</span>
                   </div>
-                  <ChevronRight size={16} color="#E0DCD0" />
                 </div>
               </div>
             </div>
           ))}
         </div>
-      )}
+      </section>
     </div>
   );
-
-  const portfolioSections = [
-    {
-      id: 'all',
-      label: 'All Portfolio',
-      icon: <Layout size={20} />,
-      component: portfolioEditorCanvas
-    },
-    {
-      id: 'categories',
-      label: 'Gallery Tags',
-      icon: <ImageIcon size={20} />,
-      onAdd: addCategoryTag,
-      children: categories.map(cat => ({
-        id: cat.id,
-        label: cat.label,
-        isNew: cat.isNew,
-        onRename: (newName) => updateTagName(cat.id, newName),
-        onDelete: () => deleteCategoryTag(cat.id, cat.label),
-        component: portfolioEditorCanvas
-      }))
-    }
-  ];
 
   const hasChanges = JSON.stringify(items) !== JSON.stringify(originalItems) || 
                      JSON.stringify(categories) !== JSON.stringify(originalCategories);
@@ -469,138 +338,34 @@ function PortfolioManager() {
         </div>
       </div>
 
-      {/* ── Desktop Layout ── */}
-      {!isMobile && (
-        <div className="hub-main-layout">
-          {/* ── Sidebar ── */}
-          <aside className="hub-sidebar" style={{ gap: '24px' }}>
-            {hasChanges && (
-              <HubActionPill 
-                onSave={saveGallery} 
-                onDiscard={handleDiscardAll} 
-                isSaving={saving} 
-              />
-            )}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#8E8484', textTransform: 'uppercase', letterSpacing: '0.05em', marginLeft: '12px', marginBottom: '4px' }}>Gallery Categories</span>
-              <StudioDropdown
-                label="Portfolio Filter"
-                value={activeSection.id === 'all' ? 'All' : categories.find(c => c.id === activeSection.id)?.label}
-                options={['All', ...categories.map(c => c.label)]}
-                icon={Layout}
-                onSelect={(catLabel) => {
-                  if (catLabel === 'All') setActiveSection({ type: 'category', id: 'all' });
-                  else {
-                    const cat = categories.find(c => c.label === catLabel);
-                    setActiveSection({ type: 'category', id: cat.id });
-                  }
-                }}
-                onAdd={addCategoryTag}
-                mode="accordion"
-              />
-            </div>
-          </aside>
-
-          {/* ── Editor Canvas ── */}
-          <main className="hub-editor-card">
-            {portfolioEditorCanvas}
-          </main>
-        </div>
-      )}
-
-      {/* ── Mobile Layout ── */}
-      <AdminMobileLayoutWithDropdown
-        sections={portfolioSections}
-        activeSectionId={activeSection.id}
-        onSectionChange={(id) => {
-          if (id === 'all') setActiveSection({ type: 'category', id: 'all' });
-          else if (id && id !== 'categories') setActiveSection({ type: 'category', id });
-        }}
-        onSave={saveGallery}
-        onDiscard={handleDiscardAll}
-        isSaving={saving}
-        hasChanges={hasChanges}
-      />
+      <div style={{ padding: '24px', maxWidth: '1200px', width: '100%', margin: '0 auto' }}>
+        {hasChanges && (
+          <div style={{ marginBottom: '24px' }}>
+            <HubActionPill
+              onSave={saveGallery}
+              onDiscard={handleDiscardAll}
+              isSaving={saving}
+              saveLabel="Save Changes"
+            />
+          </div>
+        )}
+        {galleryEditorCanvas}
+      </div>
 
       {/* ── Studio Upload Modal ── */}
       {isModalOpen && !isMobile && (
         <div className="teaser-modal-overlay">
-          <div className="teaser-modal-content" style={{ maxWidth: '900px', padding: '40px' }}>
-            <div style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <h2 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#4a1a26', margin: 0 }}>{isEditing ? 'Edit Project' : 'Add New Work'}</h2>
-                <p style={{ color: '#8E8484', marginTop: '4px', fontWeight: 500 }}>{isEditing ? 'Update your portfolio details and cloud-hosted artwork.' : 'Upload your latest artwork to your live gallery.'}</p>
-              </div>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                style={{ width: '44px', height: '44px', borderRadius: '50%', background: '#F9F7F2', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#4a1a26' }}
-              >
-                <X size={20} />
-              </button>
-            </div>
-            <div className="teaser-modal-grid">
-              {/* Left: Square Symmetry Preview */}
-              <div className="teaser-image-section">
-                {draftPhoto.image ? (
-                  <div style={{ width: '100%', aspectRatio: '1/1', position: 'relative', borderRadius: '16px', overflow: 'hidden' }}>
-                    <img src={draftPhoto.image} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    <label style={{ position: 'absolute', bottom: '12px', right: '12px', background: 'rgba(255,255,255,0.9)', padding: '8px 16px', borderRadius: '100px', fontSize: '0.8rem', fontWeight: 700, color: '#4a1a26', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', backdropFilter: 'blur(4px)', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-                      <input type="file" className="hidden" onChange={handleDraftUpload} accept="image/*" />
-                      <UploadCloud size={14} />
-                      <span>{isEditing ? 'Exchange Image' : 'Change Image'}</span>
-                    </label>
-                  </div>
-                ) : (
-                  <label className="teaser-upload-placeholder" style={{ aspectRatio: '1/1' }}>
-                    <input type="file" className="hidden" onChange={handleDraftUpload} accept="image/*" />
-                    {isUploadingDraft ? <Loader2 className="animate-spin" size={32} /> : <UploadCloud size={32} />}
-                    <span style={{ marginTop: '12px', fontWeight: 600 }}>Select Work</span>
-                  </label>
-                )}
-              </div>
-
-              {/* Right: High-Density Details */}
-              <div className="teaser-form-section" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                  <input
-                    className="hub-input"
-                    placeholder="Work Title (e.g. Artistic French...)"
-                    value={draftPhoto.title}
-                    onChange={(e) => setDraftPhoto(prev => ({ ...prev, title: e.target.value }))}
-                    style={{ fontSize: '1.1rem', fontWeight: 700 }}
-                  />
-
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <div className="input-field">
-                      <label className="field-label"><span>Gallery Tag</span></label>
-                      <StudioDropdown
-                        value={draftPhoto.category.charAt(0).toUpperCase() + draftPhoto.category.slice(1)}
-                        options={categories.map(c => c.label)}
-                        onSelect={(catLabel) => {
-                          const cat = categories.find(c => c.label === catLabel);
-                          setDraftPhoto({ ...draftPhoto, category: cat.label.toLowerCase() });
-                        }}
-                        placeholder="Select Tag"
-                        mode="menu"
-                        allowSearch={false}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Command Pill */}
-                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '40px' }}>
-                  <div className="hub-action-pill" style={{ background: '#4a1a26', padding: '6px' }}>
-                    <button className="action-pill-btn" onClick={() => setIsModalOpen(false)} style={{ borderRight: '1px solid rgba(255,255,255,0.1)' }}>
-                      <X size={20} color="#fff" />
-                    </button>
-                    <button className="action-pill-btn" onClick={confirmAddPhoto} disabled={uploading}>
-                      {uploading ? <Loader2 className="animate-spin" size={20} color="#fff" /> : <Save size={20} color="#fff" />}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div className="teaser-modal-content" style={{ maxWidth: '600px', padding: '0', background: 'transparent', boxShadow: 'none' }}>
+            <AdminUploadLayout
+                initialItems={isEditing ? [draftPhoto] : []}
+                itemConfigs={[
+                  { name: 'title', placeholder: 'Work Title', type: 'text', defaultValue: draftPhoto.title },
+                  { name: 'category', placeholder: 'Select Tag', type: 'select', options: categories.map(c => ({ label: c.label, value: c.label.toLowerCase() })), defaultValue: draftPhoto.category }
+                ]}
+                onSaveItems={(items) => confirmAddPhoto(items)}
+                onDiscard={() => setIsModalOpen(false)}
+                saveLabel={isEditing ? "Update Project" : "Add to Portfolio"}
+             />
           </div>
         </div>
       )}

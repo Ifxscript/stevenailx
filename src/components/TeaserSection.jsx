@@ -1,8 +1,6 @@
-import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Card from './Card';
-import { useHorizontalScroll } from '../hooks/useHorizontalScroll';
 
 const titleVariants = {
   hidden: { opacity: 0 },
@@ -26,12 +24,8 @@ const cardVariants = {
 };
 
 function TeaserSection({ id, title, data, footerLink, footerText, onSeeMore, type = 'service' }) {
-  const sectionRef = useRef(null);
-  const gridRef = useRef(null);
-  useHorizontalScroll(sectionRef, gridRef);
-
   return (
-    <section id={id} className={`services-teaser ${id}-teaser`} ref={sectionRef}>
+    <section id={id} className={`services-teaser ${id}-teaser`}>
       <motion.div 
         className="services-teaser-caption"
         variants={titleVariants}
@@ -42,7 +36,7 @@ function TeaserSection({ id, title, data, footerLink, footerText, onSeeMore, typ
         <p className="section-heading">{title}</p>
       </motion.div>
 
-      <div className="services-cards-grid" ref={gridRef}>
+      <div className="services-cards-grid">
         {(data || []).map((item, index) => (
           <Card 
             key={item.id} 

@@ -3,33 +3,55 @@ import { subscribeLiveData } from '../lib/dbUtils';
 
 const LandingPageContext = createContext();
 
+const CACHE_KEY = 'snx_landing_v1';
+const DEFAULT_DATA = {
+  brand: {},
+  hero: { slides: [] },
+  services: { items: [], otherItems: [] },
+  gallery: { items: [] },
+  about: { hours: [] },
+  footer: { navColumns: [] }
+};
+
+const readCache = () => {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) { return null; }
+};
+
+const writeCache = (patch) => {
+  try {
+    const existing = readCache() || {};
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ ...existing, ...patch }));
+  } catch (e) {}
+};
+
 export const LandingPageProvider = ({ children }) => {
-  const [data, setData] = useState({
-    brand: {},
-    hero: { slides: [] },
-    services: { items: [], otherItems: [] },
-    gallery: { items: [] },
-    about: { hours: [] },
-    footer: { navColumns: [] }
+  // Lazy initialisers — run once on mount, read from localStorage synchronously
+  // so the very first render already has data if the user has visited before
+  const [data, setData] = useState(() => {
+    const cache = readCache();
+    return cache?.pageData || DEFAULT_DATA;
   });
-  const [allReviews, setAllReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [allReviews, setAllReviews] = useState(() => readCache()?.reviews || []);
+  // No skeleton if we already have cached content
+  const [loading, setLoading] = useState(() => !readCache());
 
   useEffect(() => {
-    // Real-time multi-collection listener
+    // Real-time listener — updates silently in the background when cache exists
     const unsubscribe = subscribeLiveData((liveData) => {
       if (!liveData) return;
 
       if (liveData.type === 'content') {
-        setData(prev => ({
-          ...prev,
-          ...liveData.content,
-          servicesCatalog: liveData.catalog
-        }));
+        const pageData = { ...liveData.content, servicesCatalog: liveData.catalog };
+        setData(prev => ({ ...prev, ...pageData }));
+        writeCache({ pageData });
       } else if (liveData.type === 'reviews') {
         setAllReviews(liveData.reviews);
+        writeCache({ reviews: liveData.reviews });
       }
-      
+
       setLoading(false);
     });
 
@@ -83,6 +105,9 @@ export const LandingPageProvider = ({ children }) => {
   const value = {
     ...data,
     totalServicesCount,
+    studio: {
+      photos: data?.studio?.photos || []
+    },
     services: {
       title: data?.services?.title || "Trending nail art",
       subtitle: data?.services?.subtitle || "Other services",

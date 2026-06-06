@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import ServicesPage from './pages/ServicesPage';
@@ -8,13 +9,14 @@ import { LandingPageProvider } from './context/LandingPageContext';
 import { AuthProvider } from './context/AuthContext';
 import { BookingProvider } from './context/BookingContext';
 import BookingDrawer from './components/booking/BookingDrawer';
-import LoginPage from './pages/admin/LoginPage';
-import AdminDashboard from './pages/admin/AdminDashboard';
-import ProtectedRoute from './components/admin/ProtectedRoute';
 import BlogPage from './pages/BlogPage';
 import BlogPostPage from './pages/BlogPostPage';
-import BlogEditorPage from './pages/BlogEditorPage';
+import ProtectedRoute from './components/admin/ProtectedRoute';
 import ProtectedBlogRoute from './components/blog/ProtectedBlogRoute';
+
+const LoginPage     = lazy(() => import('./pages/admin/LoginPage'));
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
+const BlogEditorPage = lazy(() => import('./pages/BlogEditorPage'));
 
 function App() {
   return (
@@ -36,15 +38,23 @@ function App() {
                 {/* Blog Editor Portal Route */}
                 <Route path="/blog-editor" element={
                   <ProtectedBlogRoute>
-                    <BlogEditorPage />
+                    <Suspense fallback={null}>
+                      <BlogEditorPage />
+                    </Suspense>
                   </ProtectedBlogRoute>
                 } />
-                
+
                 {/* Admin Dashboard Routes */}
-                <Route path="/admin/login" element={<LoginPage />} />
+                <Route path="/admin/login" element={
+                  <Suspense fallback={null}>
+                    <LoginPage />
+                  </Suspense>
+                } />
                 <Route path="/admin/*" element={
                   <ProtectedRoute>
-                    <AdminDashboard />
+                    <Suspense fallback={null}>
+                      <AdminDashboard />
+                    </Suspense>
                   </ProtectedRoute>
                 } />
               </Routes>

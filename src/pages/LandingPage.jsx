@@ -13,10 +13,10 @@ import MobileStickyBar from '../components/MobileStickyBar';
 import ServiceCatalogModal from '../components/ServiceCatalogModal';
 import PortfolioModal from '../components/PortfolioModal';
 import { useLandingPage } from '../context/LandingPageContext';
-import { nailServices, salonServices } from '../data/servicesCatalog';
+
 
 const LandingPage = () => {
-  const { services, gallery } = useLandingPage();
+  const { services, gallery, servicesCatalog } = useLandingPage();
   const [isNailCatalogOpen, setIsNailCatalogOpen] = useState(false);
   const [isSalonCatalogOpen, setIsSalonCatalogOpen] = useState(false);
   const [isPortfolioOpen, setIsPortfolioOpen] = useState(false);
@@ -100,13 +100,13 @@ const LandingPage = () => {
       <ServiceCatalogModal 
         isOpen={isNailCatalogOpen} 
         onClose={() => setIsNailCatalogOpen(false)} 
-        catalog={nailServices}
+        catalog={servicesCatalog?.nails}
       />
 
       <ServiceCatalogModal 
         isOpen={isSalonCatalogOpen} 
         onClose={() => setIsSalonCatalogOpen(false)} 
-        catalog={salonServices}
+        catalog={servicesCatalog?.salon}
       />
 
       <PortfolioModal 

@@ -5,7 +5,6 @@ import { Loader2, Star, Trash2, Plus, CheckCircle2, XCircle, Save, RefreshCcw, S
 import AdminMobileLayout from './AdminMobileLayout';
 import HubActionPill from './HubActionPill';
 import AdminAddButton from './AdminAddButton';
-import AdminSectionDescription from './AdminSectionDescription';
 import { useMobile } from '../../hooks/useMobile';
 
 // ── Sub-Component for the Review List ──
@@ -14,9 +13,6 @@ function ReviewList({ list, activeSectionId, isMobile, onAdd, onToggleStatus, on
     <div className="hub-form-grid">
       {isMobile ? (
         <>
-          <div style={{ marginBottom: '12px' }}>
-            <AdminSectionDescription text="Curate your best client stories and approve new verified feedback." />
-          </div>
           <div style={{ marginBottom: '16px' }}>
             <AdminAddButton label="Add Legacy" onClick={() => onAdd(props)} />
           </div>

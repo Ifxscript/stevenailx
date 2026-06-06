@@ -1,25 +1,29 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Maximize2 } from 'lucide-react';
 import './PortfolioModal.css';
-
-const categories = [
-  { id: 'all', label: 'All Work' },
-  { id: 'nails', label: 'Nails' },
-  { id: 'lashes', label: 'Lashes' },
-  { id: 'art', label: 'Nail Art' },
-  { id: 'hair', label: 'Hair' },
-  { id: 'makeup', label: 'Makeup' },
-];
 
 function PortfolioModal({ isOpen, onClose, images }) {
   const [activeTab, setActiveTab] = useState('all');
   const [selectedImage, setSelectedImage] = useState(null);
 
-  // Filter images based on tab
-  const filteredImages = activeTab === 'all' 
-    ? images 
-    : images.filter(img => img.category === activeTab);
+  // Derive tabs dynamically from actual image data so they always match what's in Firestore
+  const categories = useMemo(() => {
+    const seen = new Set();
+    const unique = [];
+    (images || []).forEach(img => {
+      if (img.category) {
+        const key = img.category.toLowerCase();
+        if (!seen.has(key)) { seen.add(key); unique.push(img.category); }
+      }
+    });
+    return [{ id: 'all', label: 'All Work' }, ...unique.map(cat => ({ id: cat.toLowerCase(), label: cat }))];
+  }, [images]);
+
+  // Case-insensitive filter so "Lashes" and "lashes" both match the 'lashes' tab
+  const filteredImages = activeTab === 'all'
+    ? images
+    : (images || []).filter(img => (img.category || '').toLowerCase() === activeTab);
 
   useEffect(() => {
     if (isOpen) {

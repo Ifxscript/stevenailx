@@ -223,3 +223,103 @@
   font-weight: 700;
   color: #2a1a1a;
 }
+
+/* Multiple Upload Layout */
+.aul-multi-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 4px;
+  margin-bottom: 8px;
+}
+
+.aul-multi-item {
+  display: flex;
+  gap: 14px;
+  background: #fdfcfb;
+  border: 1px solid #f0eeea;
+  border-radius: 16px;
+  padding: 12px;
+  position: relative;
+}
+
+.aul-multi-thumb-wrap {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.aul-multi-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.aul-multi-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.aul-multi-field {
+  background: #f5f3ef;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  color: #2a1a1a;
+  width: 100%;
+  outline: none;
+  font-family: inherit;
+}
+
+.aul-multi-textarea {
+  resize: none;
+  height: 50px;
+  font-family: inherit;
+}
+
+.aul-multi-remove-btn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #ff5f5f;
+  color: #fff;
+  border: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  font-size: 0.75rem;
+}
+
+.aul-multi-add-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #f5f3ef;
+  border: 2px dashed #d0c8c0;
+  border-radius: 14px;
+  padding: 14px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #4a3e3e;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.aul-multi-add-more:hover {
+  background: #edeae4;
+  border-color: #a89e95;
+}

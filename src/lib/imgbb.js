@@ -20,5 +20,7 @@ export const uploadToImgBB = async (file) => {
   const result = await response.json();
   if (!result.success) throw new Error("ImgBB upload failed");
 
-  return result.data.url;
+  // Use medium (compressed) URL when ImgBB generates one — significantly smaller
+  // file size for mobile users. Falls back to original if medium isn't generated.
+  return result.data.medium?.url || result.data.url;
 };

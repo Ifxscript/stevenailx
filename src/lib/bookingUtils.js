@@ -32,7 +32,7 @@ export const getBookedSlots = async (dateStr) => {
     const q = query(
       collection(db, 'bookings'),
       where('date', '==', dateStr),
-      where('status', 'in', ['confirmed', 'rescheduled'])
+      where('status', 'in', ['confirmed', 'pending', 'rescheduled'])
     );
     const snapshot = await getDocs(q);
     const booked = [];

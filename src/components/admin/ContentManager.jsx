@@ -9,73 +9,24 @@ import {
   MapPin, Globe, Link as LinkIcon, UploadCloud, Layout, Trash, X,
   AlertTriangle, CheckCircle2
 } from 'lucide-react';
-import AdminMobileLayout from './AdminMobileLayout';
 import HubActionPill from './HubActionPill';
 import AdminMediaTile from './AdminMediaTile';
 import AdminUploadLayout from './AdminUploadLayout';
 import AdminAddButton from './AdminAddButton';
-import AdminSectionDescription from './AdminSectionDescription';
 
-// ── Layer 3: Hero Slide Form ──
-function SlideForm({ draftSlide, setDraftSlide, isUploadingDraft, handleDraftImageUpload, onConfirm, closePopup, isMobile }) {
-  if (isMobile) {
-    return (
-      <AdminUploadLayout 
-        initialImage={draftSlide.src}
-        onUploadSuccess={(url) => setDraftSlide({...draftSlide, src: url})}
-        onSave={onConfirm}
-        onDiscard={closePopup}
-        canSave={!!draftSlide.heading && !!draftSlide.src}
-      >
-        <input 
-          className="aul-field" 
-          placeholder="Slide Heading" 
-          value={draftSlide.heading} 
-          onChange={(e) => setDraftSlide({...draftSlide, heading: e.target.value})} 
-        />
-        <textarea 
-          className="aul-field" 
-          placeholder="Support text or description..." 
-          value={draftSlide.subheading} 
-          onChange={(e) => setDraftSlide({...draftSlide, subheading: e.target.value})} 
-          rows={2} 
-        />
-      </AdminUploadLayout>
-    );
-  }
-
+function SlideForm({ initialItems, onConfirm, closePopup, isMobile, isEditing }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      <div style={{ marginBottom: '8px' }}>
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#4a1a26', margin: 0 }}>New Visual Slide</h2>
-        <p style={{ color: '#8E8484', marginTop: '4px', fontWeight: 500 }}>Upload a high-quality landscape photo.</p>
-      </div>
-
-      <div className="slide-image-preview-hub" style={{ height: '160px', borderRadius: '20px', overflow: 'hidden', position: 'relative', backgroundColor: '#f9f7f2' }}>
-        {draftSlide.src ? (
-          <img src={draftSlide.src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-        ) : (
-          <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#ccc', gap: '8px' }}>
-            <ImageIcon size={32} />
-            <span style={{ fontSize: '0.7rem', fontWeight: 700 }}>16:9 RATIO RECOMMENDED</span>
-          </div>
-        )}
-        <label className="upload-pill" style={{ bottom: '12px', right: '12px', left: 'auto', transform: 'none' }}>
-          {isUploadingDraft ? <Loader2 className="animate-spin" size={14} /> : <UploadCloud size={14} />}
-          <span>{draftSlide.src ? 'Replace' : 'Upload'}</span>
-          <input type="file" className="hidden" accept="image/*" onChange={handleDraftImageUpload} />
-        </label>
-      </div>
-
-      <div className="aul-details-section">
-        <input className="aul-field" placeholder="Main Heading" value={draftSlide.heading} onChange={(e) => setDraftSlide({...draftSlide, heading: e.target.value})} />
-        <textarea className="aul-field" placeholder="Supporting text..." value={draftSlide.subheading} onChange={(e) => setDraftSlide({...draftSlide, subheading: e.target.value})} rows={2} />
-      </div>
-
-      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '8px' }}>
-        <button className="action-btn discard" onClick={closePopup}>Cancel</button>
-        <button className="action-btn save" onClick={onConfirm} disabled={!draftSlide.heading || !draftSlide.src || isUploadingDraft}>Add Slide</button>
-      </div>
+    <div className={isMobile ? "" : "teaser-modal-content"} style={isMobile ? {} : { maxWidth: '600px', padding: '0', background: 'transparent', boxShadow: 'none' }}>
+      <AdminUploadLayout 
+        initialItems={initialItems}
+        itemConfigs={[
+          { name: 'heading', placeholder: 'Slide Heading', type: 'text', defaultValue: initialItems[0]?.heading },
+          { name: 'subheading', placeholder: 'Support text...', type: 'textarea', defaultValue: initialItems[0]?.subheading }
+        ]}
+        onSaveItems={onConfirm}
+        onDiscard={closePopup}
+        saveLabel={isEditing ? "Update Slide" : "Add Slide"}
+      />
     </div>
   );
 }
@@ -124,7 +75,6 @@ function HeroSection({ isMobile, data, updateField, updateSlide, uploadingSlide,
     <div className="hub-form-grid">
       {isMobile ? (
         <>
-          <AdminSectionDescription text="Manage landing page visual sliders and auto-rotation." />
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <div style={{ fontWeight: 700, color: '#4a1a26', fontSize: '0.9rem' }}>Auto-Rotation</div>
@@ -163,14 +113,16 @@ function HeroSection({ isMobile, data, updateField, updateSlide, uploadingSlide,
               subtitle={slide.subheading}
               status="live"
               onEdit={() => {
-                setDraftSlide(slide);
                 openPopup(<SlideForm 
                   isMobile={isMobile}
-                  draftSlide={slide} 
-                  setDraftSlide={(updated) => updateSlide(idx, 'heading', updated.heading)} 
-                  isUploadingDraft={isUploadingDraft} 
-                  handleDraftImageUpload={(e) => handleSlideImageUpload(e, idx)}
-                  onConfirm={closePopup}
+                  initialItems={[slide]} 
+                  isEditing={true}
+                  onConfirm={(items) => {
+                    updateSlide(idx, 'heading', items[0].heading);
+                    updateSlide(idx, 'subheading', items[0].subheading);
+                    if (items[0].image) updateSlide(idx, 'src', items[0].image);
+                    closePopup();
+                  }}
                   closePopup={closePopup} 
                 />);
               }}
@@ -243,9 +195,9 @@ function ContentManager() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadingSlide, setUploadingSlide] = useState(null);
-  const [activeSectionId, setActiveSectionId] = useState('hero');
   const [isUploadingDraft, setIsUploadingDraft] = useState(false);
   const [draftSlide, setDraftSlide] = useState({ heading: "", subheading: "", src: "" });
+  const [popup, setPopup] = useState({ isOpen: false, content: null });
 
   useEffect(() => { fetchContent(); }, []);
 
@@ -323,12 +275,12 @@ function ContentManager() {
     }
   };
 
-  const confirmAddSlide = (closePopup) => {
+  const confirmAddSlide = (items, closePopup) => {
     setData(prev => ({
       ...prev,
       hero: {
         ...prev.hero,
-        slides: [...(prev.hero?.slides || []), { ...draftSlide, id: `slide-${Date.now()}` }]
+        slides: [...(prev.hero?.slides || []), ...items.map(i => ({ ...i, src: i.image }))]
       }
     }));
     closePopup();
@@ -375,14 +327,24 @@ function ContentManager() {
     });
   };
 
-  const sections = [
-    { 
-      id: 'hero', 
-      label: 'Hero Slider', 
-      description: 'Manage landing page visual sliders',
-      icon: <Home size={20} />, 
-      status: `${data?.hero?.slides?.length || 0} Slides`,
-      component: (
+  const openPopup = (content) => setPopup({ isOpen: true, content });
+  const closePopup = () => setPopup({ isOpen: false, content: null });
+
+  if (loading || !data) {
+    return (
+      <div style={{ textAlign: 'center', padding: '40px', opacity: 0.6 }}>
+        <Loader2 className="animate-spin" size={40} color="#4a1a26" style={{ margin: '0 auto 16px' }} />
+        <p style={{ color: '#8E8484', fontWeight: 600 }}>Loading Site Content...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ position: 'relative' }}>
+      {/* Hero Slider */}
+      <div style={{ marginBottom: '48px' }}>
+        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '12px', color: '#4a1a26' }}>Hero Slider</h3>
+        <p style={{ fontSize: '0.9rem', color: '#8E8484', marginBottom: '24px' }}>Manage landing page visual sliders and auto-rotation.</p>
         <HeroSection 
           isMobile={isMobile}
           data={data} 
@@ -392,23 +354,21 @@ function ContentManager() {
           handleSlideImageUpload={handleSlideImageUpload}
           setDraftSlide={setDraftSlide}
           isUploadingDraft={isUploadingDraft}
+          openPopup={openPopup}
+          closePopup={closePopup}
           onAddSlide={(props) => {
-            setDraftSlide({ heading: "", subheading: "", src: "" });
-            props.openPopup(<SlideForm {...props} isMobile={isMobile} draftSlide={draftSlide} setDraftSlide={setDraftSlide} isUploadingDraft={isUploadingDraft} handleDraftImageUpload={handleDraftImageUpload} onConfirm={() => confirmAddSlide(props.closePopup)} />);
+            openPopup(<SlideForm {...props} isMobile={isMobile} initialItems={[]} isEditing={false} onConfirm={(items) => confirmAddSlide(items, closePopup)} />);
           }}
           onDeleteSlide={(slide, props) => {
-             props.openPopup(<DeleteConfirm title="Delete Slide?" message={`Remove the slide "${slide.heading}" permanently?`} onConfirm={() => deleteSlide(slide.id)} closePopup={props.closePopup} />);
+            openPopup(<DeleteConfirm title="Delete Slide?" message={`Remove the slide "${slide.heading}" permanently?`} onConfirm={() => deleteSlide(slide.id)} closePopup={closePopup} />);
           }}
         />
-      )
-    },
-    { 
-      id: 'brand', 
-      label: 'Brand & Story', 
-      description: 'Define your studio identity',
-      icon: <Info size={20} />, 
-      status: data?.brand?.name ? 'Active' : 'Missing',
-      component: (
+      </div>
+
+      {/* Brand & Story */}
+      <div style={{ marginBottom: '48px' }}>
+        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '12px', color: '#4a1a26' }}>Brand & Story</h3>
+        <p style={{ fontSize: '0.9rem', color: '#8E8484', marginBottom: '24px' }}>Define your studio identity and brand messaging.</p>
         <div className="hub-form-grid">
           <div className="hub-field-card">
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '24px' }}>
@@ -431,15 +391,12 @@ function ContentManager() {
             </div>
           </div>
         </div>
-      )
-    },
-    { 
-      id: 'about', 
-      label: 'About & Hours', 
-      description: 'Update location and timings',
-      icon: <Clock size={20} />, 
-      status: 'Synced',
-      component: (
+      </div>
+
+      {/* About & Hours */}
+      <div style={{ marginBottom: '48px' }}>
+        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '12px', color: '#4a1a26' }}>About & Hours</h3>
+        <p style={{ fontSize: '0.9rem', color: '#8E8484', marginBottom: '24px' }}>Update location, description, and operating hours.</p>
         <div className="hub-form-grid">
           <div className="hub-field-card" style={{ marginBottom: '24px' }}>
             <div className="input-field" style={{ marginBottom: '24px' }}>
@@ -458,7 +415,7 @@ function ContentManager() {
             </div>
           </div>
           <div className="hub-field-card">
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '20px', color: '#4a1a26' }}>Opening Hours</h3>
+            <h4 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '20px', color: '#4a1a26' }}>Opening Hours</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {(data?.about?.hours || []).map((day, idx) => (
                 <div key={idx} className="hour-row" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', borderBottom: '1px solid #f0f0f0' }}>
@@ -476,48 +433,31 @@ function ContentManager() {
             </div>
           </div>
         </div>
-      )
-    },
-    { 
-      id: 'footer', 
-      label: 'Footer & Links', 
-      description: 'Manage site footer mapping',
-      icon: <Globe size={20} />, 
-      status: `${data?.footer?.navColumns?.reduce((acc, col) => acc + col.links.length, 0) || 0} Links`,
-      component: (
+      </div>
+
+      {/* Footer & Links */}
+      <div style={{ marginBottom: '48px' }}>
+        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '12px', color: '#4a1a26' }}>Footer & Links</h3>
+        <p style={{ fontSize: '0.9rem', color: '#8E8484', marginBottom: '24px' }}>Manage site footer navigation and external links.</p>
         <FooterSection 
           data={data} 
           updateField={updateField} 
           updateFooterLink={updateFooterLink} 
           addFooterLink={addFooterLink} 
           deleteFooterLink={deleteFooterLink} 
+          openPopup={openPopup}
+          closePopup={closePopup}
         />
-      )
-    }
-  ];
-
-  if (loading || !data) {
-    return (
-      <div className="manager-container" style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <Loader2 className="animate-spin" size={40} color="#4a1a26" />
-        <p style={{ marginTop: 16, color: '#8E8484', fontWeight: 600 }}>Loading Site Content...</p>
       </div>
-    );
-  }
 
-  return (
-    <div className="manager-container">
-      <AdminMobileLayout 
-        title="Site Content"
-        description="Curate your professional presence and landing page sections."
-        sections={sections}
-        activeSectionId={activeSectionId}
-        onSectionChange={setActiveSectionId}
-        onSave={handleSave}
-        onDiscard={fetchContent}
-        isSaving={saving}
-        hasChanges={true}
-      />
+      {/* Popup Modal */}
+      {popup.isOpen && (
+        <div className={`hub-popup-overlay ${popup.isOpen ? 'open' : ''}`} onClick={closePopup}>
+          <div className="hub-popup-card" onClick={e => e.stopPropagation()}>
+            {popup.content}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

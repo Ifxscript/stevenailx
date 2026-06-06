@@ -1,7 +1,7 @@
 import { useBooking } from '../../context/BookingContext';
 import { useAuth } from '../../context/AuthContext';
 import { formatWhatsAppForSteve, formatDisplayDate, formatDisplayTime } from '../../lib/bookingUtils';
-import { Check, MessageCircle, CalendarCheck } from 'lucide-react';
+import { Clock, MessageCircle, CalendarCheck } from 'lucide-react';
 
 function BookingConfirmation() {
   const { bookingData, closeBookingDrawer } = useBooking();
@@ -21,13 +21,13 @@ function BookingConfirmation() {
     <div className="step-container confirmation-step">
       <div className="confirmation-icon">
         <div className="check-circle-anim">
-          <Check size={40} strokeWidth={3} />
+          <Clock size={40} strokeWidth={2.5} />
         </div>
       </div>
 
-      <h3 className="confirmation-title">Booking Confirmed!</h3>
+      <h3 className="confirmation-title">Request Sent!</h3>
       <p className="confirmation-subtitle">
-        Your appointment has been saved. Steve will see it in his dashboard.
+        Your booking request is awaiting Steve's approval. You'll be notified once it's confirmed.
       </p>
 
       <div className="confirmation-card">
@@ -51,10 +51,10 @@ function BookingConfirmation() {
         </div>
       </div>
 
-      {/* WhatsApp CTA */}
+      {/* WhatsApp CTA — lets client nudge Steve directly */}
       <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="whatsapp-cta">
         <MessageCircle size={20} />
-        <span>Send Booking to Steve on WhatsApp</span>
+        <span>Message Steve on WhatsApp</span>
       </a>
 
       <button className="view-bookings-btn" onClick={handleViewBookings}>

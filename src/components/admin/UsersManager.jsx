@@ -5,7 +5,6 @@ import {
   Loader2, Search, Calendar, ChevronRight, X, User, Phone, Mail, Clock, CalendarCheck, Filter
 } from 'lucide-react';
 import AdminMobileLayout from './AdminMobileLayout';
-import AdminSectionDescription from './AdminSectionDescription';
 import { useMobile } from '../../hooks/useMobile';
 import { formatDisplayDate, formatDisplayTime } from '../../lib/bookingUtils';
 import './UsersManager.css';
@@ -114,8 +113,7 @@ function UsersList({ users, isMobile, openPopup, closePopup, isLoading }) {
   return (
     <div className="users-manager-content">
       <div className="users-controls">
-        {isMobile && <AdminSectionDescription text="Manage signed-up users and view their complete booking history." />}
-        
+          
         {!isMobile && (
           <div className="editor-header" style={{ marginBottom: '20px' }}>
             <h2>Users Directory</h2>

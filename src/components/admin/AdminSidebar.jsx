@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { 
-  BarChart3, Settings, Image as ImageIcon, ListOrdered, LogOut, 
-  Home, ChevronRight, X, Star, Users, MessageSquare, CalendarCheck, Clock, User
+import {
+  BarChart3, ListOrdered, LogOut, ChevronRight, X, CalendarCheck, Settings
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMobile } from '../../hooks/useMobile';
@@ -19,16 +18,10 @@ function AdminSidebar({ isOpen, onClose, currentUser, onLogout }) {
   }, [currentUser?.photoURL]);
 
   const navItems = [
-    { label: 'Overview', path: '/admin', icon: <BarChart3 size={18} /> },
-    { label: 'Site Content', path: '/admin/content', icon: <Home size={18} /> },
-    { label: 'Services & Prices', path: '/admin/services', icon: <ListOrdered size={18} /> },
-    { label: 'Bookings', path: '/admin/bookings', icon: <CalendarCheck size={18} /> },
-    { label: 'Portfolio', path: '/admin/portfolio', icon: <ImageIcon size={18} /> },
-    { label: 'Reviews', path: '/admin/reviews', icon: <MessageSquare size={18} /> },
-    { label: 'Users', path: '/admin/users', icon: <User size={18} /> },
-    { label: 'Team', path: '/admin/team', icon: <Users size={18} /> },
-    { label: 'Availability', path: '/admin/availability', icon: <Clock size={18} /> },
-    { label: 'Settings', path: '/admin/settings', icon: <Settings size={18} /> },
+    { label: 'Overview',           path: '/admin',                    icon: <BarChart3 size={18} /> },
+    { label: 'Studio Management',  path: '/admin/studio-management',  icon: <ListOrdered size={18} /> },
+    { label: 'Operations',         path: '/admin/operations',         icon: <CalendarCheck size={18} /> },
+    { label: 'Settings',           path: '/admin/settings',           icon: <Settings size={18} /> },
   ];
 
   // Mobile Full-Screen Drawer (matches main site)

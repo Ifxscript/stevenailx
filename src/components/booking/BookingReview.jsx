@@ -3,7 +3,6 @@ import { useAuth } from '../../context/AuthContext';
 import { useBooking } from '../../context/BookingContext';
 import { db } from '../../lib/firebase';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { sendBookingConfirmation, sendNewBookingNotification } from '../../lib/emailService';
 import { formatDisplayDate, formatDisplayTime } from '../../lib/bookingUtils';
 import { Loader2, Clock, Calendar, MapPin } from 'lucide-react';
 
@@ -36,7 +35,7 @@ function BookingReview() {
         timeSlot: bookingData.timeSlot,
         totalPrice: getTotalPrice(),
         totalDuration: getTotalDuration(),
-        status: 'confirmed',
+        status: 'pending',
         notes: bookingData.notes || '',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -45,9 +44,7 @@ function BookingReview() {
       // Save to Firestore
       await setDoc(doc(db, 'bookings', booking.id), booking);
 
-      // Send emails (non-blocking — won't fail the booking if email fails)
-      sendBookingConfirmation(booking);
-      sendNewBookingNotification(booking);
+      // Emails are handled server-side by the onBookingCreated Cloud Function
 
       // Store booking ref for confirmation screen
       updateBooking({ confirmedBooking: booking });
