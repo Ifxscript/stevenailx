@@ -66,10 +66,10 @@ export const BookingProvider = ({ children }) => {
     }));
   };
 
-  const addGuest = () => {
+  const addGuest = (id) => {
     setBookingData(prev => ({
       ...prev,
-      guests: [...prev.guests, { id: `guest-${Date.now()}`, name: '', services: [] }]
+      guests: [...prev.guests, { id: id || `guest-${Date.now()}`, name: '', services: [] }]
     }));
   };
 
