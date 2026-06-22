@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { db } from '../../lib/firebase';
-import { collection, getDocs, doc, updateDoc, query, orderBy, addDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc, query, orderBy } from 'firebase/firestore';
+import { sendBookingEmail } from '../../lib/emailService';
 import { formatDisplayDate, formatDisplayTime } from '../../lib/bookingUtils';
 import { 
   Loader2, Calendar, Phone, CheckCircle2, XCircle, 
@@ -50,27 +51,6 @@ function BookingList({ list, activeSectionId, onUpdateStatus, openPopup, closePo
           <button className="action-btn discard" style={{ flex: 1 }} onClick={props.closePopup}>Not Yet</button>
           <button className="action-btn save" style={{ flex: 1 }} onClick={async () => {
             await onUpdateStatus(booking.docId || booking.id, 'completed');
-            // Write email trigger document
-            if (booking.clientEmail) {
-              try {
-                await addDoc(collection(db, 'mail'), {
-                  to: booking.clientEmail,
-                  message: {
-                    subject: 'Your SteveNailX appointment is complete! ✨',
-                    html: `<div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 520px; margin: 0 auto; padding: 40px 24px; color: #4a1a26;">
-                      <h1 style="font-size: 1.5rem; margin-bottom: 16px;">Thank you, ${booking.clientName}! 💅</h1>
-                      <p style="color: #8E8484; line-height: 1.6;">Your appointment for <strong>${booking.services?.map(s => s.name).join(', ')}</strong> on <strong>${formatDisplayDate(booking.date)}</strong> has been completed.</p>
-                      <p style="color: #8E8484; line-height: 1.6; margin-top: 16px;">We'd love to hear how it went! Log in to your dashboard to leave a review and help others discover SteveNailX.</p>
-                      <hr style="border: none; border-top: 1px solid #F0EFEA; margin: 24px 0;" />
-                      <p style="font-size: 0.85rem; color: #B5AFA5;">SteveNailX — Premium Nail Artistry</p>
-                    </div>`
-                  }
-                });
-              } catch (emailErr) {
-                console.error('Failed to queue email:', emailErr);
-              }
-            }
-            // Open WhatsApp
             window.open(whatsappUrl, '_blank');
             props.closePopup();
           }}>Yes, Complete</button>
@@ -209,10 +189,19 @@ function BookingsManager() {
 
   const updateStatus = async (bookingId, newStatus) => {
     try {
-      await updateDoc(doc(db, 'bookings', bookingId), { 
+      await updateDoc(doc(db, 'bookings', bookingId), {
         status: newStatus,
         updatedAt: new Date().toISOString()
       });
+      const booking = bookings.find(b => (b.docId || b.id) === bookingId);
+      if (booking) {
+        const emailType = {
+          confirmed: 'booking_confirmed',
+          cancelled: 'booking_cancelled',
+          completed: 'booking_completed',
+        }[newStatus];
+        if (emailType) sendBookingEmail(emailType, booking);
+      }
       fetchBookings();
     } catch {
       alert('Failed to update status.');

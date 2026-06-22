@@ -4,6 +4,7 @@ import { useBooking } from '../../context/BookingContext';
 import { db } from '../../lib/firebase';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { formatDisplayDate, formatDisplayTime } from '../../lib/bookingUtils';
+import { sendBookingEmail } from '../../lib/emailService';
 import { Loader2, Clock, Calendar, MapPin } from 'lucide-react';
 
 function BookingReview() {
@@ -44,7 +45,8 @@ function BookingReview() {
       // Save to Firestore
       await setDoc(doc(db, 'bookings', booking.id), booking);
 
-      // Emails are handled server-side by the onBookingCreated Cloud Function
+      // Fire emails (non-blocking — don't await so it doesn't delay the UX)
+      sendBookingEmail('booking_received', booking);
 
       // Store booking ref for confirmation screen
       updateBooking({ confirmedBooking: booking });
