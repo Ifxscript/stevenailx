@@ -226,7 +226,7 @@ function SettingsPage() {
               <p style={F({ fontSize:12, fontWeight:600, color:T.sub, margin:'0 0 4px' })}>{s.label}</p>
               <input
                 value={s.href || ''}
-                onChange={e => setSocials(prev => prev.map((item, idx) => idx === i ? { ...item, href: e.target.value } : item))}
+                onChange={e => setSocials(prev => prev.map((item, idx) => idx === i ? { ...item, href: e.target.value.trim() } : item))}
                 placeholder="https://..."
                 style={F({ width:'100%', height:42, padding:'0 12px', border:`1px solid ${T.bdr}`, borderRadius:10, fontSize:13, color:T.text, outline:'none', background:'#fff', boxSizing:'border-box' })}
               />

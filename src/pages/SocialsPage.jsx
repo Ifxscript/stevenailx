@@ -26,7 +26,10 @@ function SocialsPage() {
 
         <section className="editorial-links">
           {socials.map((social) => {
-            const href = social.href || '';
+            let href = (social.href || '').trim();
+            if (href && href !== '#' && !href.startsWith('http') && !href.startsWith('/')) {
+              href = 'https://' + href;
+            }
             const isExternal = href.startsWith('http');
             const isValid = href && href !== '#';
             return (
