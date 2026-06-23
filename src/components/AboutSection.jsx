@@ -3,12 +3,34 @@ import { motion } from 'framer-motion';
 import { useLandingPage } from '../context/LandingPageContext';
 import './AboutSection.css';
 
+const parseMinutes = (timeStr) => {
+  try {
+    const [time, period] = timeStr.trim().toLowerCase().split(' ');
+    let [h, m] = time.split(':').map(Number);
+    if (period === 'pm' && h !== 12) h += 12;
+    if (period === 'am' && h === 12) h = 0;
+    return h * 60 + m;
+  } catch { return null; }
+};
+
+const getDotState = (day, isToday, now) => {
+  if (!isToday) return 'other';
+  if (!day.isOpen) return 'closed-today';
+  try {
+    const [openStr, closeStr] = day.hours.split(' - ');
+    const openMins = parseMinutes(openStr);
+    const closeMins = parseMinutes(closeStr);
+    const nowMins = now.getHours() * 60 + now.getMinutes();
+    return (nowMins >= openMins && nowMins < closeMins) ? 'open-now' : 'closed-today';
+  } catch { return 'closed-today'; }
+};
+
 const AboutSection = () => {
   const { about, studio } = useLandingPage();
   const studioPhotos = studio?.photos || [];
-  
-  // Logic to find current day index (Monday = 0, Sunday = 6)
-  const currentDayIndex = (new Date().getDay() + 6) % 7;
+
+  const now = new Date();
+  const currentDayIndex = (now.getDay() + 6) % 7;
 
   return (
     <section className="about-section" id="about">
@@ -82,14 +104,15 @@ const AboutSection = () => {
               {(about?.hours || []).map((day, index) => {
                 const isToday = index === currentDayIndex;
                 const isClosed = !day.isOpen;
-                
+                const dotState = getDotState(day, isToday, now);
+
                 return (
-                  <div 
-                    key={day.name} 
+                  <div
+                    key={day.name}
                     className={`opening-day-row ${isToday ? 'is-today' : ''} ${isClosed ? 'is-closed' : ''}`}
                   >
                     <div className="day-name-group">
-                      <span className={`status-dot ${day.isOpen ? 'open' : 'closed'}`}></span>
+                      <span className={`status-dot ${dotState}`}></span>
                       <span className="day-name">{day.name}</span>
                     </div>
                     <span className="day-hours">
