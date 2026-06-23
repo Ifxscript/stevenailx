@@ -25,23 +25,29 @@ function SocialsPage() {
         </section>
 
         <section className="editorial-links">
-          {socials.map((social) => (
-            <a
-              key={social.id}
-              href={social.href}
-              target={social.href.startsWith('http') ? '_blank' : '_self'}
-              rel={social.href.startsWith('http') ? 'noopener noreferrer' : ''}
-              className="editorial-link-item"
-            >
-              <div className="link-text-block">
-                <span className="link-label">{social.label}</span>
-                <span className="link-description">{social.description}</span>
-              </div>
-              <div className="link-arrow">
-                <ArrowRight size={28} strokeWidth={1} />
-              </div>
-            </a>
-          ))}
+          {socials.map((social) => {
+            const href = social.href || '';
+            const isExternal = href.startsWith('http');
+            const isValid = href && href !== '#';
+            return (
+              <a
+                key={social.id}
+                href={isValid ? href : undefined}
+                target={isExternal ? '_blank' : '_self'}
+                rel={isExternal ? 'noopener noreferrer' : ''}
+                className={`editorial-link-item${!isValid ? ' link-inactive' : ''}`}
+                onClick={!isValid ? (e) => e.preventDefault() : undefined}
+              >
+                <div className="link-text-block">
+                  <span className="link-label">{social.label}</span>
+                  <span className="link-description">{social.description}</span>
+                </div>
+                <div className="link-arrow">
+                  <ArrowRight size={28} strokeWidth={1} />
+                </div>
+              </a>
+            );
+          })}
         </section>
 
       </main>

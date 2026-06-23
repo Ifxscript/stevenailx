@@ -3,7 +3,7 @@ import { subscribeLiveData } from '../lib/dbUtils';
 
 const LandingPageContext = createContext();
 
-const CACHE_KEY = 'snx_landing_v1';
+const CACHE_KEY = 'snx_landing_v2';
 const DEFAULT_DATA = {
   brand: {},
   hero: { slides: [] },
