@@ -13,6 +13,7 @@ function SettingsPage() {
   const [newAdminEmail, setNewAdminEmail] = useState('');
   const [marketerEmails, setMarketerEmails] = useState([]);
   const [newMarketerEmail, setNewMarketerEmail] = useState('');
+  const [socials, setSocials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [confirmDeleteEmail, setConfirmDeleteEmail] = useState(null);
@@ -28,11 +29,13 @@ function SettingsPage() {
       const docRef = doc(db, 'site_content', 'landing_page');
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        const security = docSnap.data().security || {};
+        const d = docSnap.data();
+        const security = d.security || {};
         const roster = security.adminEmails || ['ianekwe7@gmail.com'];
         const mRoster = security.marketerEmails || [];
         setAdminEmails(roster.filter(email => email && email.trim() !== ''));
         setMarketerEmails(mRoster.filter(email => email && email.trim() !== ''));
+        setSocials(d.socials || []);
       }
     } catch (err) {
       console.error(err);
@@ -49,7 +52,8 @@ function SettingsPage() {
       // 1. Update the security roster doc
       await updateDoc(docRef, {
         'security.adminEmails': adminEmails.filter(e => e && e.trim() !== ''),
-        'security.marketerEmails': marketerEmails.filter(e => e && e.trim() !== '')
+        'security.marketerEmails': marketerEmails.filter(e => e && e.trim() !== ''),
+        'socials': socials,
       });
 
       // 2. Sync roles to individual user documents for all marketers
@@ -211,6 +215,25 @@ function SettingsPage() {
         ))}
         <InviteRow value={newMarketerEmail} onChange={setNewMarketerEmail} onAdd={addMarketerEmail} placeholder="Invite marketer email…" />
       </div>
+
+      {/* ── Social Links ── */}
+      {socials.length > 0 && (
+        <div style={{ background:T.card, borderRadius:14, boxShadow:'0 1px 4px rgba(0,0,0,.07)', padding:'16px', marginBottom:16 }}>
+          <p style={F({ fontSize:11, fontWeight:700, color:T.mut, textTransform:'uppercase', letterSpacing:'.08em', margin:'0 0 4px' })}>Social Links</p>
+          <p style={F({ fontSize:12, color:T.sub, margin:'0 0 12px' })}>Update the URLs shown on your Socials page.</p>
+          {socials.map((s, i) => (
+            <div key={s.id ?? i} style={{ marginBottom:10 }}>
+              <p style={F({ fontSize:12, fontWeight:600, color:T.sub, margin:'0 0 4px' })}>{s.label}</p>
+              <input
+                value={s.href || ''}
+                onChange={e => setSocials(prev => prev.map((item, idx) => idx === i ? { ...item, href: e.target.value } : item))}
+                placeholder="https://..."
+                style={F({ width:'100%', height:42, padding:'0 12px', border:`1px solid ${T.bdr}`, borderRadius:10, fontSize:13, color:T.text, outline:'none', background:'#fff', boxSizing:'border-box' })}
+              />
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* ── Cloud sync note ── */}
       <div style={{ display:'flex', alignItems:'center', gap:8, justifyContent:'center', marginBottom:24, opacity:.6 }}>
