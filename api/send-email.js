@@ -2,7 +2,7 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const FROM = 'SteveNailX <booking@stevenailx.com>';
+const FROM = 'SteveNailX <booking@support.stevenailx.com>';
 const ADMIN_EMAIL = 'ianekwe7@gmail.com';
 
 const fmt = (dateStr) => {
