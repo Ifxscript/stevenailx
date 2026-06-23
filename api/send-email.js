@@ -2,8 +2,7 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// Update to 'SteveNailX <booking@stevenailx.com>' once stevenailx.com is verified in Resend dashboard
-const FROM = 'SteveNailX <onboarding@resend.dev>';
+const FROM = 'SteveNailX <booking@stevenailx.com>';
 const ADMIN_EMAIL = 'ianekwe7@gmail.com';
 
 const fmt = (dateStr) => {
