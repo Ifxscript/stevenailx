@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { Star, ShieldCheck } from 'lucide-react';
 import { useLandingPage } from '../context/LandingPageContext';
 import ReviewsModal from './ReviewsModal';
@@ -26,12 +26,7 @@ const ReviewCard = ({ review }) => {
   };
 
   return (
-    <motion.div 
-      className="review-card"
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-    >
+    <div className="review-card">
       <div className="review-user">
         <div className="review-avatar" style={{ backgroundColor: getAvatarColor(review.name) }}>
           {review.name.charAt(0)}
@@ -65,7 +60,7 @@ const ReviewCard = ({ review }) => {
           )}
         </p>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

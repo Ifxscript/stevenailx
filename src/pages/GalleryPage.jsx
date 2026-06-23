@@ -6,64 +6,32 @@ import Footer from '../components/Footer';
 import { useLandingPage } from '../context/LandingPageContext';
 import './GalleryPage.css';
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { duration: 0.8, ease: "easeOut" }
-  }
-};
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.08
-    }
-  }
-};
-
 function GalleryPage() {
   const { gallery } = useLandingPage();
   const galleryData = gallery.items;
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Manage body scroll when modal is open
   useEffect(() => {
-    if (selectedImage) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
+    document.body.style.overflow = selectedImage ? 'hidden' : 'unset';
+    return () => { document.body.style.overflow = 'unset'; };
   }, [selectedImage]);
 
-  const openModal = (image, index) => {
-    setSelectedImage(image);
-    setCurrentIndex(index);
-  };
-
-  const closeModal = () => {
-    setSelectedImage(null);
-  };
+  const openModal = (image, index) => { setSelectedImage(image); setCurrentIndex(index); };
+  const closeModal = () => setSelectedImage(null);
 
   const nextImage = (e) => {
     e.stopPropagation();
-    const nextIdx = (currentIndex + 1) % galleryData.length;
-    setCurrentIndex(nextIdx);
-    setSelectedImage(galleryData[nextIdx].image);
+    const next = (currentIndex + 1) % galleryData.length;
+    setCurrentIndex(next);
+    setSelectedImage(galleryData[next].image);
   };
 
   const prevImage = (e) => {
     e.stopPropagation();
-    const prevIdx = (currentIndex - 1 + galleryData.length) % galleryData.length;
-    setCurrentIndex(prevIdx);
-    setSelectedImage(galleryData[prevIdx].image);
+    const prev = (currentIndex - 1 + galleryData.length) % galleryData.length;
+    setCurrentIndex(prev);
+    setSelectedImage(galleryData[prev].image);
   };
 
   return (
@@ -71,29 +39,18 @@ function GalleryPage() {
       <BackButton />
 
       <header className="gallery-page-header">
-        <motion.div 
-          className="header-content"
-          initial="hidden"
-          animate="visible"
-          variants={fadeUp}
-        >
+        <div className="header-content">
           <h1>PORTFOLIO</h1>
           <p className="subtitle">A visual celebration of meticulous craftsmanship and high-fashion hair and beauty.</p>
-        </motion.div>
+        </div>
       </header>
 
       <main className="gallery-page-content">
-        <motion.div 
-          className="gallery-grid"
-          variants={staggerContainer}
-          initial="hidden"
-          animate="visible"
-        >
+        <div className="gallery-grid">
           {galleryData.map((item, index) => (
-            <motion.div 
+            <div
               key={item.id}
               className="gallery-item"
-              variants={fadeUp}
               onClick={() => openModal(item.image, index)}
             >
               <div className="gallery-image-container">
@@ -102,15 +59,15 @@ function GalleryPage() {
                   <span>{item.title}</span>
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </main>
 
-      {/* Lightbox Modal */}
+      {/* Lightbox — keep fade + scale animation */}
       <AnimatePresence>
         {selectedImage && (
-          <motion.div 
+          <motion.div
             className="lightbox-overlay"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -120,12 +77,12 @@ function GalleryPage() {
             <button className="lightbox-close" onClick={closeModal} aria-label="Close">
               <X size={32} />
             </button>
-            
+
             <button className="lightbox-nav prev" onClick={prevImage} aria-label="Previous">
               <ChevronLeft size={48} strokeWidth={1} />
             </button>
-            
-            <motion.div 
+
+            <motion.div
               className="lightbox-content"
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -137,7 +94,7 @@ function GalleryPage() {
                 <span>{galleryData[currentIndex].title}</span>
               </div>
             </motion.div>
- 
+
             <button className="lightbox-nav next" onClick={nextImage} aria-label="Next">
               <ChevronRight size={48} strokeWidth={1} />
             </button>

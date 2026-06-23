@@ -1,25 +1,7 @@
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import './SneakPeek.css';
 
 const MAX_IMAGES = 5;
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08, delayChildren: 0.15 }
-  }
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, scale: 1.03 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: { duration: 0.8, ease: [0.215, 0.61, 0.355, 1] }
-  }
-};
 
 function SneakPeek({ data, title, exploreLabel, onExplore }) {
   const images = (data || []).slice(0, MAX_IMAGES);
@@ -33,43 +15,33 @@ function SneakPeek({ data, title, exploreLabel, onExplore }) {
 
   return (
     <section className="sneak-peek" id="gallery">
-      {/* Header with dynamic title */}
       {title && (
         <div className="sneak-peek-header">
           <p className="section-heading">{title}</p>
         </div>
       )}
 
-      {/* ---- Universal Editorial Collage ---- */}
-      <motion.div
-        className="sneak-peek-collage"
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-80px" }}
-      >
-        <motion.div className="collage-hero" variants={itemVariants}>
+      <div className="sneak-peek-collage">
+        <div className="collage-hero">
           <img src={heroImage.image} alt={heroImage.title} loading="lazy" />
-        </motion.div>
+        </div>
 
         {sideCount > 0 && (
           <div className={`collage-side side-${sideCount}`}>
             {sideImages.map((item, i) => (
-              <motion.div
+              <div
                 key={item.id}
                 className={`collage-cell side-cell-${i}`}
-                variants={itemVariants}
-                onClick={onExplore} /* Clicking any teaser image also opens the gallery */
+                onClick={onExplore}
                 style={{ cursor: 'pointer' }}
               >
                 <img src={item.image} alt={item.title} loading="lazy" />
-              </motion.div>
-             ))}
+              </div>
+            ))}
           </div>
         )}
-      </motion.div>
+      </div>
 
-      {/* ---- Explore More Button ---- */}
       <div className="section-footer">
         <button onClick={onExplore} className="btn-explore">
           see more &gt;

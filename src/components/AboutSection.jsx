@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { useLandingPage } from '../context/LandingPageContext';
 import './AboutSection.css';
 
@@ -38,13 +37,7 @@ const AboutSection = () => {
         <div className="about-grid">
           
           {/* Left Column: About & Map */}
-          <motion.div 
-            className="about-content"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
+          <div className="about-content">
             <h2 className="section-heading">{about.heading}</h2>
             <p className="about-text">{about.description}</p>
 
@@ -89,16 +82,10 @@ const AboutSection = () => {
                 Get directions
               </a>
             </div>
-          </motion.div>
+          </div>
 
           {/* Right Column: Opening Times */}
-          <motion.div 
-            className="opening-times-content"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
+          <div className="opening-times-content">
             <h2 className="section-heading">{about.openingTitle}</h2>
             <div className="opening-list">
               {(about?.hours || []).map((day, index) => {
@@ -122,8 +109,8 @@ const AboutSection = () => {
                 );
               })}
             </div>
-          </motion.div>
-          
+          </div>
+
         </div>
       </div>
     </section>

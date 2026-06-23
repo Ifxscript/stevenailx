@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { useLandingPage } from '../context/LandingPageContext';
 import { Star } from 'lucide-react';
 import './TeamSection.css';
@@ -24,15 +23,8 @@ function TeamSection() {
         </header>
 
         <div className="team-row">
-          {(team?.members || []).map((member, index) => (
-            <motion.div 
-              key={member.id} 
-              className="team-card"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1, duration: 0.8 }}
-            >
+          {(team?.members || []).map((member) => (
+            <div key={member.id} className="team-card">
               <div className="team-avatar-container">
                 <div className="team-avatar-wrapper">
                   {member.image ? (
@@ -55,7 +47,7 @@ function TeamSection() {
                 <h3 className="team-name">{member.name}</h3>
                 <p className="team-role">{member.role}</p>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

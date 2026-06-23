@@ -1,29 +1,8 @@
 import BackButton from '../components/BackButton';
 import Footer from '../components/Footer';
 import { useLandingPage } from '../context/LandingPageContext';
-import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import './SocialsPage.css';
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } 
-  }
-};
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2
-    }
-  }
-};
 
 function SocialsPage() {
   const { brand, socials } = useLandingPage();
@@ -31,16 +10,10 @@ function SocialsPage() {
   return (
     <div className="socials-page">
       <BackButton />
-      
+
       <main className="socials-container">
-        
-        {/* Profile Card */}
-        <motion.section 
-          className="profile-section"
-          initial="hidden"
-          animate="visible"
-          variants={fadeUp}
-        >
+
+        <section className="profile-section">
           <div className="profile-image">
             <img src={brand.logoImage} alt={brand.name} />
           </div>
@@ -49,23 +22,16 @@ function SocialsPage() {
           <div className="bio-container">
             <p className="bio">{brand.bio}</p>
           </div>
-        </motion.section>
+        </section>
 
-        {/* Editorial Link List */}
-        <motion.section 
-          className="editorial-links"
-          initial="hidden"
-          animate="visible"
-          variants={staggerContainer}
-        >
+        <section className="editorial-links">
           {socials.map((social) => (
-            <motion.a 
+            <a
               key={social.id}
               href={social.href}
-              target={social.href.startsWith('http') ? "_blank" : "_self"}
-              rel={social.href.startsWith('http') ? "noopener noreferrer" : ""}
+              target={social.href.startsWith('http') ? '_blank' : '_self'}
+              rel={social.href.startsWith('http') ? 'noopener noreferrer' : ''}
               className="editorial-link-item"
-              variants={fadeUp}
             >
               <div className="link-text-block">
                 <span className="link-label">{social.label}</span>
@@ -74,9 +40,9 @@ function SocialsPage() {
               <div className="link-arrow">
                 <ArrowRight size={28} strokeWidth={1} />
               </div>
-            </motion.a>
+            </a>
           ))}
-        </motion.section>
+        </section>
 
       </main>
 
