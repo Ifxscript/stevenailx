@@ -140,21 +140,15 @@ function BookingPayment() {
 
       await waitForPaystack();
 
+      const paystackKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
+      console.log('[Paystack] key present:', !!paystackKey, '| amount (kobo):', selectedAmount * 100, '| ref:', reference, '| email:', currentUser.email);
+
       const popup = new window.PaystackPop();
       popup.newTransaction({
         key: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
         email: currentUser.email,
         amount: selectedAmount * 100,
-        currency: 'NGN',
-        channels: ['bank_transfer'],
         reference,
-        metadata: {
-          custom_fields: [{
-            display_name: 'Booking ID',
-            variable_name: 'booking_id',
-            value: bookingId,
-          }],
-        },
         onSuccess: (txn) => {
           setPhase('waiting');
           fetch(`/api/paystack-verify?reference=${encodeURIComponent(txn.reference)}`)
