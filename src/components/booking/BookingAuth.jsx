@@ -1,102 +1,44 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useBooking } from '../../context/BookingContext';
-import { db } from '../../lib/firebase';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
 import UserAvatar from '../UserAvatar';
 
 function BookingAuth() {
   const { currentUser, loginAsClient } = useAuth();
   const { nextStep } = useBooking();
-  const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [needsPhone, setNeedsPhone] = useState(false);
-  const [readyToContinue, setReadyToContinue] = useState(false); // already logged in + has phone
-  const [checking, setChecking] = useState(false);
-
-  // Check phone when already logged in — don't auto-advance, show the welcome card instead
-  useEffect(() => {
-    if (!currentUser || needsPhone || readyToContinue) return;
-    setChecking(true);
-    getDoc(doc(db, 'users', currentUser.uid))
-      .then(snap => {
-        if (snap.exists() && snap.data().phone) {
-          setReadyToContinue(true);
-        } else {
-          setNeedsPhone(true);
-        }
-      })
-      .catch(() => setNeedsPhone(true))
-      .finally(() => setChecking(false));
-  }, [currentUser]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleGoogleLogin = async () => {
     setLoading(true);
     setError('');
     try {
-      const result = await loginAsClient();
-      const userDoc = await getDoc(doc(db, 'users', result.user.uid));
-      if (userDoc.exists() && userDoc.data().phone) {
-        setReadyToContinue(true);
-      } else {
-        setNeedsPhone(true);
-      }
+      await loginAsClient();
+      // loginAsClient returns after Google popup — user is now signed in
+      // nextStep is called by the button below once the user doc syncs
     } catch (err) {
-      setError(err.message || 'Login failed. Please try again.');
+      setError(err.message || 'Sign-in failed. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSavePhone = async () => {
-    if (!phone.trim()) {
-      setError('Phone number is required for booking confirmations.');
-      return;
-    }
-    setLoading(true);
-    try {
-      await setDoc(doc(db, 'users', currentUser.uid), {
-        uid: currentUser.uid,
-        name: currentUser.displayName || '',
-        email: currentUser.email,
-        phone: phone.trim(),
-        photoURL: currentUser.photoURL || '',
-        createdAt: new Date().toISOString(),
-      }, { merge: true });
-      nextStep();
-    } catch {
-      setError('Failed to save profile. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Brief loading state while checking Firestore
-  if (checking) {
-    return (
-      <div className="step-loading">
-        <Loader2 className="animate-spin" size={20} /> Checking account…
-      </div>
-    );
-  }
-
-  // Already logged in + has phone — show a confirmation card, let user tap Continue
-  if (readyToContinue) {
+  // Already signed in — show confirmation card, user must tap Continue
+  if (currentUser) {
     return (
       <div className="step-container auth-step">
         <div className="step-header centered">
           <div className="auth-icon">👋</div>
-          <h3>Welcome back!</h3>
-          <p>You're signed in and ready to continue.</p>
+          <h3>You're signed in</h3>
+          <p>Booking as the account below.</p>
         </div>
 
         <div className="auth-profile-card">
           <UserAvatar user={currentUser} className="auth-avatar" />
           <div>
-            <span className="auth-name">{currentUser?.displayName}</span>
-            <span className="auth-email">{currentUser?.email}</span>
+            <span className="auth-name">{currentUser.displayName || 'No name'}</span>
+            <span className="auth-email">{currentUser.email}</span>
           </div>
         </div>
 
@@ -109,53 +51,13 @@ function BookingAuth() {
     );
   }
 
-  // Needs phone number after login
-  if (needsPhone) {
-    return (
-      <div className="step-container auth-step">
-        <div className="step-header centered">
-          <div className="auth-icon">📞</div>
-          <h3>Almost there!</h3>
-          <p>Add your phone number so Steve can reach you about your appointment.</p>
-        </div>
-
-        <div className="auth-profile-card">
-          <UserAvatar user={currentUser} className="auth-avatar" />
-          <div>
-            <span className="auth-name">{currentUser?.displayName}</span>
-            <span className="auth-email">{currentUser?.email}</span>
-          </div>
-        </div>
-
-        <div className="phone-input-group">
-          <label>Phone number</label>
-          <input
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="+234 801 234 5678"
-            className="phone-input"
-          />
-        </div>
-
-        {error && <p className="auth-error">{error}</p>}
-
-        <div className="step-footer">
-          <button className="step-continue-btn" onClick={handleSavePhone} disabled={loading}>
-            {loading ? <Loader2 className="animate-spin" size={18} /> : 'Continue to Review'}
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // Not logged in — show Google sign-in
+  // Not signed in — show Google button
   return (
     <div className="step-container auth-step">
       <div className="step-header centered">
         <div className="auth-icon">👤</div>
         <h3>Sign in to continue</h3>
-        <p>We need your account to save your booking and send confirmations.</p>
+        <p>We need your account to save your booking and send you confirmations.</p>
       </div>
 
       <button className="google-login-btn" onClick={handleGoogleLogin} disabled={loading}>
