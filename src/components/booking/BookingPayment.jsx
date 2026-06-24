@@ -131,6 +131,13 @@ function BookingPayment() {
       await setDoc(doc(db, 'bookings', booking.id), booking);
       savedRef.current = { bookingId: booking.id, reference };
 
+      // Notify both parties immediately — don't wait for payment
+      fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'booking_awaiting_payment', booking }),
+      }).catch(() => {});
+
       await waitForPaystack();
 
       const popup = new window.PaystackPop();

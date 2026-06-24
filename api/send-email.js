@@ -115,6 +115,50 @@ export default async function handler(req, res) {
       );
     }
 
+    if (type === 'booking_awaiting_payment') {
+      sends.push(
+        resend.emails.send({
+          from: FROM,
+          to: booking.clientEmail,
+          subject: 'Booking received — complete your transfer to confirm',
+          html: wrap(`
+            <h2 style="color:#c94b35;margin-top:0">Your slot is reserved!</h2>
+            <p>Hi ${booking.clientName},</p>
+            <p>We've received your booking details for <strong>${fmt(booking.date)} at ${fmtTime(booking.timeSlot)}</strong>.</p>
+            <p>To confirm your appointment, please complete your bank transfer of <strong>${naira(booking.depositAmount)}</strong> to the account shown in the Paystack window. Your slot will be locked in as soon as the transfer lands.</p>
+            ${card(`
+              <p style="margin:0"><strong>Services:</strong> ${svcList(booking.services)}</p>
+              <p style="margin:0"><strong>Total:</strong> ${naira(booking.totalPrice)}</p>
+              <p style="margin:0"><strong>Deposit due:</strong> ${naira(booking.depositAmount)}</p>
+              <p style="margin:0"><strong>Location:</strong> Saham Plaza, behind New Banex, Shop A20 Upstairs, Abuja</p>
+            `)}
+            <p style="font-size:0.9em;color:#888">Didn't make a booking? You can safely ignore this email.</p>
+          `),
+        }),
+        resend.emails.send({
+          from: FROM,
+          to: ADMIN_EMAIL,
+          subject: `⏳ New booking pending payment — ${booking.clientName} (${fmt(booking.date)})`,
+          html: wrap(`
+            <h2 style="color:#c94b35;margin-top:0">Booking Started — Payment Pending</h2>
+            <p>A client has started the booking process and is being asked to transfer a deposit.</p>
+            ${card(`
+              <p style="margin:0"><strong>Client:</strong> ${booking.clientName}</p>
+              <p style="margin:0"><strong>Email:</strong> ${booking.clientEmail}</p>
+              <p style="margin:0"><strong>Phone:</strong> ${booking.clientPhone || 'Not provided'}</p>
+              <p style="margin:0"><strong>Date:</strong> ${fmt(booking.date)} at ${fmtTime(booking.timeSlot)}</p>
+              <p style="margin:0"><strong>Services:</strong> ${svcList(booking.services)}</p>
+              <p style="margin:0"><strong>Total:</strong> ${naira(booking.totalPrice)}</p>
+              <p style="margin:0"><strong>Deposit requested:</strong> ${naira(booking.depositAmount)}</p>
+              ${booking.notes ? `<p style="margin:0"><strong>Notes:</strong> ${booking.notes}</p>` : ''}
+            `)}
+            <p style="font-size:0.9em;color:#888">This booking is <strong>awaiting payment</strong>. You'll get another email once the deposit lands.</p>
+            <a href="https://stevenailx.com/admin/operations" style="background:#18130e;color:#fff;padding:12px 24px;text-decoration:none;border-radius:99px;display:inline-block;margin-top:8px">View in Dashboard →</a>
+          `),
+        })
+      );
+    }
+
     if (type === 'booking_paid') {
       sends.push(
         resend.emails.send({
