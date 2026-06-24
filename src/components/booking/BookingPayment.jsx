@@ -97,8 +97,8 @@ function BookingPayment() {
       const snap = await getDoc(doc(db, 'users', currentUser.uid));
       const phone = snap.exists() ? snap.data().phone : '';
 
-      const bookingId = `bk_${Date.now()}`;
-      const reference = `snx_${bookingId}`;
+      const bookingId = `bk${Date.now()}`;
+      const reference = `snx-${bookingId}`;
 
       const booking = {
         id: bookingId,
