@@ -1,7 +1,7 @@
 import { useBooking } from '../../context/BookingContext';
 import { useAuth } from '../../context/AuthContext';
 import { formatWhatsAppForSteve, formatDisplayDate, formatDisplayTime } from '../../lib/bookingUtils';
-import { Clock, MessageCircle, CalendarCheck } from 'lucide-react';
+import { CheckCircle2, MessageCircle, CalendarCheck } from 'lucide-react';
 
 function BookingConfirmation() {
   const { bookingData, closeBookingDrawer } = useBooking();
@@ -11,6 +11,9 @@ function BookingConfirmation() {
   if (!booking) return null;
 
   const whatsappUrl = formatWhatsAppForSteve(booking);
+  const balance = booking.depositAmount && booking.totalPrice > booking.depositAmount
+    ? booking.totalPrice - booking.depositAmount
+    : 0;
 
   const handleViewBookings = () => {
     closeBookingDrawer();
@@ -21,13 +24,13 @@ function BookingConfirmation() {
     <div className="step-container confirmation-step">
       <div className="confirmation-icon">
         <div className="check-circle-anim">
-          <Clock size={40} strokeWidth={2.5} />
+          <CheckCircle2 size={40} strokeWidth={2} />
         </div>
       </div>
 
-      <h3 className="confirmation-title">Request Sent!</h3>
+      <h3 className="confirmation-title">Booking Confirmed!</h3>
       <p className="confirmation-subtitle">
-        Your booking request is awaiting Steve's approval. You'll be notified once it's confirmed.
+        Your deposit has been received. We can't wait to see you!
       </p>
 
       <div className="confirmation-card">
@@ -39,19 +42,24 @@ function BookingConfirmation() {
           {booking.services.map((s, i) => (
             <span key={i} className="conf-service-tag">{s.name}</span>
           ))}
-          {booking.guests?.map(g => 
+          {booking.guests?.map(g =>
             g.services.map((s, i) => (
               <span key={`g-${i}`} className="conf-service-tag guest">{s.name} ({g.name})</span>
             ))
           )}
         </div>
         <div className="conf-total">
-          <span>Total</span>
-          <span>₦{Number(booking.totalPrice).toLocaleString()}</span>
+          <span>Deposit paid</span>
+          <span>₦{Number(booking.depositAmount || booking.totalPrice).toLocaleString()}</span>
         </div>
+        {balance > 0 && (
+          <div className="conf-total" style={{ marginTop: 6, opacity: 0.7, fontSize: '0.9rem' }}>
+            <span>Balance due on the day</span>
+            <span>₦{balance.toLocaleString()}</span>
+          </div>
+        )}
       </div>
 
-      {/* WhatsApp CTA — lets client nudge Steve directly */}
       <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="whatsapp-cta">
         <MessageCircle size={20} />
         <span>Message Steve on WhatsApp</span>

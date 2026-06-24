@@ -1,0 +1,130 @@
+/* ── Deposit option cards ── */
+.deposit-options {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.deposit-option {
+  flex: 1;
+  padding: 20px 16px;
+  border: 2px solid #eee;
+  border-radius: 16px;
+  background: #faf9f8;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.deposit-option:hover {
+  border-color: #ccc;
+}
+
+.deposit-option.selected {
+  border-color: var(--color-burgundy, #8b1d41);
+  background: rgba(139, 29, 65, 0.04);
+}
+
+.deposit-amount {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--color-brown, #3a2a2a);
+  margin-bottom: 4px;
+}
+
+.deposit-label {
+  font-size: 0.75rem;
+  color: #888;
+  font-weight: 500;
+}
+
+/* ── Payment summary breakdown ── */
+.payment-summary {
+  background: #faf9f8;
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+
+.payment-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--color-brown, #3a2a2a);
+  padding: 8px 0;
+}
+
+.payment-row + .payment-row {
+  border-top: 1px solid #eee;
+}
+
+.deposit-now-val {
+  font-weight: 700;
+  color: var(--color-burgundy, #8b1d41);
+}
+
+.balance-row {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+/* ── Waiting state ── */
+.payment-waiting {
+  align-items: center;
+  text-align: center;
+  padding-top: 60px;
+}
+
+.waiting-spinner {
+  color: var(--color-burgundy, #8b1d41);
+  margin-bottom: 24px;
+}
+
+.waiting-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-brown, #3a2a2a);
+  margin: 0 0 8px;
+}
+
+.waiting-sub {
+  font-size: 0.85rem;
+  color: #888;
+  margin: 0 0 28px;
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+.waiting-amount-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 300px;
+  background: #faf9f8;
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.waiting-amount-card strong {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--color-brown, #3a2a2a);
+}
+
+.waiting-note {
+  font-size: 0.75rem;
+  color: #bbb;
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+/* ── Error state ── */
+.payment-error-state {
+  padding-top: 40px;
+}

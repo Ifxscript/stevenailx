@@ -115,6 +115,50 @@ export default async function handler(req, res) {
       );
     }
 
+    if (type === 'booking_paid') {
+      sends.push(
+        resend.emails.send({
+          from: FROM,
+          to: booking.clientEmail,
+          subject: 'Booking confirmed — deposit received',
+          html: wrap(`
+            <h2 style="color:#1a9e5a;margin-top:0">You're confirmed!</h2>
+            <p>Hi ${booking.clientName},</p>
+            <p>Your deposit of <strong>${naira(booking.depositAmount)}</strong> has been received. Your slot is locked in!</p>
+            ${card(`
+              <p style="margin:0"><strong>Date:</strong> ${fmt(booking.date)} at ${fmtTime(booking.timeSlot)}</p>
+              <p style="margin:0"><strong>Services:</strong> ${svcList(booking.services)}</p>
+              <p style="margin:0"><strong>Total:</strong> ${naira(booking.totalPrice)}</p>
+              ${booking.totalPrice > booking.depositAmount ? `<p style="margin:0"><strong>Balance due on the day:</strong> ${naira(booking.totalPrice - booking.depositAmount)}</p>` : ''}
+              <p style="margin:0"><strong>Location:</strong> Saham Plaza, behind New Banex, Shop A20 Upstairs, Abuja</p>
+            `)}
+            <p style="font-size:0.9em;color:#888">Need to cancel or reschedule? Please let us know at least 24 hours in advance.</p>
+          `),
+        }),
+        resend.emails.send({
+          from: FROM,
+          to: ADMIN_EMAIL,
+          subject: `💰 New paid booking — ${booking.clientName} (${fmt(booking.date)})`,
+          html: wrap(`
+            <h2 style="color:#1a9e5a;margin-top:0">New Paid Booking</h2>
+            <p>Deposit received and booking auto-confirmed.</p>
+            ${card(`
+              <p style="margin:0"><strong>Client:</strong> ${booking.clientName}</p>
+              <p style="margin:0"><strong>Email:</strong> ${booking.clientEmail}</p>
+              <p style="margin:0"><strong>Phone:</strong> ${booking.clientPhone || 'Not provided'}</p>
+              <p style="margin:0"><strong>Date:</strong> ${fmt(booking.date)} at ${fmtTime(booking.timeSlot)}</p>
+              <p style="margin:0"><strong>Services:</strong> ${svcList(booking.services)}</p>
+              <p style="margin:0"><strong>Total:</strong> ${naira(booking.totalPrice)}</p>
+              <p style="margin:0"><strong>Deposit paid:</strong> ${naira(booking.depositAmount)}</p>
+              ${booking.totalPrice > booking.depositAmount ? `<p style="margin:0"><strong>Balance due:</strong> ${naira(booking.totalPrice - booking.depositAmount)}</p>` : ''}
+              ${booking.notes ? `<p style="margin:0"><strong>Notes:</strong> ${booking.notes}</p>` : ''}
+            `)}
+            <a href="https://stevenailx.com/admin/operations" style="background:#18130e;color:#fff;padding:12px 24px;text-decoration:none;border-radius:99px;display:inline-block;margin-top:8px">View in Dashboard →</a>
+          `),
+        })
+      );
+    }
+
     if (type === 'booking_completed') {
       sends.push(
         resend.emails.send({
