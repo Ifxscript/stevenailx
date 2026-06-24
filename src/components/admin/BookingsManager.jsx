@@ -82,23 +82,26 @@ function BookingList({ list, activeSectionId, onUpdateStatus, openPopup, closePo
                   </div>
                 </div>
               </div>
-              <span style={{ 
-                padding: '6px 12px', 
-                borderRadius: '20px', 
-                fontSize: '0.75rem', 
-                fontWeight: 800, 
+              <span style={{
+                padding: '6px 12px',
+                borderRadius: '20px',
+                fontSize: '0.75rem',
+                fontWeight: 800,
                 textTransform: 'uppercase',
                 letterSpacing: '0.05em',
-                backgroundColor: b.status === 'completed' ? '#E6E9F9' : 
-                                 b.status === 'cancelled' ? '#FEE2E2' : 
+                backgroundColor: b.status === 'completed' ? '#E6E9F9' :
+                                 b.status === 'cancelled' ? '#FEE2E2' :
+                                 b.status === 'awaiting_payment' ? '#FEF3C7' :
                                  (b.date < todayStr ? '#FDE68A' : (b.status === 'confirmed' ? '#E1E8DE' : '#F9F0D9')),
-                color: b.status === 'completed' ? '#4D547F' : 
-                       b.status === 'cancelled' ? '#991B1B' : 
+                color: b.status === 'completed' ? '#4D547F' :
+                       b.status === 'cancelled' ? '#991B1B' :
+                       b.status === 'awaiting_payment' ? '#92400E' :
                        (b.date < todayStr ? '#92400E' : (b.status === 'confirmed' ? '#4F5E49' : '#7A693F'))
               }}>
-                {b.status === 'completed' || b.status === 'cancelled' 
-                  ? b.status 
-                  : (b.date < todayStr ? 'missed' : b.status)}
+                {b.status === 'completed' ? 'completed' :
+                 b.status === 'cancelled' ? 'cancelled' :
+                 b.status === 'awaiting_payment' ? 'awaiting payment' :
+                 (b.date < todayStr ? 'missed' : b.status)}
               </span>
             </div>
 
@@ -132,6 +135,16 @@ function BookingList({ list, activeSectionId, onUpdateStatus, openPopup, closePo
                     </button>
                   </>
                 )}
+                {b.status === 'awaiting_payment' && (
+                  <>
+                    <button className="action-btn save" style={{ padding: '8px 16px', fontSize: '0.8rem', backgroundColor: '#E1E8DE', color: '#4F5E49' }} onClick={() => onUpdateStatus(b.docId || b.id, 'confirmed')}>
+                      <CheckCircle2 size={14} /> Mark Paid
+                    </button>
+                    <button className="action-btn discard" style={{ padding: '8px 16px', fontSize: '0.8rem', backgroundColor: '#FEE2E2', color: '#991B1B' }} onClick={() => confirmCancel(b, { openPopup, closePopup })}>
+                      <XCircle size={14} /> Cancel
+                    </button>
+                  </>
+                )}
               </div>
             </div>
 
@@ -139,16 +152,36 @@ function BookingList({ list, activeSectionId, onUpdateStatus, openPopup, closePo
             {b.status === 'confirmed' && (
               <div className="booking-mobile-actions">
                 <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
-                  <button 
-                    className="action-btn save" 
-                    style={{ flex: 1, padding: '10px 16px', fontSize: '0.85rem', borderRadius: '24px', backgroundColor: '#E1E8DE', color: '#4F5E49', justifyContent: 'center', border: 'none' }} 
+                  <button
+                    className="action-btn save"
+                    style={{ flex: 1, padding: '10px 16px', fontSize: '0.85rem', borderRadius: '24px', backgroundColor: '#E1E8DE', color: '#4F5E49', justifyContent: 'center', border: 'none' }}
                     onClick={() => confirmComplete(b, { openPopup, closePopup })}
                   >
                     <CheckCircle2 size={16} /> Mark as Completed
                   </button>
-                  <button 
-                    className="action-btn discard" 
-                    style={{ flex: 1, padding: '10px 16px', fontSize: '0.85rem', borderRadius: '24px', backgroundColor: '#FEE2E2', color: '#991B1B', justifyContent: 'center', border: 'none' }} 
+                  <button
+                    className="action-btn discard"
+                    style={{ flex: 1, padding: '10px 16px', fontSize: '0.85rem', borderRadius: '24px', backgroundColor: '#FEE2E2', color: '#991B1B', justifyContent: 'center', border: 'none' }}
+                    onClick={() => confirmCancel(b, { openPopup, closePopup })}
+                  >
+                    <XCircle size={16} /> Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+            {b.status === 'awaiting_payment' && (
+              <div className="booking-mobile-actions">
+                <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
+                  <button
+                    className="action-btn save"
+                    style={{ flex: 1, padding: '10px 16px', fontSize: '0.85rem', borderRadius: '24px', backgroundColor: '#E1E8DE', color: '#4F5E49', justifyContent: 'center', border: 'none' }}
+                    onClick={() => onUpdateStatus(b.docId || b.id, 'confirmed')}
+                  >
+                    <CheckCircle2 size={16} /> Mark as Paid
+                  </button>
+                  <button
+                    className="action-btn discard"
+                    style={{ flex: 1, padding: '10px 16px', fontSize: '0.85rem', borderRadius: '24px', backgroundColor: '#FEE2E2', color: '#991B1B', justifyContent: 'center', border: 'none' }}
                     onClick={() => confirmCancel(b, { openPopup, closePopup })}
                   >
                     <XCircle size={16} /> Cancel
