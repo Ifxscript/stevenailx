@@ -1,10 +1,10 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  X, UserRound, CalendarHeart, Phone, LogOut, ChevronRight, 
-  Check, Clock, MessageCircle, Loader2, Calendar, MapPin, 
-  XCircle, History, Settings, ShieldCheck, Mail, Star, Plus, 
-  ChevronDown, ChevronUp
+import {
+  X, UserRound, CalendarHeart, Phone, LogOut, ChevronRight,
+  Check, Clock, MessageCircle, Loader2, Calendar, MapPin,
+  XCircle, History, Settings, ShieldCheck, Mail, Star, Plus,
+  ChevronDown, ChevronUp, CreditCard
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useBooking } from '../context/BookingContext';
@@ -23,31 +23,33 @@ const TAB_TITLES = {
 };
 
 // Reusable Booking Row inside the dashboard
-const DashboardBookingRow = ({ booking, onCancel, onReview }) => {
+const DashboardBookingRow = ({ booking, onCancel, onReview, onResumePayment }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { reviews } = useLandingPage();
   const allReviews = reviews?.items || [];
-  
+
   const isReviewed = allReviews?.some(r => r.bookingId === (booking.id || booking.docId));
 
   const [year, month, day] = booking.date.split('-');
   const d = new Date(year, month - 1, day);
   const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
   const dayNumber = d.toLocaleDateString('en-US', { day: 'numeric' });
-  
+
   const isUpcoming = new Date(`${booking.date}T${booking.timeSlot.split(' - ')[0]}`) > new Date();
   const isCancelled = booking.status === 'cancelled';
-  const isCompleted = booking.status === 'completed' || (!isUpcoming && !isCancelled);
+  const isAwaitingPayment = booking.status === 'awaiting_payment';
+  const isCompleted = booking.status === 'completed' || (!isUpcoming && !isCancelled && !isAwaitingPayment);
 
   const totalPrice = booking.services?.reduce((sum, s) => sum + parseInt(s.price || 0), 0) || 0;
 
   const handleContactSteve = () => {
     const msg = `Hi Steve, I'd like to discuss rescheduling my appointment on ${booking.date} at ${booking.timeSlot}.`;
     const whatsappUrl = `${CONFIG.whatsappBaseUrl}?text=${encodeURIComponent(msg)}`;
-    // Use window.location for better mobile reliability (prevents popup blockers)
     window.location.href = whatsappUrl;
     setMenuOpen(false);
   };
+
+  const statusLabel = isAwaitingPayment ? 'Payment Pending' : (booking.status || 'Upcoming');
 
   return (
     <div className={`ref-booking-card ${isCancelled ? 'cancelled' : ''}`}>
@@ -61,8 +63,8 @@ const DashboardBookingRow = ({ booking, onCancel, onReview }) => {
               <span>{booking.timeSlot}</span>
             </div>
           </div>
-          <div className={`booking-status-tag ${booking.status || 'upcoming'}`}>
-            {booking.status || 'Upcoming'}
+          <div className={`booking-status-tag ${isAwaitingPayment ? 'awaiting-payment' : (booking.status || 'upcoming')}`}>
+            {statusLabel}
           </div>
         </div>
 
@@ -78,10 +80,10 @@ const DashboardBookingRow = ({ booking, onCancel, onReview }) => {
           <div className="booking-price-tag">
             ₦{totalPrice.toLocaleString()}
           </div>
-          
+
           <div className="booking-actions-group">
-            {/* ONLY show Edit/Actions for upcoming bookings */}
-            {isUpcoming && !isCancelled && (
+            {/* Show Edit dropdown for regular upcoming bookings only */}
+            {isUpcoming && !isCancelled && !isAwaitingPayment && (
               <>
                 <button className={`ref-edit-btn ${menuOpen ? 'active' : ''}`} onClick={() => setMenuOpen(!menuOpen)}>
                   <span>Edit</span>
@@ -107,9 +109,21 @@ const DashboardBookingRow = ({ booking, onCancel, onReview }) => {
         </div>
       </div>
 
-      {/* Prominent review banner for completed, unreviewed bookings */}
+      {/* Complete Payment banner for awaiting_payment bookings */}
+      {isAwaitingPayment && (
+        <button
+          className="complete-payment-banner"
+          onClick={() => onResumePayment(booking)}
+        >
+          <CreditCard size={16} />
+          <span>Complete Payment — ₦{(booking.depositAmount || 0).toLocaleString()} deposit</span>
+          <ChevronRight size={16} />
+        </button>
+      )}
+
+      {/* Review banner for completed, unreviewed bookings */}
       {isCompleted && !isReviewed && !isCancelled && (
-        <button 
+        <button
           className="review-prompt-banner"
           onClick={() => onReview(booking)}
         >
@@ -125,7 +139,7 @@ const DashboardBookingRow = ({ booking, onCancel, onReview }) => {
 const UserDashboardModal = ({ isOpen, onClose }) => {
   const { currentUser, logout, loginAsClient, dashboardTab, openDashboard } = useAuth();
   const { openBookingDrawer } = useBooking();
-  
+
   // Normalize tab state
   const activeTab = useMemo(() => {
     if (dashboardTab === 'settings') return 'settings';
@@ -133,12 +147,19 @@ const UserDashboardModal = ({ isOpen, onClose }) => {
   }, [dashboardTab]);
 
   const [subTab, setSubTab] = useState(dashboardTab === 'history' ? 'history' : 'upcoming');
-  
+
   const setActiveTab = (tab) => openDashboard(tab);
   const [bookings, setBookings] = useState([]);
   const [loadingBookings, setLoadingBookings] = useState(false);
   const [reviewingBooking, setReviewingBooking] = useState(null);
-  
+
+  // Resume payment state
+  const [resumePhase, setResumePhase] = useState(null); // null | 'initiating' | 'waiting' | 'error'
+  const [resumeBooking, setResumeBooking] = useState(null);
+  const [resumeError, setResumeError] = useState('');
+  const resumePollingRef = useRef(null);
+  const resumePollCount = useRef(0);
+
   // Profile state
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isEditingPhone, setIsEditingPhone] = useState(false);
@@ -156,6 +177,103 @@ const UserDashboardModal = ({ isOpen, onClose }) => {
       document.body.style.overflow = 'auto';
     }
   }, [isOpen, currentUser]);
+
+  // Load Paystack script for resume payment
+  useEffect(() => {
+    if (!document.querySelector('script[src*="js.paystack.co"]')) {
+      const s = document.createElement('script');
+      s.src = 'https://js.paystack.co/v2/inline.js';
+      s.async = true;
+      document.head.appendChild(s);
+    }
+    return () => { if (resumePollingRef.current) clearInterval(resumePollingRef.current); };
+  }, []);
+
+  const waitForPaystack = () => new Promise((resolve, reject) => {
+    if (window.PaystackPop) return resolve();
+    let tries = 0;
+    const iv = setInterval(() => {
+      if (window.PaystackPop) { clearInterval(iv); resolve(); }
+      else if (++tries > 30) { clearInterval(iv); reject(new Error('Paystack failed to load')); }
+    }, 200);
+  });
+
+  const confirmResumedBooking = async (booking) => {
+    const id = booking.id || booking.docId;
+    await updateDoc(doc(db, 'bookings', id), {
+      status: 'confirmed',
+      paymentStatus: 'deposit_paid',
+      updatedAt: new Date().toISOString(),
+    });
+    fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'booking_paid', booking: { ...booking, status: 'confirmed', paymentStatus: 'deposit_paid' } }),
+    }).catch(() => {});
+    setResumePhase(null);
+    setResumeBooking(null);
+    fetchBookings();
+  };
+
+  const startResumePolling = (reference, booking) => {
+    resumePollCount.current = 0;
+    resumePollingRef.current = setInterval(async () => {
+      resumePollCount.current += 1;
+      if (resumePollCount.current > 72) {
+        clearInterval(resumePollingRef.current);
+        setResumeError("Payment not detected yet. If you've already transferred, contact Steve on WhatsApp.");
+        setResumePhase('error');
+        return;
+      }
+      try {
+        const r = await fetch(`/api/paystack-verify?reference=${encodeURIComponent(reference)}`);
+        const data = await r.json();
+        if (data.verified) {
+          clearInterval(resumePollingRef.current);
+          await confirmResumedBooking(booking);
+        }
+      } catch { /* keep polling */ }
+    }, 5000);
+  };
+
+  const handleResumePayment = async (booking) => {
+    if (resumePollingRef.current) clearInterval(resumePollingRef.current);
+    setResumeBooking(booking);
+    setResumePhase('initiating');
+    setResumeError('');
+    try {
+      await waitForPaystack();
+      const newRef = `snx-bk${Date.now()}`;
+      await updateDoc(doc(db, 'bookings', booking.id || booking.docId), {
+        paystackReference: newRef,
+        updatedAt: new Date().toISOString(),
+      });
+      const popup = new window.PaystackPop();
+      popup.newTransaction({
+        key: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
+        email: currentUser.email,
+        amount: (booking.depositAmount || 5000) * 100,
+        reference: newRef,
+        onSuccess: (txn) => {
+          setResumePhase('waiting');
+          fetch(`/api/paystack-verify?reference=${encodeURIComponent(txn.reference)}`)
+            .then(r => r.json())
+            .then(d => {
+              if (d.verified) confirmResumedBooking(booking);
+              else startResumePolling(txn.reference, booking);
+            })
+            .catch(() => startResumePolling(txn.reference, booking));
+        },
+        onCancel: () => {
+          setResumePhase('waiting');
+          startResumePolling(newRef, booking);
+        },
+      });
+    } catch (err) {
+      setResumeError(err.message || 'Something went wrong. Please try again.');
+      setResumePhase('error');
+    }
+  };
 
   const fetchUserData = async () => {
     try {
@@ -402,11 +520,12 @@ const UserDashboardModal = ({ isOpen, onClose }) => {
                               <h3 className="ref-month-label">{month}</h3>
                               <div className="ref-booking-list">
                                 {items.map(b => (
-                                  <DashboardBookingRow 
-                                    key={b.id} 
-                                    booking={b} 
+                                  <DashboardBookingRow
+                                    key={b.id}
+                                    booking={b}
                                     onCancel={handleCancelBooking}
                                     onReview={setReviewingBooking}
+                                    onResumePayment={handleResumePayment}
                                   />
                                 ))}
                               </div>
@@ -423,10 +542,44 @@ const UserDashboardModal = ({ isOpen, onClose }) => {
         )}
       </motion.div>
 
+      {/* Resume payment overlay */}
+      {resumePhase && resumeBooking && (
+        <div className="resume-payment-overlay">
+          {resumePhase === 'initiating' && (
+            <div className="resume-payment-card">
+              <Loader2 size={36} className="animate-spin" style={{ color: '#c94b35' }} />
+              <p>Opening payment…</p>
+            </div>
+          )}
+          {resumePhase === 'waiting' && (
+            <div className="resume-payment-card">
+              <Loader2 size={36} className="animate-spin" style={{ color: '#c94b35' }} />
+              <h4>Waiting for your transfer…</h4>
+              <p>We check every 5 seconds. Bank transfers usually land within 2 minutes.</p>
+              <div className="resume-amount-chip">
+                Amount due: <strong>₦{(resumeBooking.depositAmount || 0).toLocaleString()}</strong>
+              </div>
+            </div>
+          )}
+          {resumePhase === 'error' && (
+            <div className="resume-payment-card">
+              <p style={{ color: '#c94b35', marginBottom: 16 }}>{resumeError}</p>
+              <button
+                className="step-continue-btn confirm"
+                style={{ fontSize: '0.9rem', padding: '10px 20px' }}
+                onClick={() => { setResumePhase(null); setResumeBooking(null); setResumeError(''); }}
+              >
+                Close
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Legacy Review Modal integration */}
       <AnimatePresence>
         {reviewingBooking && (
-          <ReviewSubmissionModal 
+          <ReviewSubmissionModal
             isOpen={!!reviewingBooking}
             onClose={() => setReviewingBooking(null)}
             booking={reviewingBooking}
