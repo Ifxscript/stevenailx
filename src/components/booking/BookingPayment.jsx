@@ -95,7 +95,7 @@ function BookingPayment() {
 
     try {
       const snap = await getDoc(doc(db, 'users', currentUser.uid));
-      const phone = snap.exists() ? snap.data().phone : '';
+      const phone = (snap.exists() ? snap.data().phone : '') || '';
 
       const bookingId = `bk${Date.now()}`;
       const reference = `snx-${bookingId}`;
@@ -107,13 +107,13 @@ function BookingPayment() {
         clientEmail: currentUser.email,
         clientPhone: phone,
         services: bookingData.services.map(s => ({
-          name: s.name, price: s.price, duration: s.duration || 30,
+          name: s.name || '', price: s.price || 0, duration: s.duration || 30,
         })),
-        guests: bookingData.guests
-          .filter(g => g.name && g.services.length > 0)
+        guests: (bookingData.guests || [])
+          .filter(g => g.name && g.services?.length > 0)
           .map(g => ({
             name: g.name,
-            services: g.services.map(s => ({ name: s.name, price: s.price, duration: s.duration || 30 })),
+            services: g.services.map(s => ({ name: s.name || '', price: s.price || 0, duration: s.duration || 30 })),
           })),
         date: bookingData.date,
         timeSlot: bookingData.timeSlot,
@@ -166,7 +166,7 @@ function BookingPayment() {
       });
     } catch (err) {
       console.error('[BookingPayment]', err);
-      setError(err.message || 'Something went wrong. Please try again.');
+      setError('Something went wrong. Please try again or contact us on WhatsApp.');
       setPhase('select');
     }
   };
