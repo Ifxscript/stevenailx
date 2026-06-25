@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import ServicesPage from './pages/ServicesPage';
@@ -19,6 +19,14 @@ const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 const BlogEditorPage = lazy(() => import('./pages/BlogEditorPage'));
 
 function App() {
+  useEffect(() => {
+    const loader = document.getElementById('app-loader');
+    if (!loader) return;
+    loader.classList.add('fade-out');
+    const t = setTimeout(() => loader.remove(), 450);
+    return () => clearTimeout(t);
+  }, []);
+
   return (
     <Router>
       <AuthProvider>
