@@ -183,9 +183,12 @@ function BookingCard({ b, onUpdateStatus, onViewDetail }) {
               <button onClick={() => onUpdateStatus(b, 'completed')} style={f({ height: 32, padding: '0 12px', borderRadius: 999, background: T.grnBg, color: T.grn, border: 'none', fontSize: 12, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 })}>
                 <CheckCircle2 size={13} />Done
               </button>
-              <button onClick={() => onUpdateStatus(b, 'cancelled')} style={f({ height: 32, padding: '0 12px', borderRadius: 999, background: '#fee2e2', color: '#991b1b', border: 'none', fontSize: 12, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 })}>
-                <XCircle size={13} />Cancel
-              </button>
+              {/* Hide Cancel once payment has been made — booking is locked */}
+              {b.paymentStatus !== 'deposit_paid' && b.paymentStatus !== 'full_paid' && (
+                <button onClick={() => onUpdateStatus(b, 'cancelled')} style={f({ height: 32, padding: '0 12px', borderRadius: 999, background: '#fee2e2', color: '#991b1b', border: 'none', fontSize: 12, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 })}>
+                  <XCircle size={13} />Cancel
+                </button>
+              )}
             </>
           )}
         </div>
@@ -257,18 +260,27 @@ function BookingsSect({ nav }) {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <span style={f({ fontSize: 14, fontWeight: 700, color: T.text })}>₦{Number(b.totalPrice || 0).toLocaleString()}</span>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button
-            onClick={() => setCfm({ booking: b, status: 'cancelled', label: 'Reject' })}
-            style={f({ height: 36, padding: '0 14px', borderRadius: 999, background: '#fee2e2', color: '#991b1b', border: 'none', fontSize: 13, fontWeight: 700, cursor: 'pointer' })}
-          >
-            Reject
-          </button>
-          <button
-            onClick={() => setCfm({ booking: b, status: 'confirmed', label: 'Accept' })}
-            style={f({ height: 36, padding: '0 14px', borderRadius: 999, background: T.grnBg, color: T.grn, border: 'none', fontSize: 13, fontWeight: 700, cursor: 'pointer' })}
-          >
-            Accept
-          </button>
+          {/* If payment has already been made, this booking is auto-confirmed — no Reject/Accept */}
+          {(b.paymentStatus === 'deposit_paid' || b.paymentStatus === 'full_paid') ? (
+            <span style={f({ height: 36, padding: '0 14px', borderRadius: 999, background: T.grnBg, color: T.grn, border: 'none', fontSize: 13, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4 })}>
+              <ShieldCheck size={14} />Payment Received
+            </span>
+          ) : (
+            <>
+              <button
+                onClick={() => setCfm({ booking: b, status: 'cancelled', label: 'Reject' })}
+                style={f({ height: 36, padding: '0 14px', borderRadius: 999, background: '#fee2e2', color: '#991b1b', border: 'none', fontSize: 13, fontWeight: 700, cursor: 'pointer' })}
+              >
+                Reject
+              </button>
+              <button
+                onClick={() => setCfm({ booking: b, status: 'confirmed', label: 'Accept' })}
+                style={f({ height: 36, padding: '0 14px', borderRadius: 999, background: T.grnBg, color: T.grn, border: 'none', fontSize: 13, fontWeight: 700, cursor: 'pointer' })}
+              >
+                Accept
+              </button>
+            </>
+          )}
         </div>
       </div>
       {b.notes ? <p style={f({ fontSize: 12, color: T.mut, marginTop: 10, fontStyle: 'italic' })}>"{b.notes}"</p> : null}
