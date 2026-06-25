@@ -15,6 +15,11 @@ import HubActionPill from './HubActionPill';
 function BookingList({ list, activeSectionId, onUpdateStatus, openPopup, closePopup }) {
   const todayStr = new Date().toISOString().split('T')[0];
 
+  const isAppointmentPast = (b) => {
+    const slotStart = b.timeSlot?.split(' - ')[0] || b.timeSlot || '00:00';
+    return new Date(`${b.date}T${slotStart}`) < new Date();
+  };
+
   const getWhatsAppLink = (booking) => {
     const msg = `Hi ${booking.clientName}! This is SteveNailX regarding your appointment on ${formatDisplayDate(booking.date)} at ${formatDisplayTime(booking.timeSlot)}.`;
     return `https://wa.me/${booking.clientPhone?.replace(/[^\d]/g, '') || ''}?text=${encodeURIComponent(msg)}`;
@@ -80,6 +85,11 @@ function BookingList({ list, activeSectionId, onUpdateStatus, openPopup, closePo
                     <a href={`tel:${b.clientPhone}`} style={{ display: 'flex', alignItems: 'center', gap: '4px', textDecoration: 'none', color: 'inherit' }}><Smartphone size={12} /> {b.clientPhone}</a>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Clock size={12} /> {formatDisplayTime(b.timeSlot)}</span>
                   </div>
+                  {(b.orderId || b.id) && (
+                    <span style={{ fontSize: '0.72rem', color: '#bbb', fontWeight: 700, letterSpacing: '0.05em', marginTop: '2px', display: 'block' }}>
+                      {b.orderId || b.id}
+                    </span>
+                  )}
                 </div>
               </div>
               <span style={{
@@ -130,7 +140,7 @@ function BookingList({ list, activeSectionId, onUpdateStatus, openPopup, closePo
                     <CheckCircle2 size={14} /> Done
                   </button>
                 )}
-                {b.status === 'awaiting_payment' && (
+                {b.status === 'awaiting_payment' && isAppointmentPast(b) && (
                   <button className="action-btn discard" style={{ padding: '8px 16px', fontSize: '0.8rem', backgroundColor: '#FEE2E2', color: '#991B1B' }} onClick={() => confirmCancel(b, { openPopup, closePopup })}>
                     <XCircle size={14} /> Cancel
                   </button>
@@ -152,7 +162,7 @@ function BookingList({ list, activeSectionId, onUpdateStatus, openPopup, closePo
                 </div>
               </div>
             )}
-            {b.status === 'awaiting_payment' && (
+            {b.status === 'awaiting_payment' && isAppointmentPast(b) && (
               <div className="booking-mobile-actions">
                 <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
                   <button

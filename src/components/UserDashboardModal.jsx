@@ -42,7 +42,8 @@ const DashboardBookingRow = ({ booking, onReview, onResumePayment }) => {
   const totalPrice = booking.services?.reduce((sum, s) => sum + parseInt(s.price || 0), 0) || 0;
 
   const handleContactSteve = () => {
-    const msg = `Hi Steve, I'd like to discuss rescheduling my appointment on ${booking.date} at ${booking.timeSlot}.`;
+    const orderId = booking.orderId || booking.id || booking.docId;
+    const msg = `Hi Steve, I'd like to discuss my appointment.\n\nOrder ID: ${orderId}\nDate: ${booking.date} at ${booking.timeSlot}`;
     const whatsappUrl = `${CONFIG.whatsappBaseUrl}?text=${encodeURIComponent(msg)}`;
     window.location.href = whatsappUrl;
     setMenuOpen(false);
@@ -67,11 +68,16 @@ const DashboardBookingRow = ({ booking, onReview, onResumePayment }) => {
           </div>
         </div>
 
-        {/* Middle Row: Service Name */}
+        {/* Middle Row: Service Name + Order ID */}
         <div className="booking-body-row">
           <h4 className="booking-service-title">
             {booking.services?.map(s => s.name).join(', ') || 'Nail Service'}
           </h4>
+          {(booking.orderId || booking.id) && (
+            <span style={{ fontSize: '0.72rem', color: '#aaa', fontWeight: 600, letterSpacing: '0.04em', marginTop: '2px', display: 'block' }}>
+              {booking.orderId || booking.id}
+            </span>
+          )}
         </div>
 
         {/* Bottom Row: Price & Actions */}

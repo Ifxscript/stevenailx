@@ -124,6 +124,7 @@ export const formatWhatsAppForSteve = (booking) => {
 
   const msg = `🔔 NEW BOOKING
 
+🆔 Order ID: ${booking.orderId || booking.id}
 👤 Client: ${booking.clientName}
 📅 ${booking.date} | ${booking.timeSlot}
 💅 Services:

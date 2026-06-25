@@ -34,6 +34,12 @@ function BookingConfirmation() {
       </p>
 
       <div className="confirmation-card">
+        {booking.orderId && (
+          <div className="conf-row" style={{ justifyContent: 'space-between', borderBottom: '1px solid #f0efea', paddingBottom: '10px', marginBottom: '10px' }}>
+            <span style={{ fontSize: '0.8rem', color: '#888' }}>Order ID</span>
+            <span style={{ fontWeight: 800, letterSpacing: '0.05em', color: '#4a1a26', fontSize: '0.85rem' }}>{booking.orderId}</span>
+          </div>
+        )}
         <div className="conf-row">
           <CalendarCheck size={18} />
           <span>{formatDisplayDate(booking.date)} at {formatDisplayTime(booking.timeSlot)}</span>

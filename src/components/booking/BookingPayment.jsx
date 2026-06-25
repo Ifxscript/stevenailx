@@ -119,9 +119,12 @@ function BookingPayment() {
 
       const bookingId = `bk${Date.now()}`;
       const reference = `snx-${bookingId}`;
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      const orderId = 'SNX-' + Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
 
       const booking = {
         id: bookingId,
+        orderId,
         clientId: currentUser.uid,
         clientName: currentUser.displayName || currentUser.email,
         clientEmail: currentUser.email,
