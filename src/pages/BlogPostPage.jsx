@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import DOMPurify from 'dompurify';
 import { db } from '../lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import Navbar from '../components/Navbar';
@@ -109,7 +110,7 @@ function BlogPostPage() {
         {/* Rich Content Body */}
         <div 
           className="blog-post__content"
-          dangerouslySetInnerHTML={{ __html: post.content }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
         />
       </article>
 

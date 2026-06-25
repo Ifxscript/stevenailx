@@ -69,7 +69,7 @@ function BookingPayment() {
       const confirmed = { ...booking, status: 'confirmed', paymentStatus: 'deposit_paid' };
       fetch('/api/send-email', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-internal-secret': import.meta.env.VITE_SEND_EMAIL_SECRET || '' },
         body: JSON.stringify({ type: 'booking_paid', booking: confirmed }),
       }).catch(() => {});
       updateBooking({ confirmedBooking: confirmed });
@@ -156,7 +156,7 @@ function BookingPayment() {
 
       fetch('/api/send-email', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-internal-secret': import.meta.env.VITE_SEND_EMAIL_SECRET || '' },
         body: JSON.stringify({ type: 'booking_awaiting_payment', booking }),
       }).catch(() => {});
 

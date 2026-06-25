@@ -2,7 +2,7 @@ export const sendBookingEmail = async (type, booking) => {
   try {
     const res = await fetch('/api/send-email', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-internal-secret': import.meta.env.VITE_SEND_EMAIL_SECRET || '' },
       body: JSON.stringify({ type, booking }),
     });
     if (!res.ok) {

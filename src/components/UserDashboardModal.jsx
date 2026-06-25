@@ -195,7 +195,7 @@ const UserDashboardModal = ({ isOpen, onClose }) => {
     });
     fetch('/api/send-email', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-internal-secret': import.meta.env.VITE_SEND_EMAIL_SECRET || '' },
       body: JSON.stringify({ type: 'booking_paid', booking: { ...booking, status: 'confirmed', paymentStatus: 'deposit_paid' } }),
     }).catch(() => {});
     setResumePhase(null);

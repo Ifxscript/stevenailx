@@ -49,6 +49,11 @@ const card = (html) => `<div style="background:#f9f7f2;padding:16px;border-radiu
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
+  const secret = process.env.SEND_EMAIL_SECRET;
+  if (secret && req.headers['x-internal-secret'] !== secret) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
   const { type, booking } = req.body || {};
   if (!type || !booking) return res.status(400).json({ error: 'Missing type or booking' });
 
