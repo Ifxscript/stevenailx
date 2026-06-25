@@ -304,7 +304,7 @@ function BookingPayment() {
 
       <div className="phone-field">
         <label className="phone-field-label">
-          <Phone size={14} />
+          <Phone size={16} strokeWidth={2.2} />
           Phone Number
         </label>
         <input
@@ -328,7 +328,7 @@ function BookingPayment() {
           {phase === 'initiating' ? (
             <><Loader2 className="animate-spin" size={18} /> Opening payment…</>
           ) : depositOption ? (
-            `Pay ₦${selectedAmount.toLocaleString()} →`
+            `Pay ₦${selectedAmount.toLocaleString()}`
           ) : (
             'Choose a deposit option'
           )}

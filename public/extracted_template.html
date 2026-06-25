@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="17e2956f-118a-4559-8355-92543d878118"></script>
+</head>
+<body>
+
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<style>/* cyrillic-ext */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("545df7c8-77cd-4784-8835-e5a98662410c") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("03852782-dcd1-4c34-b58d-ab2c36dcc40c") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("1b6820ba-3277-4741-ba32-00d65699fbe4") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("da4d920c-22f2-4d27-a14f-af6442807a9e") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("f6a0ca8e-429e-4539-9df9-4eb8a288e5c9") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("545df7c8-77cd-4784-8835-e5a98662410c") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("03852782-dcd1-4c34-b58d-ab2c36dcc40c") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("1b6820ba-3277-4741-ba32-00d65699fbe4") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("da4d920c-22f2-4d27-a14f-af6442807a9e") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("f6a0ca8e-429e-4539-9df9-4eb8a288e5c9") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("545df7c8-77cd-4784-8835-e5a98662410c") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("03852782-dcd1-4c34-b58d-ab2c36dcc40c") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("1b6820ba-3277-4741-ba32-00d65699fbe4") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("da4d920c-22f2-4d27-a14f-af6442807a9e") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("f6a0ca8e-429e-4539-9df9-4eb8a288e5c9") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("545df7c8-77cd-4784-8835-e5a98662410c") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("03852782-dcd1-4c34-b58d-ab2c36dcc40c") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("1b6820ba-3277-4741-ba32-00d65699fbe4") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("da4d920c-22f2-4d27-a14f-af6442807a9e") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("f6a0ca8e-429e-4539-9df9-4eb8a288e5c9") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("545df7c8-77cd-4784-8835-e5a98662410c") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("03852782-dcd1-4c34-b58d-ab2c36dcc40c") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("1b6820ba-3277-4741-ba32-00d65699fbe4") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("da4d920c-22f2-4d27-a14f-af6442807a9e") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("f6a0ca8e-429e-4539-9df9-4eb8a288e5c9") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("545df7c8-77cd-4784-8835-e5a98662410c") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("03852782-dcd1-4c34-b58d-ab2c36dcc40c") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("1b6820ba-3277-4741-ba32-00d65699fbe4") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("da4d920c-22f2-4d27-a14f-af6442807a9e") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("f6a0ca8e-429e-4539-9df9-4eb8a288e5c9") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+</style>
+<meta name="design_doc_mode" content="canvas">
+<style>
+  * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  body { margin: 0; font-family: 'Nunito', sans-serif; }
+</style>
+</helmet>
+
+<!-- ============ ACCOUNT ============ -->
+<div style="position:absolute; left:80px; top:80px; width:390px;">
+  <div data-drags-parent="1" style="font-family:'Nunito',sans-serif; font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#8C8688; margin-bottom:14px; cursor:grab;">Account</div>
+  <div data-screen-label="Account" style="width:390px; height:844px; background:#FFFFFF; border-radius:40px; box-shadow:0 12px 40px rgba(40,20,25,.12); overflow:hidden; display:flex; flex-direction:column; position:relative;">
+
+    <!-- status bar -->
+    <div style="height:50px; flex:0 0 auto; display:flex; align-items:center; justify-content:space-between; padding:0 30px 0 34px;">
+      <span style="font-size:16px; font-weight:800; color:#221F20;">9:41</span>
+      <div style="display:flex; align-items:center; gap:7px;">
+        <div style="display:flex; align-items:flex-end; gap:2px; height:11px;">
+          <span style="width:3px; height:4px; background:#221F20; border-radius:1px;"></span>
+          <span style="width:3px; height:6px; background:#221F20; border-radius:1px;"></span>
+          <span style="width:3px; height:9px; background:#221F20; border-radius:1px;"></span>
+          <span style="width:3px; height:11px; background:#221F20; border-radius:1px;"></span>
+        </div>
+        <div style="width:24px; height:12px; border:1.5px solid #221F20; border-radius:3px; padding:1.5px; position:relative;">
+          <div style="width:60%; height:100%; background:#221F20; border-radius:1px;"></div>
+          <div style="position:absolute; right:-3px; top:3px; width:2px; height:5px; background:#221F20; border-radius:0 1px 1px 0;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- domain bar -->
+    <div style="flex:0 0 auto; padding:4px 16px 12px;">
+      <div style="height:36px; background:#F2EEEC; border-radius:12px; display:flex; align-items:center; justify-content:center; gap:6px;">
+        <span style="font-size:11px;">🔒</span>
+        <span style="font-size:14px; font-weight:600; color:#221F20;">stevenailx.com</span>
+      </div>
+    </div>
+
+    <!-- modal header -->
+    <div style="flex:0 0 auto; padding:10px 22px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #F1ECEA;">
+      <div style="display:flex; align-items:center; gap:14px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#221F20" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        <span style="font-size:21px; font-weight:800; color:#221F20;">Book Appointment</span>
+      </div>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9A9395" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </div>
+
+    <!-- progress -->
+    <div style="flex:0 0 auto; padding:20px 22px 4px;">
+      <div style="height:6px; border-radius:99px; background:#F0EAE8; overflow:hidden;">
+        <div style="width:55%; height:100%; border-radius:99px; background:linear-gradient(90deg,#D98C9A,#8C3A4B);"></div>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-top:14px;">
+        <span style="font-size:10px; font-weight:700; letter-spacing:.04em; color:#C3BDBE;">SERVICES</span>
+        <span style="font-size:10px; font-weight:700; letter-spacing:.04em; color:#C3BDBE;">DATE</span>
+        <span style="font-size:10px; font-weight:800; letter-spacing:.04em; color:#8C3A4B;">ACCOUNT</span>
+        <span style="font-size:10px; font-weight:700; letter-spacing:.04em; color:#C3BDBE;">REVIEW</span>
+        <span style="font-size:10px; font-weight:700; letter-spacing:.04em; color:#C3BDBE;">PAY</span>
+      </div>
+    </div>
+
+    <!-- content -->
+    <div style="flex:1 1 auto; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 28px; text-align:center;">
+      <div style="width:72px; height:72px; border-radius:50%; background:#F6ECEE; display:flex; align-items:center; justify-content:center; font-size:34px; margin-bottom:24px;">👋</div>
+      <h2 style="margin:0 0 8px; font-size:26px; font-weight:800; color:#221F20;">You're signed in</h2>
+      <p style="margin:0 0 28px; font-size:16px; font-weight:500; color:#8C8688;">Booking as the account below.</p>
+
+      <div style="width:100%; background:#F8F3F1; border-radius:20px; padding:18px; display:flex; align-items:center; gap:16px; text-align:left;">
+        <div style="width:52px; height:52px; flex:0 0 auto; border-radius:50%; background:#8C3A4B; display:flex; align-items:center; justify-content:center; color:#fff; font-size:19px; font-weight:800;">CC</div>
+        <div style="min-width:0;">
+          <div style="font-size:18px; font-weight:800; color:#221F20;">Christyl Clintyl</div>
+          <div style="font-size:14px; font-weight:500; color:#9A9395; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">xlinprince2020@gmail.com</div>
+        </div>
+      </div>
+
+      <button style="margin-top:14px; font-size:13px; font-weight:700; color:#8C8688; background:none; border:none; cursor:pointer; text-decoration:underline; text-underline-offset:3px;">Not you? Switch account</button>
+    </div>
+
+    <!-- footer -->
+    <div style="flex:0 0 auto; padding:18px 22px 30px; border-top:1px solid #F1ECEA;">
+      <button style="width:100%; height:60px; border:none; border-radius:18px; background:#8C3A4B; color:#fff; font-family:'Nunito',sans-serif; font-size:18px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center;" style-hover="background:#7B3242;">Continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ REVIEW ============ -->
+<div style="position:absolute; left:550px; top:80px; width:390px;">
+  <div data-drags-parent="1" style="font-family:'Nunito',sans-serif; font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#8C8688; margin-bottom:14px; cursor:grab;">Review</div>
+  <div data-screen-label="Review" style="width:390px; height:844px; background:#FFFFFF; border-radius:40px; box-shadow:0 12px 40px rgba(40,20,25,.12); overflow:hidden; display:flex; flex-direction:column; position:relative;">
+
+    <div style="height:50px; flex:0 0 auto; display:flex; align-items:center; justify-content:space-between; padding:0 30px 0 34px;">
+      <span style="font-size:16px; font-weight:800; color:#221F20;">9:41</span>
+      <div style="display:flex; align-items:center; gap:7px;">
+        <div style="display:flex; align-items:flex-end; gap:2px; height:11px;">
+          <span style="width:3px; height:4px; background:#221F20; border-radius:1px;"></span>
+          <span style="width:3px; height:6px; background:#221F20; border-radius:1px;"></span>
+          <span style="width:3px; height:9px; background:#221F20; border-radius:1px;"></span>
+          <span style="width:3px; height:11px; background:#221F20; border-radius:1px;"></span>
+        </div>
+        <div style="width:24px; height:12px; border:1.5px solid #221F20; border-radius:3px; padding:1.5px; position:relative;">
+          <div style="width:60%; height:100%; background:#221F20; border-radius:1px;"></div>
+          <div style="position:absolute; right:-3px; top:3px; width:2px; height:5px; background:#221F20; border-radius:0 1px 1px 0;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="flex:0 0 auto; padding:4px 16px 12px;">
+      <div style="height:36px; background:#F2EEEC; border-radius:12px; display:flex; align-items:center; justify-content:center; gap:6px;">
+        <span style="font-size:11px;">🔒</span>
+        <span style="font-size:14px; font-weight:600; color:#221F20;">stevenailx.com</span>
+      </div>
+    </div>
+
+    <div style="flex:0 0 auto; padding:10px 22px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #F1ECEA;">
+      <div style="display:flex; align-items:center; gap:14px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#221F20" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        <span style="font-size:21px; font-weight:800; color:#221F20;">Book Appointment</span>
+      </div>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9A9395" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </div>
+
+    <div style="flex:0 0 auto; padding:20px 22px 4px;">
+      <div style="height:6px; border-radius:99px; background:#F0EAE8; overflow:hidden;">
+        <div style="width:80%; height:100%; border-radius:99px; background:linear-gradient(90deg,#D98C9A,#8C3A4B);"></div>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-top:14px;">
+        <span style="font-size:10px; font-weight:700; letter-spacing:.04em; color:#C3BDBE;">SERVICES</span>
+        <span style="font-size:10px; font-weight:700; letter-spacing:.04em; color:#C3BDBE;">DATE</span>
+        <span style="font-size:10px; font-weight:700; letter-spacing:.04em; color:#C3BDBE;">ACCOUNT</span>
+        <span style="font-size:10px; font-weight:800; letter-spacing:.04em; color:#8C3A4B;">REVIEW</span>
+        <span style="font-size:10px; font-weight:700; letter-spacing:.04em; color:#C3BDBE;">PAY</span>
+      </div>
+    </div>
+
+    <!-- content -->
+    <div style="flex:1 1 auto; overflow-y:auto; padding:22px;">
+      <h2 style="margin:0 0 16px; font-size:24px; font-weight:800; color:#221F20;">Review your booking</h2>
+
+      <div style="background:#F8F3F1; border-radius:22px; padding:6px 20px;">
+        <div style="display:flex; gap:15px; align-items:flex-start; padding:16px 0; border-bottom:1px solid #EDE5E2;">
+          <svg width="22" height="22" style="flex:0 0 auto; margin-top:2px;" viewBox="0 0 24 24" fill="none" stroke="#8C3A4B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          <div>
+            <div style="font-size:11px; font-weight:800; letter-spacing:.06em; color:#A99FA0; text-transform:uppercase; margin-bottom:3px;">Date &amp; Time</div>
+            <div style="font-size:17px; font-weight:700; color:#221F20;">Thu, Jun 25 · 9:30 AM</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:15px; align-items:flex-start; padding:16px 0; border-bottom:1px solid #EDE5E2;">
+          <svg width="22" height="22" style="flex:0 0 auto; margin-top:2px;" viewBox="0 0 24 24" fill="none" stroke="#8C3A4B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 16 14"></polyline></svg>
+          <div>
+            <div style="font-size:11px; font-weight:800; letter-spacing:.06em; color:#A99FA0; text-transform:uppercase; margin-bottom:3px;">Duration</div>
+            <div style="font-size:17px; font-weight:700; color:#221F20;">~30 minutes</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:15px; align-items:flex-start; padding:16px 0;">
+          <svg width="22" height="22" style="flex:0 0 auto; margin-top:2px;" viewBox="0 0 24 24" fill="none" stroke="#8C3A4B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          <div>
+            <div style="font-size:11px; font-weight:800; letter-spacing:.06em; color:#A99FA0; text-transform:uppercase; margin-bottom:3px;">Location</div>
+            <div style="font-size:17px; font-weight:700; color:#221F20; line-height:1.4;">Saham Plaza, behind New Banex, Shop A20, Abuja</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:center; justify-content:space-between; margin:24px 2px 14px;">
+        <span style="font-size:12px; font-weight:800; letter-spacing:.08em; color:#8C3A4B; text-transform:uppercase;">Services</span>
+        <button style="font-size:13px; font-weight:700; color:#8C8688; background:none; border:none; cursor:pointer; text-decoration:underline; text-underline-offset:2px;">Edit</button>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:0 2px;">
+        <span style="font-size:17px; font-weight:600; color:#221F20;">Classic Manicure</span>
+        <span style="font-size:17px; font-weight:700; color:#221F20;">₦10,000</span>
+      </div>
+
+      <div style="height:1px; background:#EDE5E2; margin:18px 0;"></div>
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:0 2px;">
+        <span style="font-size:19px; font-weight:800; color:#221F20;">Total</span>
+        <span style="font-size:22px; font-weight:800; color:#221F20;">₦10,000</span>
+      </div>
+
+      <div style="margin-top:26px;">
+        <label style="display:block; font-size:14px; font-weight:700; color:#6B6566; margin-bottom:10px;">Special requests <span style="font-weight:500; color:#A99FA0;">(optional)</span></label>
+        <textarea placeholder="Any notes for Steve…" style="width:100%; height:90px; resize:none; border:1.5px solid #EBE4E2; border-radius:16px; padding:14px; font-family:'Nunito',sans-serif; font-size:15px; font-weight:500; color:#221F20; outline:none;" style-focus="border-color:#8C3A4B;"></textarea>
+      </div>
+    </div>
+
+    <div style="flex:0 0 auto; padding:14px 22px 30px; border-top:1px solid #F1ECEA;">
+      <p style="margin:0 0 12px; font-size:12.5px; font-weight:500; color:#A99FA0; text-align:center; line-height:1.45;">A deposit confirms your slot — you'll choose the amount next.</p>
+      <button style="width:100%; height:60px; border:none; border-radius:18px; background:#8C3A4B; color:#fff; font-family:'Nunito',sans-serif; font-size:18px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center;" style-hover="background:#7B3242;">Proceed to Payment</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PAY ============ -->
+<div style="position:absolute; left:1020px; top:80px; width:390px;">
+  <div data-drags-parent="1" style="font-family:'Nunito',sans-serif; font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#8C8688; margin-bottom:14px; cursor:grab;">Pay</div>
+  <div data-screen-label="Pay" style="width:390px; height:844px; background:#FFFFFF; border-radius:40px; box-shadow:0 12px 40px rgba(40,20,25,.12); overflow:hidden; display:flex; flex-direction:column; position:relative;">
+
+    <div style="height:50px; flex:0 0 auto; display:flex; align-items:center; justify-content:space-between; padding:0 30px 0 34px;">
+      <span style="font-size:16px; font-weight:800; color:#221F20;">9:41</span>
+      <div style="display:flex; align-items:center; gap:7px;">
+        <div style="display:flex; align-items:flex-end; gap:2px; height:11px;">
+          <span style="width:3px; height:4px; background:#221F20; border-radius:1px;"></span>
+          <span style="width:3px; height:6px; background:#221F20; border-radius:1px;"></span>
+          <span style="width:3px; height:9px; background:#221F20; border-radius:1px;"></span>
+          <span style="width:3px; height:11px; background:#221F20; border-radius:1px;"></span>
+        </div>
+        <div style="width:24px; height:12px; border:1.5px solid #221F20; border-radius:3px; padding:1.5px; position:relative;">
+          <div style="width:60%; height:100%; background:#221F20; border-radius:1px;"></div>
+          <div style="position:absolute; right:-3px; top:3px; width:2px; height:5px; background:#221F20; border-radius:0 1px 1px 0;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="flex:0 0 auto; padding:4px 16px 12px;">
+      <div style="height:36px; background:#F2EEEC; border-radius:12px; display:flex; align-items:center; justify-content:center; gap:6px;">
+        <span style="font-size:11px;">🔒</span>
+        <span style="font-size:14px; font-weight:600; color:#221F20;">stevenailx.com</span>
+      </div>
+    </div>
+
+    <div style="flex:0 0 auto; padding:10px 22px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #F1ECEA;">
+      <div style="display:flex; align-items:center; gap:14px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#221F20" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        <span style="font-size:21px; font-weight:800; color:#221F20;">Book Appointment</span>
+      </div>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9A9395" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </div>
+
+    <div style="flex:0 0 auto; padding:20px 22px 4px;">
+      <div style="height:6px; border-radius:99px; background:#F0EAE8; overflow:hidden;">
+        <div style="width:100%; height:100%; border-radius:99px; background:linear-gradient(90deg,#D98C9A,#8C3A4B);"></div>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-top:14px;">
+        <span style="font-size:10px; font-weight:700; letter-spacing:.04em; color:#C3BDBE;">SERVICES</span>
+        <span style="font-size:10px; font-weight:700; letter-spacing:.04em; color:#C3BDBE;">DATE</span>
+        <span style="font-size:10px; font-weight:700; letter-spacing:.04em; color:#C3BDBE;">ACCOUNT</span>
+        <span style="font-size:10px; font-weight:700; letter-spacing:.04em; color:#C3BDBE;">REVIEW</span>
+        <span style="font-size:10px; font-weight:800; letter-spacing:.04em; color:#8C3A4B;">PAY</span>
+      </div>
+    </div>
+
+    <!-- content -->
+    <div style="flex:1 1 auto; overflow-y:auto; padding:22px;">
+      <h2 style="margin:0 0 4px; font-size:24px; font-weight:800; color:#221F20;">Lock in your slot</h2>
+      <p style="margin:0 0 20px; font-size:15px; font-weight:500; color:#8C8688;">Pay a deposit now to confirm.</p>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <button onclick="{{ pickFlat }}" style="position:relative; text-align:left; background:#F8F3F1; border:2px solid #EBE4E2; border-radius:18px; padding:18px 16px; cursor:pointer; font-family:'Nunito',sans-serif;">
+          <div style="font-size:24px; font-weight:800; color:#221F20;">₦5,000</div>
+          <div style="font-size:13px; font-weight:600; color:#9A9395; margin-top:3px;">Flat deposit</div>
+          <sc-if value="{{ selFlat }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute; inset:0; border:2px solid #8C3A4B; border-radius:18px; pointer-events:none;"></div>
+            <div style="position:absolute; top:12px; right:12px; width:22px; height:22px; border-radius:50%; background:#8C3A4B; display:flex; align-items:center; justify-content:center;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+          </sc-if>
+        </button>
+        <button onclick="{{ pickPct }}" style="position:relative; text-align:left; background:#F8F3F1; border:2px solid #EBE4E2; border-radius:18px; padding:18px 16px; cursor:pointer; font-family:'Nunito',sans-serif;">
+          <div style="font-size:24px; font-weight:800; color:#221F20;">₦2,500</div>
+          <div style="font-size:13px; font-weight:600; color:#9A9395; margin-top:3px;">25% of total</div>
+          <sc-if value="{{ selPct }}" hint-placeholder-val="{{ true }}">
+            <div style="position:absolute; inset:0; border:2px solid #8C3A4B; border-radius:18px; pointer-events:none;"></div>
+            <div style="position:absolute; top:12px; right:12px; width:22px; height:22px; border-radius:50%; background:#8C3A4B; display:flex; align-items:center; justify-content:center;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+          </sc-if>
+        </button>
+      </div>
+
+      <div style="background:#F8F3F1; border-radius:20px; padding:6px 20px; margin-top:18px;">
+        <div style="display:flex; justify-content:space-between; padding:15px 0; border-bottom:1px solid #EDE5E2;">
+          <span style="font-size:16px; font-weight:600; color:#6B6566;">Appointment total</span>
+          <span style="font-size:16px; font-weight:700; color:#221F20;">₦10,000</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; padding:15px 0; border-bottom:1px solid #EDE5E2;">
+          <span style="font-size:16px; font-weight:700; color:#221F20;">Deposit now</span>
+          <span style="font-size:18px; font-weight:800; color:#8C3A4B;">{{ depositNow }}</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; padding:15px 0;">
+          <span style="font-size:16px; font-weight:600; color:#9A9395;">Balance on the day</span>
+          <span style="font-size:16px; font-weight:600; color:#9A9395;">{{ balance }}</span>
+        </div>
+      </div>
+
+      <div style="margin-top:22px;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8C3A4B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"></path></svg>
+          <span style="font-size:13px; font-weight:800; letter-spacing:.04em; color:#221F20; text-transform:uppercase;">Phone number</span>
+        </div>
+        <input value="07048465106" style="width:100%; height:54px; border:1.5px solid #EBE4E2; border-radius:16px; padding:0 16px; font-family:'Nunito',sans-serif; font-size:17px; font-weight:600; color:#221F20; outline:none;" style-focus="border-color:#8C3A4B;">
+        <p style="margin:8px 2px 0; font-size:13px; font-weight:500; color:#A99FA0;">So Steve can reach you about your appointment.</p>
+      </div>
+    </div>
+
+    <div style="flex:0 0 auto; padding:16px 22px 30px; border-top:1px solid #F1ECEA;">
+      <button style="width:100%; height:60px; border:none; border-radius:18px; background:#8C3A4B; color:#fff; font-family:'Nunito',sans-serif; font-size:18px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center;" style-hover="background:#7B3242;">{{ payLabel }}</button>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="">
+class Component extends DCLogic {
+  state = { deposit: 'percent' };
+  renderVals() {
+    const isPct = this.state.deposit === 'percent';
+    return {
+      selFlat: !isPct,
+      selPct: isPct,
+      pickFlat: () => this.setState({ deposit: 'flat' }),
+      pickPct: () => this.setState({ deposit: 'percent' }),
+      depositNow: isPct ? '₦2,500' : '₦5,000',
+      balance: isPct ? '₦7,500' : '₦5,000',
+      payLabel: isPct ? 'Pay ₦2,500' : 'Pay ₦5,000',
+    };
+  }
+}
+</script>
+
+
+</body></html>

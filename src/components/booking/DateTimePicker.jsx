@@ -158,7 +158,7 @@ function DateTimePicker() {
             </span>
           )}
         </div>
-        <button className="step-continue-btn" disabled={!selectedDate || !selectedTime} onClick={handleContinue}>
+        <button className="step-continue-btn confirm" disabled={!selectedDate || !selectedTime} onClick={handleContinue}>
           Continue
         </button>
       </div>

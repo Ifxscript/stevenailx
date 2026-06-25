@@ -43,7 +43,7 @@ function BookingDrawer() {
             <div className="booking-header-left">
               {currentStep > 0 && currentStep < 5 && (
                 <button className="booking-back-btn" onClick={prevStep}>
-                  <ChevronLeft size={20} />
+                  <ChevronLeft size={20} strokeWidth={2.4} />
                 </button>
               )}
               <h2 className="booking-title">
@@ -51,7 +51,7 @@ function BookingDrawer() {
               </h2>
             </div>
             <button className="booking-close-btn" onClick={closeBookingDrawer}>
-              <X size={24} />
+              <X size={22} strokeWidth={2.2} />
             </button>
           </div>
 

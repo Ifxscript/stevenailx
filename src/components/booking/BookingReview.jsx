@@ -3,7 +3,7 @@ import { formatDisplayDate, formatDisplayTime } from '../../lib/bookingUtils';
 import { Clock, Calendar, MapPin } from 'lucide-react';
 
 function BookingReview() {
-  const { bookingData, updateBooking, getTotalPrice, getTotalDuration, nextStep } = useBooking();
+  const { bookingData, updateBooking, getTotalPrice, getTotalDuration, nextStep, goToStep } = useBooking();
 
   return (
     <div className="step-container">
@@ -41,6 +41,7 @@ function BookingReview() {
 
       <div className="review-services-header">
         <span className="review-services-label">Services</span>
+        <button className="review-edit-btn" onClick={() => goToStep(0)}>Edit</button>
       </div>
 
       {bookingData.services.map(s => (

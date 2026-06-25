@@ -5,7 +5,7 @@ import ServicesPage from './pages/ServicesPage';
 import GalleryPage from './pages/GalleryPage';
 import SocialsPage from './pages/SocialsPage';
 import ScrollToTop from './components/ScrollToTop';
-import { LandingPageProvider } from './context/LandingPageContext';
+import { LandingPageProvider, useLandingPage } from './context/LandingPageContext';
 import { AuthProvider } from './context/AuthContext';
 import { BookingProvider } from './context/BookingContext';
 import BookingDrawer from './components/booking/BookingDrawer';
@@ -18,19 +18,29 @@ const LoginPage     = lazy(() => import('./pages/admin/LoginPage'));
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 const BlogEditorPage = lazy(() => import('./pages/BlogEditorPage'));
 
-function App() {
-  useEffect(() => {
-    const loader = document.getElementById('app-loader');
-    if (!loader) return;
-    loader.classList.add('fade-out');
-    const t = setTimeout(() => loader.remove(), 450);
-    return () => clearTimeout(t);
-  }, []);
+function LoaderRemover() {
+  const { loading } = useLandingPage();
 
+  useEffect(() => {
+    if (!loading) {
+      const loader = document.getElementById('app-loader');
+      if (loader && !loader.classList.contains('fade-out')) {
+        loader.classList.add('fade-out');
+        const t = setTimeout(() => loader.remove(), 450);
+        return () => clearTimeout(t);
+      }
+    }
+  }, [loading]);
+
+  return null;
+}
+
+function App() {
   return (
     <Router>
       <AuthProvider>
         <LandingPageProvider>
+          <LoaderRemover />
           <BookingProvider>
             <div className="app">
               <ScrollToTop />

@@ -31,7 +31,7 @@ function BookingAuth() {
 
     return (
       <div className="step-container auth-step">
-        <div className="auth-icon-circle">🌸</div>
+        <div className="auth-icon-circle">👋</div>
         <h2 className="auth-heading">You're signed in</h2>
         <p className="auth-subtext">Booking as the account below.</p>
 
