@@ -1,0 +1,76 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'ianekwe7@gmail.com' ||
+        request.auth.token.email in
+          get(/databases/$(database)/documents/site_content/landing_page).data.security.adminEmails
+      );
+    }
+
+    // Site content (landing page, settings): public read, admin write only
+    match /site_content/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Catalogue data: public read, admin write
+    match /services/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /portfolio/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /team/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /posts/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Reviews: public read, signed-in create, admin manage
+    match /reviews/{doc} {
+      allow read: if true;
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    // Users: own profile read/write, admin can read all
+    match /users/{userId} {
+      allow read, write: if isSignedIn() && request.auth.uid == userId;
+      allow read: if isAdmin();
+    }
+
+    // Bookings — critical: clients can create (awaiting_payment only),
+    // server (Admin SDK) handles all status updates, admin email can update via dashboard
+    match /bookings/{bookingId} {
+      allow read: if isSignedIn() && (
+        request.auth.uid == resource.data.clientId || isAdmin()
+      );
+      allow create: if isSignedIn()
+        && request.auth.uid == request.resource.data.clientId
+        && request.resource.data.status == 'awaiting_payment';
+      allow update, delete: if isAdmin();
+    }
+
+    // Mail (Trigger Email extension) — server/admin only
+    match /mail/{doc} {
+      allow read, write: if false;
+    }
+
+    // Deny everything else by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

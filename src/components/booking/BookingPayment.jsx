@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useBooking } from '../../context/BookingContext';
 import { db } from '../../lib/firebase';
-import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { Loader2, Phone } from 'lucide-react';
 import './BookingPayment.css';
 
@@ -58,21 +58,25 @@ function BookingPayment() {
     }, 200);
   });
 
-  const confirmBooking = async (booking) => {
-    const id = savedRef.current?.bookingId || booking.id;
-    await updateDoc(doc(db, 'bookings', id), {
-      status: 'confirmed',
-      paymentStatus: 'deposit_paid',
-      updatedAt: new Date().toISOString(),
-    });
-    const confirmed = { ...booking, status: 'confirmed', paymentStatus: 'deposit_paid' };
-    fetch('/api/send-email', {
+  const confirmViaServer = async (reference, booking) => {
+    const r = await fetch('/api/confirm-booking', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: 'booking_paid', booking: confirmed }),
-    }).catch(() => {});
-    updateBooking({ confirmedBooking: confirmed });
-    nextStep();
+      body: JSON.stringify({ reference, bookingId: booking.id }),
+    });
+    const data = await r.json();
+    if (data.confirmed) {
+      const confirmed = { ...booking, status: 'confirmed', paymentStatus: 'deposit_paid' };
+      fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'booking_paid', booking: confirmed }),
+      }).catch(() => {});
+      updateBooking({ confirmedBooking: confirmed });
+      nextStep();
+      return true;
+    }
+    return false;
   };
 
   const startPolling = (reference, booking) => {
@@ -86,12 +90,8 @@ function BookingPayment() {
         return;
       }
       try {
-        const r = await fetch(`/api/paystack-verify?reference=${encodeURIComponent(reference)}`);
-        const data = await r.json();
-        if (data.verified) {
-          clearInterval(pollingRef.current);
-          await confirmBooking(booking);
-        }
+        const done = await confirmViaServer(reference, booking);
+        if (done) clearInterval(pollingRef.current);
       } catch { /* keep polling */ }
     }, 5000);
   };
@@ -167,12 +167,8 @@ function BookingPayment() {
         reference,
         onSuccess: (txn) => {
           setPhase('waiting');
-          fetch(`/api/paystack-verify?reference=${encodeURIComponent(txn.reference)}`)
-            .then(r => r.json())
-            .then(d => {
-              if (d.verified) confirmBooking(booking);
-              else startPolling(txn.reference, booking);
-            })
+          confirmViaServer(txn.reference, booking)
+            .then(done => { if (!done) startPolling(txn.reference, booking); })
             .catch(() => startPolling(txn.reference, booking));
         },
         onCancel: () => {
