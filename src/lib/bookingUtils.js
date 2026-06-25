@@ -119,19 +119,19 @@ export const formatWhatsAppForSteve = (booking) => {
   const services = booking.services.map(s => `  • ${s.name} — ₦${Number(s.price).toLocaleString()}`).join('\n');
   const guestLines = booking.guests?.filter(g => g.name && g.services.length > 0).map(g => {
     const gServices = g.services.map(s => `    - ${s.name} — ₦${Number(s.price).toLocaleString()}`).join('\n');
-    return `  👤 ${g.name}\n${gServices}`;
+    return `  ${g.name}\n${gServices}`;
   }).join('\n') || '';
 
-  const msg = `🔔 NEW BOOKING
+  const msg = `NEW BOOKING
 
-🆔 Order ID: ${booking.orderId || booking.id}
-👤 Client: ${booking.clientName}
-📅 ${booking.date} | ${booking.timeSlot}
-💅 Services:
-${services}${guestLines ? `\n👥 Guests:\n${guestLines}` : ''}
-💰 Total: ₦${Number(booking.totalPrice).toLocaleString()}
-📞 ${booking.clientPhone || booking.clientEmail}
-${booking.notes ? `📝 Notes: ${booking.notes}` : ''}`;
+Order ID: ${booking.orderId || booking.id}
+Client: ${booking.clientName}
+Date: ${booking.date} | ${booking.timeSlot}
+Services:
+${services}${guestLines ? `\nGuests:\n${guestLines}` : ''}
+Total: ₦${Number(booking.totalPrice).toLocaleString()}
+Phone: ${booking.clientPhone || booking.clientEmail}
+${booking.notes ? `Notes: ${booking.notes}` : ''}`;
 
   return `https://wa.me/${STEVE_PHONE}?text=${encodeURIComponent(msg)}`;
 };
@@ -142,12 +142,12 @@ ${booking.notes ? `📝 Notes: ${booking.notes}` : ''}`;
 export const formatWhatsAppForClient = (booking) => {
   const services = booking.services.map(s => `• ${s.name}`).join('\n');
 
-  const msg = `✅ BOOKING CONFIRMED — SteveNailX
+  const msg = `BOOKING CONFIRMED — SteveNailX
 
-📅 ${booking.date} | ${booking.timeSlot}
-💅 ${services}
-💰 Total: ₦${Number(booking.totalPrice).toLocaleString()}
-📍 Saham Plaza, behind New Banex, Shop A20, Abuja
+Date: ${booking.date} | ${booking.timeSlot}
+Services: ${services}
+Total: ₦${Number(booking.totalPrice).toLocaleString()}
+Location: Saham Plaza, behind New Banex, Shop A20, Abuja
 
 To cancel or reschedule, visit your bookings at stevenailx.com/bookings`;
 
