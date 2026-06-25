@@ -3,7 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useBooking } from '../../context/BookingContext';
 import { db } from '../../lib/firebase';
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Phone } from 'lucide-react';
 import './BookingPayment.css';
 
 function BookingPayment() {
@@ -13,6 +13,7 @@ function BookingPayment() {
   const [depositOption, setDepositOption] = useState(null); // 'flat' | 'percent'
   const [phase, setPhase] = useState('select'); // 'select' | 'initiating' | 'waiting' | 'error'
   const [error, setError] = useState('');
+  const [phone, setPhone] = useState('');
   const savedRef = useRef(null);
   const pollingRef = useRef(null);
   const pollCountRef = useRef(0);
@@ -26,6 +27,16 @@ function BookingPayment() {
     depositOption === 'flat' ? flatDeposit
     : depositOption === 'percent' ? percentDeposit
     : 0;
+
+  // Load saved phone on mount
+  useEffect(() => {
+    if (!currentUser) return;
+    getDoc(doc(db, 'users', currentUser.uid))
+      .then(snap => {
+        setPhone((snap.exists() ? snap.data().phone : '') || '');
+      })
+      .catch(() => {});
+  }, [currentUser]);
 
   // Load Paystack script once
   useEffect(() => {
@@ -70,7 +81,6 @@ function BookingPayment() {
     pollCountRef.current = 0;
     pollingRef.current = setInterval(async () => {
       pollCountRef.current += 1;
-      // 72 polls × 5s = 6 minutes timeout
       if (pollCountRef.current > 72) {
         clearInterval(pollingRef.current);
         setError("We haven't detected your payment yet. If you've already transferred, contact us on WhatsApp.");
@@ -90,12 +100,19 @@ function BookingPayment() {
 
   const handlePay = async () => {
     if (!depositOption || phase !== 'select') return;
+
+    const trimmedPhone = phone.trim();
+    if (!trimmedPhone) {
+      setError('Please enter your phone number before continuing.');
+      return;
+    }
+
     setPhase('initiating');
     setError('');
 
     try {
-      const snap = await getDoc(doc(db, 'users', currentUser.uid));
-      const phone = (snap.exists() ? snap.data().phone : '') || '';
+      // Persist phone to user profile (fire-and-forget, non-blocking)
+      setDoc(doc(db, 'users', currentUser.uid), { phone: trimmedPhone }, { merge: true }).catch(() => {});
 
       const bookingId = `bk${Date.now()}`;
       const reference = `snx-${bookingId}`;
@@ -105,7 +122,7 @@ function BookingPayment() {
         clientId: currentUser.uid,
         clientName: currentUser.displayName || currentUser.email,
         clientEmail: currentUser.email,
-        clientPhone: phone,
+        clientPhone: trimmedPhone,
         services: bookingData.services.map(s => ({
           name: s.name || '', price: s.price || 0, duration: s.duration || 30,
         })),
@@ -131,7 +148,6 @@ function BookingPayment() {
       await setDoc(doc(db, 'bookings', booking.id), booking);
       savedRef.current = { bookingId: booking.id, reference };
 
-      // Notify both parties immediately — don't wait for payment
       fetch('/api/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -139,9 +155,6 @@ function BookingPayment() {
       }).catch(() => {});
 
       await waitForPaystack();
-
-      const paystackKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
-      console.log('[Paystack] key present:', !!paystackKey, '| amount (kobo):', selectedAmount * 100, '| ref:', reference, '| email:', currentUser.email);
 
       const popup = new window.PaystackPop();
       popup.newTransaction({
@@ -253,6 +266,21 @@ function BookingPayment() {
           )}
         </div>
       )}
+
+      <div className="phone-field">
+        <label className="phone-field-label">
+          <Phone size={14} />
+          Phone Number
+        </label>
+        <input
+          className="phone-field-input"
+          type="tel"
+          placeholder="e.g. 08012345678"
+          value={phone}
+          onChange={e => { setPhone(e.target.value); setError(''); }}
+        />
+        <p className="phone-field-hint">So Steve can reach you about your appointment</p>
+      </div>
 
       {error && <p className="auth-error">{error}</p>}
 
