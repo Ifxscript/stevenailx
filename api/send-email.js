@@ -3,10 +3,23 @@ import { Resend } from 'resend';
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const FROM = 'SteveNailX <booking@support.stevenailx.com>';
-// Comma-separated list in ADMIN_EMAILS env var, e.g. "a@x.com,b@x.com"
-const ADMIN_EMAILS = process.env.ADMIN_EMAILS
-  ? process.env.ADMIN_EMAILS.split(',').map(e => e.trim()).filter(Boolean)
-  : ['ianekwe7@gmail.com'];
+const FALLBACK_ADMIN = 'ianekwe7@gmail.com';
+
+async function getAdminEmails() {
+  try {
+    const url =
+      'https://firestore.googleapis.com/v1/projects/stevenailx/databases/(default)/documents/site_content/landing_page';
+    const res = await fetch(url);
+    const data = await res.json();
+    const emails =
+      data?.fields?.security?.mapValue?.fields?.adminEmails?.arrayValue?.values?.map(
+        v => v.stringValue
+      ).filter(Boolean) || [];
+    return emails.length > 0 ? emails : [FALLBACK_ADMIN];
+  } catch {
+    return [FALLBACK_ADMIN];
+  }
+}
 
 const fmt = (dateStr) => {
   try {
@@ -40,6 +53,7 @@ export default async function handler(req, res) {
   if (!type || !booking) return res.status(400).json({ error: 'Missing type or booking' });
 
   try {
+    const ADMIN_EMAILS = await getAdminEmails();
     const sends = [];
 
     if (type === 'booking_received') {
