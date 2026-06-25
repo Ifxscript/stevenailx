@@ -3,7 +3,10 @@ import { Resend } from 'resend';
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const FROM = 'SteveNailX <booking@support.stevenailx.com>';
-const ADMIN_EMAIL = 'ianekwe7@gmail.com';
+// Comma-separated list in ADMIN_EMAILS env var, e.g. "a@x.com,b@x.com"
+const ADMIN_EMAILS = process.env.ADMIN_EMAILS
+  ? process.env.ADMIN_EMAILS.split(',').map(e => e.trim()).filter(Boolean)
+  : ['ianekwe7@gmail.com'];
 
 const fmt = (dateStr) => {
   try {
@@ -59,7 +62,7 @@ export default async function handler(req, res) {
         }),
         resend.emails.send({
           from: FROM,
-          to: ADMIN_EMAIL,
+          to: ADMIN_EMAILS,
           subject: `New booking request — ${booking.clientName} (${fmt(booking.date)})`,
           html: wrap(`
             <h2 style="color:#c94b35;margin-top:0">New Booking Request</h2>
@@ -137,7 +140,7 @@ export default async function handler(req, res) {
         }),
         resend.emails.send({
           from: FROM,
-          to: ADMIN_EMAIL,
+          to: ADMIN_EMAILS,
           subject: `⏳ New booking pending payment — ${booking.clientName} (${fmt(booking.date)})`,
           html: wrap(`
             <h2 style="color:#c94b35;margin-top:0">Booking Started — Payment Pending</h2>
@@ -181,7 +184,7 @@ export default async function handler(req, res) {
         }),
         resend.emails.send({
           from: FROM,
-          to: ADMIN_EMAIL,
+          to: ADMIN_EMAILS,
           subject: `💰 New paid booking — ${booking.clientName} (${fmt(booking.date)})`,
           html: wrap(`
             <h2 style="color:#1a9e5a;margin-top:0">New Paid Booking</h2>
