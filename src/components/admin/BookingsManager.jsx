@@ -126,24 +126,14 @@ function BookingList({ list, activeSectionId, onUpdateStatus, openPopup, closePo
                   </a>
                 )}
                 {b.status === 'confirmed' && (
-                  <>
-                    <button className="action-btn save" style={{ padding: '8px 16px', fontSize: '0.8rem' }} onClick={() => confirmComplete(b, { openPopup, closePopup })}>
-                      <CheckCircle2 size={14} /> Done
-                    </button>
-                    <button className="action-btn discard" style={{ padding: '8px 16px', fontSize: '0.8rem', backgroundColor: '#FEE2E2', color: '#991B1B' }} onClick={() => confirmCancel(b, { openPopup, closePopup })}>
-                      <XCircle size={14} /> Cancel
-                    </button>
-                  </>
+                  <button className="action-btn save" style={{ padding: '8px 16px', fontSize: '0.8rem' }} onClick={() => confirmComplete(b, { openPopup, closePopup })}>
+                    <CheckCircle2 size={14} /> Done
+                  </button>
                 )}
                 {b.status === 'awaiting_payment' && (
-                  <>
-                    <button className="action-btn save" style={{ padding: '8px 16px', fontSize: '0.8rem', backgroundColor: '#E1E8DE', color: '#4F5E49' }} onClick={() => onUpdateStatus(b.docId || b.id, 'confirmed')}>
-                      <CheckCircle2 size={14} /> Mark Paid
-                    </button>
-                    <button className="action-btn discard" style={{ padding: '8px 16px', fontSize: '0.8rem', backgroundColor: '#FEE2E2', color: '#991B1B' }} onClick={() => confirmCancel(b, { openPopup, closePopup })}>
-                      <XCircle size={14} /> Cancel
-                    </button>
-                  </>
+                  <button className="action-btn discard" style={{ padding: '8px 16px', fontSize: '0.8rem', backgroundColor: '#FEE2E2', color: '#991B1B' }} onClick={() => confirmCancel(b, { openPopup, closePopup })}>
+                    <XCircle size={14} /> Cancel
+                  </button>
                 )}
               </div>
             </div>
@@ -159,26 +149,12 @@ function BookingList({ list, activeSectionId, onUpdateStatus, openPopup, closePo
                   >
                     <CheckCircle2 size={16} /> Mark as Completed
                   </button>
-                  <button
-                    className="action-btn discard"
-                    style={{ flex: 1, padding: '10px 16px', fontSize: '0.85rem', borderRadius: '24px', backgroundColor: '#FEE2E2', color: '#991B1B', justifyContent: 'center', border: 'none' }}
-                    onClick={() => confirmCancel(b, { openPopup, closePopup })}
-                  >
-                    <XCircle size={16} /> Cancel
-                  </button>
                 </div>
               </div>
             )}
             {b.status === 'awaiting_payment' && (
               <div className="booking-mobile-actions">
                 <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
-                  <button
-                    className="action-btn save"
-                    style={{ flex: 1, padding: '10px 16px', fontSize: '0.85rem', borderRadius: '24px', backgroundColor: '#E1E8DE', color: '#4F5E49', justifyContent: 'center', border: 'none' }}
-                    onClick={() => onUpdateStatus(b.docId || b.id, 'confirmed')}
-                  >
-                    <CheckCircle2 size={16} /> Mark as Paid
-                  </button>
                   <button
                     className="action-btn discard"
                     style={{ flex: 1, padding: '10px 16px', fontSize: '0.85rem', borderRadius: '24px', backgroundColor: '#FEE2E2', color: '#991B1B', justifyContent: 'center', border: 'none' }}
@@ -212,6 +188,16 @@ function BookingsManager() {
       const snapshot = await getDocs(q);
       const items = [];
       snapshot.forEach(d => items.push({ ...d.data(), docId: d.id }));
+
+      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+      const stale = items.filter(b => b.status === 'awaiting_payment' && b.createdAt < oneHourAgo);
+      if (stale.length > 0) {
+        await Promise.all(stale.map(b =>
+          updateDoc(doc(db, 'bookings', b.docId), { status: 'cancelled', updatedAt: new Date().toISOString() })
+        ));
+        stale.forEach(b => { b.status = 'cancelled'; });
+      }
+
       setBookings(items);
     } catch (err) {
       console.error('Error fetching bookings:', err);
@@ -229,7 +215,6 @@ function BookingsManager() {
       const booking = bookings.find(b => (b.docId || b.id) === bookingId);
       if (booking) {
         const emailType = {
-          confirmed: 'booking_confirmed',
           cancelled: 'booking_cancelled',
           completed: 'booking_completed',
         }[newStatus];
@@ -250,7 +235,7 @@ function BookingsManager() {
   const thisWeekRevenue = bookings.filter(b => {
     const now = new Date();
     const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    return new Date(b.date) >= weekAgo && b.status !== 'cancelled';
+    return new Date(b.date) >= weekAgo && (b.status === 'confirmed' || b.status === 'completed');
   }).reduce((sum, b) => sum + (b.totalPrice || 0), 0);
 
   const sections = [

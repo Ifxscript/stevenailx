@@ -36,9 +36,11 @@ export const getBookedSlots = async (dateStr) => {
     );
     const snapshot = await getDocs(q);
     const booked = [];
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
     snapshot.forEach(doc => {
       const data = doc.data();
-      // Block all slots this booking occupies
+      // Don't block slots held by awaiting_payment bookings older than 1 hour
+      if (data.status === 'awaiting_payment' && data.createdAt < oneHourAgo) return;
       const startMinutes = timeToMinutes(data.timeSlot);
       const duration = data.totalDuration || 30;
       for (let i = 0; i < duration; i += 30) {

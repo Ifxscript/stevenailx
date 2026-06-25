@@ -41,7 +41,7 @@ function BookingDrawer() {
           {/* Header */}
           <div className="booking-header">
             <div className="booking-header-left">
-              {currentStep > 0 && currentStep < 4 && (
+              {currentStep > 0 && currentStep < 5 && (
                 <button className="booking-back-btn" onClick={prevStep}>
                   <ChevronLeft size={20} />
                 </button>

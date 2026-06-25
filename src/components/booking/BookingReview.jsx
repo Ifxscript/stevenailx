@@ -9,83 +9,80 @@ function BookingReview() {
     <div className="step-container">
       <div className="step-header">
         <h3>Review your booking</h3>
-        <p>Make sure everything looks good before paying.</p>
       </div>
 
-      <div className="review-card">
-        <div className="review-row">
-          <Calendar size={18} />
+      <div className="review-info-card">
+        <div className="review-info-row">
+          <Calendar size={22} className="review-info-icon" />
           <div>
-            <span className="review-label">Date & Time</span>
+            <span className="review-label">Date &amp; Time</span>
             <span className="review-value">
-              {bookingData.date ? formatDisplayDate(bookingData.date) : '—'} at{' '}
-              {bookingData.timeSlot ? formatDisplayTime(bookingData.timeSlot) : '—'}
+              {bookingData.date ? formatDisplayDate(bookingData.date) : '—'} · {bookingData.timeSlot ? formatDisplayTime(bookingData.timeSlot) : '—'}
             </span>
           </div>
         </div>
 
-        <div className="review-row">
-          <Clock size={18} />
+        <div className="review-info-row">
+          <Clock size={22} className="review-info-icon" />
           <div>
             <span className="review-label">Duration</span>
             <span className="review-value">~{getTotalDuration()} minutes</span>
           </div>
         </div>
 
-        <div className="review-row">
-          <MapPin size={18} />
+        <div className="review-info-row">
+          <MapPin size={22} className="review-info-icon" />
           <div>
             <span className="review-label">Location</span>
             <span className="review-value">Saham Plaza, behind New Banex, Shop A20, Abuja</span>
           </div>
         </div>
+      </div>
 
-        <div className="review-divider" />
-        <h4 className="review-section-title">Services</h4>
-        {bookingData.services.map(s => (
-          <div key={s.id} className="review-service-row">
-            <span>{s.name}</span>
-            <span>₦{Number(s.price).toLocaleString()}</span>
-          </div>
-        ))}
+      <div className="review-services-header">
+        <span className="review-services-label">Services</span>
+      </div>
 
-        {bookingData.guests.filter(g => g.name && g.services.length > 0).map(guest => (
-          <div key={guest.id}>
-            <div className="review-divider" />
-            <h4 className="review-section-title">👤 {guest.name} (Guest)</h4>
-            {guest.services.map(s => (
-              <div key={s.id} className="review-service-row">
-                <span>{s.name}</span>
-                <span>₦{Number(s.price).toLocaleString()}</span>
-              </div>
-            ))}
-          </div>
-        ))}
-
-        <div className="review-divider" />
-        <div className="review-total">
-          <span>Total</span>
-          <span>₦{getTotalPrice().toLocaleString()}</span>
+      {bookingData.services.map(s => (
+        <div key={s.id} className="review-service-row">
+          <span>{s.name}</span>
+          <span>₦{Number(s.price).toLocaleString()}</span>
         </div>
+      ))}
+
+      {bookingData.guests.filter(g => g.name && g.services.length > 0).map(guest => (
+        <div key={guest.id}>
+          <div className="review-guest-label">👤 {guest.name} (Guest)</div>
+          {guest.services.map(s => (
+            <div key={s.id} className="review-service-row">
+              <span>{s.name}</span>
+              <span>₦{Number(s.price).toLocaleString()}</span>
+            </div>
+          ))}
+        </div>
+      ))}
+
+      <div className="review-total-divider" />
+      <div className="review-total">
+        <span>Total</span>
+        <span>₦{getTotalPrice().toLocaleString()}</span>
       </div>
 
       <div className="notes-field">
-        <label>Special requests (optional)</label>
+        <label>
+          Special requests <span className="notes-optional">(optional)</span>
+        </label>
         <textarea
           value={bookingData.notes || ''}
           onChange={(e) => updateBooking({ notes: e.target.value })}
-          placeholder="Any special requests or notes for Steve..."
-          rows={3}
+          placeholder="Any notes for Steve…"
         />
       </div>
 
-      <p className="cancellation-note">
-        A deposit is required to confirm your slot — you'll choose the amount on the next step.
-      </p>
-
       <div className="step-footer">
+        <p className="cancellation-note">A deposit confirms your slot — you'll choose the amount next.</p>
         <button className="step-continue-btn confirm" onClick={nextStep}>
-          Proceed to Payment →
+          Proceed to Payment
         </button>
       </div>
     </div>

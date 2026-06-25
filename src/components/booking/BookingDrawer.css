@@ -2,6 +2,11 @@
    BOOKING DRAWER — Premium Booking Flow
    ══════════════════════════════════════════ */
 
+:root {
+  --color-burgundy: #8C3A4B;
+  --color-brown: #221F20;
+}
+
 /* ── Full-screen booking page ── */
 .booking-drawer {
   position: fixed;
@@ -10,6 +15,7 @@
   z-index: 1200;
   display: flex;
   flex-direction: column;
+  font-family: 'Nunito', sans-serif;
 }
 
 @media (min-width: 768px) {
@@ -86,7 +92,7 @@
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--color-burgundy, #8b1d41), #d4547a);
+  background: linear-gradient(90deg, #D98C9A, #8C3A4B);
   border-radius: 4px;
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -97,20 +103,20 @@
 }
 
 .progress-step {
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: 0.625rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #ccc;
+  letter-spacing: 0.04em;
+  color: #C3BDBE;
   transition: color 0.3s;
 }
 
 .progress-step.active {
-  color: #888;
+  color: #C3BDBE;
 }
 
 .progress-step.current {
-  color: var(--color-burgundy, #8b1d41);
+  color: #8C3A4B;
 }
 
 /* ── Content Area ── */
@@ -135,15 +141,16 @@
 }
 
 .step-header h3 {
-  font-size: 1.2rem;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 800;
   margin: 0 0 4px;
-  color: var(--color-brown, #3a2a2a);
+  color: #221F20;
 }
 
 .step-header p {
-  font-size: 0.85rem;
-  color: #888;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #8C8688;
   margin: 0;
 }
 
@@ -269,8 +276,11 @@
 .step-continue-btn.confirm {
   width: 100%;
   justify-content: center;
-  padding: 16px;
-  font-size: 1rem;
+  padding: 0 16px;
+  min-height: 60px;
+  font-size: 1.125rem;
+  font-weight: 800;
+  border-radius: 18px;
 }
 
 /* ══════════════════════════════════════════
@@ -914,9 +924,32 @@
   padding-top: 40px;
 }
 
-.auth-icon {
-  font-size: 3rem;
-  margin-bottom: 16px;
+.auth-icon-circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #F6ECEE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  margin-bottom: 24px;
+}
+
+.auth-heading {
+  margin: 0 0 8px;
+  font-size: 1.625rem;
+  font-weight: 800;
+  color: #221F20;
+  text-align: center;
+}
+
+.auth-subtext {
+  margin: 0 0 28px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #8C8688;
+  text-align: center;
 }
 
 .google-login-btn {
@@ -966,33 +999,64 @@
 .auth-profile-card {
   display: flex;
   align-items: center;
-  gap: 14px;
-  background-color: #faf9f8;
-  padding: 16px 20px;
-  border-radius: 16px;
+  gap: 16px;
+  background: #F8F3F1;
+  padding: 18px;
+  border-radius: 20px;
   width: 100%;
-  max-width: 320px;
-  margin-bottom: 24px;
+  margin-bottom: 0;
 }
 
-.auth-avatar {
-  width: 44px;
-  height: 44px;
+.auth-initials-avatar {
+  width: 52px;
+  height: 52px;
+  flex: 0 0 auto;
   border-radius: 50%;
-  object-fit: cover;
+  background: #8C3A4B;
+  color: #fff;
+  font-size: 1.1875rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-user-info {
+  min-width: 0;
 }
 
 .auth-name {
   display: block;
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: var(--color-brown, #3a2a2a);
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: #221F20;
 }
 
 .auth-email {
   display: block;
-  font-size: 0.8rem;
-  color: #888;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #9A9395;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.auth-switch-link {
+  margin-top: 14px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #8C8688;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-family: inherit;
+}
+
+.auth-switch-link:disabled {
+  opacity: 0.6;
 }
 
 .phone-input-group {
@@ -1029,71 +1093,115 @@
    STEP 4: REVIEW
    ══════════════════════════════════════════ */
 
-.review-card {
-  background-color: #faf9f8;
-  border-radius: 20px;
-  padding: 24px;
-  margin-bottom: 20px;
+.review-info-card {
+  background: #F8F3F1;
+  border-radius: 22px;
+  padding: 6px 20px;
+  margin-bottom: 24px;
 }
 
-.review-row {
+.review-info-row {
   display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 14px;
-  color: #888;
+  gap: 15px;
+  align-items: flex-start;
+  padding: 16px 0;
+  border-bottom: 1px solid #EDE5E2;
 }
 
-.review-row div {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.review-info-row:last-child {
+  border-bottom: none;
+}
+
+.review-info-icon {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: #8C3A4B;
 }
 
 .review-label {
-  font-size: 0.7rem;
-  font-weight: 600;
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #bbb;
+  color: #A99FA0;
+  margin-bottom: 3px;
 }
 
 .review-value {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--color-brown, #3a2a2a);
-}
-
-.review-divider {
-  height: 1px;
-  background-color: #eee;
-  margin: 16px 0;
-}
-
-.review-section-title {
-  font-size: 0.8rem;
+  display: block;
+  font-size: 1.0625rem;
   font-weight: 700;
+  color: #221F20;
+  line-height: 1.4;
+}
+
+.review-services-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 2px 14px;
+}
+
+.review-services-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #8C3A4B;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--color-burgundy, #8b1d41);
-  margin: 0 0 10px;
 }
 
 .review-service-row {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  padding: 6px 0;
-  font-size: 0.9rem;
-  color: var(--color-brown, #3a2a2a);
+  padding: 0 2px;
+  margin-bottom: 10px;
+}
+
+.review-service-row span:first-child {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: #221F20;
+}
+
+.review-service-row span:last-child {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: #221F20;
+}
+
+.review-guest-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #8C3A4B;
+  margin: 12px 2px 8px;
+}
+
+.review-total-divider {
+  height: 1px;
+  background: #EDE5E2;
+  margin: 18px 0;
 }
 
 .review-total {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  padding: 4px 0;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--color-brown, #3a2a2a);
+  padding: 0 2px;
+  margin-bottom: 26px;
+}
+
+.review-total span:first-child {
+  font-size: 1.1875rem;
+  font-weight: 800;
+  color: #221F20;
+}
+
+.review-total span:last-child {
+  font-size: 1.375rem;
+  font-weight: 800;
+  color: #221F20;
 }
 
 .notes-field {
@@ -1102,34 +1210,44 @@
 
 .notes-field label {
   display: block;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #888;
-  margin-bottom: 6px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #6B6566;
+  margin-bottom: 10px;
+}
+
+.notes-optional {
+  font-weight: 500;
+  color: #A99FA0;
 }
 
 .notes-field textarea {
   width: 100%;
-  padding: 14px 16px;
-  border: 1.5px solid #eee;
-  border-radius: 14px;
+  height: 90px;
+  padding: 14px;
+  border: 1.5px solid #EBE4E2;
+  border-radius: 16px;
   font-family: inherit;
-  font-size: 0.9rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #221F20;
   outline: none;
-  resize: vertical;
+  resize: none;
   box-sizing: border-box;
   transition: border-color 0.2s;
 }
 
 .notes-field textarea:focus {
-  border-color: var(--color-burgundy, #8b1d41);
+  border-color: #8C3A4B;
 }
 
 .cancellation-note {
-  font-size: 0.75rem;
-  color: #bbb;
+  margin: 0 0 12px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #A99FA0;
   text-align: center;
-  line-height: 1.5;
+  line-height: 1.45;
 }
 
 /* ══════════════════════════════════════════

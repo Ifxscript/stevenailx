@@ -56,82 +56,6 @@ export default async function handler(req, res) {
     const ADMIN_EMAILS = await getAdminEmails();
     const sends = [];
 
-    if (type === 'booking_received') {
-      sends.push(
-        resend.emails.send({
-          from: FROM,
-          to: booking.clientEmail,
-          subject: 'Booking request received — SteveNailX',
-          html: wrap(`
-            <h2 style="color:#c94b35;margin-top:0">Request Received</h2>
-            <p>Hi ${booking.clientName},</p>
-            <p>We've received your booking request for <strong>${fmt(booking.date)} at ${fmtTime(booking.timeSlot)}</strong>.</p>
-            <p>Steve will review it shortly and you'll get a confirmation email as soon as it's accepted.</p>
-            ${card(`
-              <p style="margin:0"><strong>Services:</strong> ${svcList(booking.services)}</p>
-              <p style="margin:0"><strong>Total:</strong> ${naira(booking.totalPrice)}</p>
-              <p style="margin:0"><strong>Location:</strong> Saham Plaza, behind New Banex, Shop A20 Upstairs, Abuja</p>
-            `)}
-          `),
-        }),
-        resend.emails.send({
-          from: FROM,
-          to: ADMIN_EMAILS,
-          subject: `New booking request — ${booking.clientName} (${fmt(booking.date)})`,
-          html: wrap(`
-            <h2 style="color:#c94b35;margin-top:0">New Booking Request</h2>
-            ${card(`
-              <p style="margin:0"><strong>Client:</strong> ${booking.clientName}</p>
-              <p style="margin:0"><strong>Email:</strong> ${booking.clientEmail}</p>
-              <p style="margin:0"><strong>Phone:</strong> ${booking.clientPhone || 'Not provided'}</p>
-              <p style="margin:0"><strong>Date:</strong> ${fmt(booking.date)} at ${fmtTime(booking.timeSlot)}</p>
-              <p style="margin:0"><strong>Services:</strong> ${svcList(booking.services)}</p>
-              <p style="margin:0"><strong>Total:</strong> ${naira(booking.totalPrice)}</p>
-              ${booking.notes ? `<p style="margin:0"><strong>Notes:</strong> ${booking.notes}</p>` : ''}
-            `)}
-            <a href="https://stevenailx.com/admin/operations" style="background:#18130e;color:#fff;padding:12px 24px;text-decoration:none;border-radius:99px;display:inline-block;margin-top:8px">Review Request →</a>
-          `),
-        })
-      );
-    }
-
-    if (type === 'booking_confirmed') {
-      sends.push(
-        resend.emails.send({
-          from: FROM,
-          to: booking.clientEmail,
-          subject: 'Booking confirmed — SteveNailX 💅',
-          html: wrap(`
-            <h2 style="color:#1a9e5a;margin-top:0">Booking Confirmed!</h2>
-            <p>Hi ${booking.clientName},</p>
-            <p>Your appointment is confirmed. See you on <strong>${fmt(booking.date)} at ${fmtTime(booking.timeSlot)}</strong>!</p>
-            ${card(`
-              <p style="margin:0"><strong>Services:</strong> ${svcList(booking.services)}</p>
-              <p style="margin:0"><strong>Total:</strong> ${naira(booking.totalPrice)}</p>
-              <p style="margin:0"><strong>Location:</strong> Saham Plaza, behind New Banex, Shop A20 Upstairs, Abuja</p>
-            `)}
-            <p style="font-size:0.9em;color:#888">Need to cancel or reschedule? Please let us know at least 24 hours in advance.</p>
-          `),
-        })
-      );
-    }
-
-    if (type === 'booking_cancelled') {
-      sends.push(
-        resend.emails.send({
-          from: FROM,
-          to: booking.clientEmail,
-          subject: 'Booking request update — SteveNailX',
-          html: wrap(`
-            <h2 style="color:#c94b35;margin-top:0">Request Not Accepted</h2>
-            <p>Hi ${booking.clientName},</p>
-            <p>Unfortunately your booking request for <strong>${fmt(booking.date)} at ${fmtTime(booking.timeSlot)}</strong> could not be accepted at this time.</p>
-            <p>Please try selecting a different date or contact us directly via WhatsApp.</p>
-          `),
-        })
-      );
-    }
-
     if (type === 'booking_awaiting_payment') {
       sends.push(
         resend.emails.send({
@@ -193,7 +117,7 @@ export default async function handler(req, res) {
               ${booking.totalPrice > booking.depositAmount ? `<p style="margin:0"><strong>Balance due on the day:</strong> ${naira(booking.totalPrice - booking.depositAmount)}</p>` : ''}
               <p style="margin:0"><strong>Location:</strong> Saham Plaza, behind New Banex, Shop A20 Upstairs, Abuja</p>
             `)}
-            <p style="font-size:0.9em;color:#888">Need to cancel or reschedule? Please let us know at least 24 hours in advance.</p>
+            <p style="font-size:0.9em;color:#888">Need to reschedule? Please let us know at least 24 hours in advance.</p>
           `),
         }),
         resend.emails.send({
@@ -215,6 +139,22 @@ export default async function handler(req, res) {
               ${booking.notes ? `<p style="margin:0"><strong>Notes:</strong> ${booking.notes}</p>` : ''}
             `)}
             <a href="https://stevenailx.com/admin/operations" style="background:#18130e;color:#fff;padding:12px 24px;text-decoration:none;border-radius:99px;display:inline-block;margin-top:8px">View in Dashboard →</a>
+          `),
+        })
+      );
+    }
+
+    if (type === 'booking_cancelled') {
+      sends.push(
+        resend.emails.send({
+          from: FROM,
+          to: booking.clientEmail,
+          subject: 'Booking cancelled — SteveNailX',
+          html: wrap(`
+            <h2 style="color:#c94b35;margin-top:0">Booking Cancelled</h2>
+            <p>Hi ${booking.clientName},</p>
+            <p>Your booking for <strong>${fmt(booking.date)} at ${fmtTime(booking.timeSlot)}</strong> has been cancelled.</p>
+            <p>If you'd like to rebook, visit stevenailx.com or contact us on WhatsApp.</p>
           `),
         })
       );

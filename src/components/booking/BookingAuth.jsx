@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useBooking } from '../../context/BookingContext';
 import { Loader2 } from 'lucide-react';
-import UserAvatar from '../UserAvatar';
 
 function BookingAuth() {
   const { currentUser, loginAsClient } = useAuth();
@@ -15,8 +14,6 @@ function BookingAuth() {
     setError('');
     try {
       await loginAsClient();
-      // loginAsClient returns after Google popup — user is now signed in
-      // nextStep is called by the button below once the user doc syncs
     } catch (err) {
       setError(err.message || 'Sign-in failed. Please try again.');
     } finally {
@@ -24,41 +21,46 @@ function BookingAuth() {
     }
   };
 
-  // Already signed in — show confirmation card, user must tap Continue
   if (currentUser) {
+    const initials = (currentUser.displayName || currentUser.email || 'U')
+      .split(' ')
+      .filter(Boolean)
+      .map(p => p[0].toUpperCase())
+      .join('')
+      .slice(0, 2) || 'U';
+
     return (
       <div className="step-container auth-step">
-        <div className="step-header centered">
-          <div className="auth-icon">👋</div>
-          <h3>You're signed in</h3>
-          <p>Booking as the account below.</p>
-        </div>
+        <div className="auth-icon-circle">🌸</div>
+        <h2 className="auth-heading">You're signed in</h2>
+        <p className="auth-subtext">Booking as the account below.</p>
 
         <div className="auth-profile-card">
-          <UserAvatar user={currentUser} className="auth-avatar" />
-          <div>
+          <div className="auth-initials-avatar">{initials}</div>
+          <div className="auth-user-info">
             <span className="auth-name">{currentUser.displayName || 'No name'}</span>
             <span className="auth-email">{currentUser.email}</span>
           </div>
         </div>
 
+        <button className="auth-switch-link" onClick={handleGoogleLogin} disabled={loading}>
+          {loading ? 'Signing in…' : 'Not you? Switch account'}
+        </button>
+
         <div className="step-footer">
           <button className="step-continue-btn confirm" onClick={nextStep}>
-            Continue →
+            Continue
           </button>
         </div>
       </div>
     );
   }
 
-  // Not signed in — show Google button
   return (
     <div className="step-container auth-step">
-      <div className="step-header centered">
-        <div className="auth-icon">👤</div>
-        <h3>Sign in to continue</h3>
-        <p>We need your account to save your booking and send you confirmations.</p>
-      </div>
+      <div className="auth-icon-circle">👤</div>
+      <h2 className="auth-heading">Sign in to continue</h2>
+      <p className="auth-subtext">We need your account to save your booking and send you confirmations.</p>
 
       <button className="google-login-btn" onClick={handleGoogleLogin} disabled={loading}>
         {loading ? (

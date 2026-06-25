@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   X, UserRound, CalendarHeart, Phone, LogOut, ChevronRight,
   Check, Clock, MessageCircle, Loader2, Calendar, MapPin,
-  XCircle, History, Settings, ShieldCheck, Mail, Star, Plus,
-  ChevronDown, ChevronUp, CreditCard
+  History, Settings, ShieldCheck, Mail, Star, Plus,
+  CreditCard
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useBooking } from '../context/BookingContext';
@@ -23,8 +23,7 @@ const TAB_TITLES = {
 };
 
 // Reusable Booking Row inside the dashboard
-const DashboardBookingRow = ({ booking, onCancel, onReview, onResumePayment }) => {
-  const [menuOpen, setMenuOpen] = useState(false);
+const DashboardBookingRow = ({ booking, onReview, onResumePayment }) => {
   const { reviews } = useLandingPage();
   const allReviews = reviews?.items || [];
 
@@ -38,7 +37,7 @@ const DashboardBookingRow = ({ booking, onCancel, onReview, onResumePayment }) =
   const isUpcoming = new Date(`${booking.date}T${booking.timeSlot.split(' - ')[0]}`) > new Date();
   const isCancelled = booking.status === 'cancelled';
   const isAwaitingPayment = booking.status === 'awaiting_payment';
-  const isCompleted = booking.status === 'completed' || (!isUpcoming && !isCancelled && !isAwaitingPayment);
+  const isCompleted = booking.status === 'completed';
 
   const totalPrice = booking.services?.reduce((sum, s) => sum + parseInt(s.price || 0), 0) || 0;
 
@@ -82,28 +81,11 @@ const DashboardBookingRow = ({ booking, onCancel, onReview, onResumePayment }) =
           </div>
 
           <div className="booking-actions-group">
-            {/* Show Edit dropdown for regular upcoming bookings only */}
             {isUpcoming && !isCancelled && !isAwaitingPayment && (
-              <>
-                <button className={`ref-edit-btn ${menuOpen ? 'active' : ''}`} onClick={() => setMenuOpen(!menuOpen)}>
-                  <span>Edit</span>
-                  {menuOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                </button>
-
-                {menuOpen && (
-                  <>
-                    <div className="dropdown-overlay-fixed" onClick={() => setMenuOpen(false)} />
-                    <div className="dropdown-menu">
-                      <button className="dropdown-item" onClick={handleContactSteve}>
-                        <MessageCircle size={16} /> Contact to Reschedule
-                      </button>
-                      <button className="dropdown-item danger" onClick={() => { onCancel(booking); setMenuOpen(false); }}>
-                        <XCircle size={16} /> Cancel Appointment
-                      </button>
-                    </div>
-                  </>
-                )}
-              </>
+              <button className="ref-edit-btn" onClick={handleContactSteve}>
+                <MessageCircle size={14} />
+                <span>Contact Steve</span>
+              </button>
             )}
           </div>
         </div>
@@ -288,6 +270,16 @@ const UserDashboardModal = ({ isOpen, onClose }) => {
       const q = query(collection(db, 'bookings'), where('clientId', '==', currentUser.uid));
       const snapshot = await getDocs(q);
       const items = snapshot.docs.map(d => ({ ...d.data(), docId: d.id, id: d.id }));
+
+      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+      const stale = items.filter(b => b.status === 'awaiting_payment' && b.createdAt < oneHourAgo);
+      if (stale.length > 0) {
+        await Promise.all(stale.map(b =>
+          updateDoc(doc(db, 'bookings', b.id), { status: 'cancelled', updatedAt: new Date().toISOString() })
+        ));
+        stale.forEach(b => { b.status = 'cancelled'; });
+      }
+
       items.sort((a, b) => new Date(a.date) - new Date(b.date));
       setBookings(items);
     } catch (err) { console.error(err); }
@@ -305,22 +297,14 @@ const UserDashboardModal = ({ isOpen, onClose }) => {
     finally { setIsSavingPhone(false); }
   };
 
-  const handleCancelBooking = async (booking) => {
-    if (!window.confirm('Cancel this appointment?')) return;
-    try {
-      await updateDoc(doc(db, 'bookings', booking.docId), { status: 'cancelled' });
-      fetchBookings();
-    } catch (err) { alert('Failed to cancel.'); }
-  };
-
   const filteredBookings = useMemo(() => {
     return bookings.filter(b => {
       const isCancelled = b.status === 'cancelled';
-      const isUpcoming = new Date(`${b.date}T${b.timeSlot.split(' - ')[0]}`) >= new Date();
-      
+      const isCompleted = b.status === 'completed';
+
       if (activeTab === 'appointments') {
-        if (subTab === 'upcoming') return isUpcoming && !isCancelled;
-        if (subTab === 'history') return !isUpcoming || isCancelled;
+        if (subTab === 'upcoming') return !isCancelled && !isCompleted;
+        if (subTab === 'history') return isCancelled || isCompleted;
       }
       return false;
     });
@@ -523,7 +507,6 @@ const UserDashboardModal = ({ isOpen, onClose }) => {
                                   <DashboardBookingRow
                                     key={b.id}
                                     booking={b}
-                                    onCancel={handleCancelBooking}
                                     onReview={setReviewingBooking}
                                     onResumePayment={handleResumePayment}
                                   />
