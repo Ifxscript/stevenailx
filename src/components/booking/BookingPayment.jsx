@@ -7,10 +7,10 @@ import { Loader2, Phone } from 'lucide-react';
 import './BookingPayment.css';
 
 function BookingPayment() {
-  const { currentUser } = useAuth();
-  const { bookingData, getTotalPrice, getTotalDuration, updateBooking, nextStep } = useBooking();
+  const { currentUser, openDashboard } = useAuth();
+  const { bookingData, getTotalPrice, getTotalDuration, updateBooking, nextStep, closeBookingDrawer } = useBooking();
 
-  const [depositOption, setDepositOption] = useState(null); // 'flat' | 'percent'
+  const [depositOption, setDepositOption] = useState(null); // 'thirty' | 'full'
   const [phase, setPhase] = useState('select'); // 'select' | 'initiating' | 'waiting' | 'error'
   const [error, setError] = useState('');
   const [phone, setPhone] = useState('');
@@ -19,13 +19,11 @@ function BookingPayment() {
   const pollCountRef = useRef(0);
 
   const totalPrice = getTotalPrice();
-  const flatDeposit = Math.min(5000, totalPrice);
-  const percentDeposit = Math.max(Math.round(totalPrice * 0.25), 100);
-  const isFlatFull = flatDeposit >= totalPrice;
+  const thirtyPercent = Math.max(Math.round(totalPrice * 0.3), 100);
 
   const selectedAmount =
-    depositOption === 'flat' ? flatDeposit
-    : depositOption === 'percent' ? percentDeposit
+    depositOption === 'thirty' ? thirtyPercent
+    : depositOption === 'full' ? totalPrice
     : 0;
 
   // Load saved phone on mount
@@ -100,6 +98,11 @@ function BookingPayment() {
 
   const handlePay = async () => {
     if (!depositOption || phase !== 'select') return;
+    if (savedRef.current) {
+      closeBookingDrawer();
+      openDashboard('upcoming');
+      return;
+    }
 
     const trimmedPhone = phone.trim();
     if (!trimmedPhone) {
@@ -173,8 +176,7 @@ function BookingPayment() {
             .catch(() => startPolling(txn.reference, booking));
         },
         onCancel: () => {
-          setPhase('waiting');
-          startPolling(reference, booking);
+          setPhase('slot_reserved');
         },
       });
     } catch (err) {
@@ -183,6 +185,23 @@ function BookingPayment() {
       setPhase('select');
     }
   };
+
+  if (phase === 'slot_reserved') {
+    return (
+      <div className="step-container">
+        <div className="step-header">
+          <h3>Your slot is held</h3>
+          <p>Your booking is saved. Complete your deposit from your dashboard whenever you're ready.</p>
+        </div>
+        <button
+          className="step-continue-btn confirm"
+          onClick={() => { closeBookingDrawer(); openDashboard('upcoming'); }}
+        >
+          Go to My Bookings →
+        </button>
+      </div>
+    );
+  }
 
   if (phase === 'waiting') {
     return (
@@ -224,48 +243,64 @@ function BookingPayment() {
   return (
     <div className="step-container">
       <div className="step-header">
-        <h3>Secure your slot</h3>
-        <p>Pay a deposit now to lock in your appointment.</p>
+        <h3>Lock in your slot</h3>
+        <p>Pay a deposit now to confirm.</p>
       </div>
 
       <div className="deposit-options">
         <button
-          className={`deposit-option${depositOption === 'flat' ? ' selected' : ''}`}
-          onClick={() => setDepositOption('flat')}
+          className={`deposit-option${depositOption === 'thirty' ? ' selected' : ''}`}
+          onClick={() => setDepositOption('thirty')}
         >
-          <div className="deposit-amount">₦{flatDeposit.toLocaleString()}</div>
-          <div className="deposit-label">{isFlatFull ? 'Full payment' : '₦5,000 flat deposit'}</div>
+          {depositOption === 'thirty' && (
+            <>
+              <div className="deposit-selected-ring" />
+              <div className="deposit-check-badge">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </div>
+            </>
+          )}
+          <div className="deposit-amount">₦{thirtyPercent.toLocaleString()}</div>
+          <div className="deposit-label">30% deposit</div>
         </button>
 
-        {!isFlatFull && (
-          <button
-            className={`deposit-option${depositOption === 'percent' ? ' selected' : ''}`}
-            onClick={() => setDepositOption('percent')}
-          >
-            <div className="deposit-amount">₦{percentDeposit.toLocaleString()}</div>
-            <div className="deposit-label">25% of total</div>
-          </button>
-        )}
+        <button
+          className={`deposit-option${depositOption === 'full' ? ' selected' : ''}`}
+          onClick={() => setDepositOption('full')}
+        >
+          {depositOption === 'full' && (
+            <>
+              <div className="deposit-selected-ring" />
+              <div className="deposit-check-badge">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </div>
+            </>
+          )}
+          <div className="deposit-amount">₦{totalPrice.toLocaleString()}</div>
+          <div className="deposit-label">Full payment</div>
+        </button>
       </div>
 
-      {depositOption && (
-        <div className="payment-summary">
-          <div className="payment-row">
-            <span>Appointment total</span>
-            <span>₦{totalPrice.toLocaleString()}</span>
-          </div>
-          <div className="payment-row deposit-row">
-            <span>Deposit now</span>
-            <span className="deposit-now-val">₦{selectedAmount.toLocaleString()}</span>
-          </div>
-          {balance > 0 && (
-            <div className="payment-row balance-row">
-              <span>Balance due on the day</span>
-              <span>₦{balance.toLocaleString()}</span>
-            </div>
-          )}
+      <div className="payment-summary">
+        <div className="payment-row">
+          <span className="payment-row-label">Appointment total</span>
+          <span className="payment-row-value">₦{totalPrice.toLocaleString()}</span>
         </div>
-      )}
+        <div className="payment-row">
+          <span className="payment-row-label payment-row-label--strong">Deposit now</span>
+          <span className="deposit-now-val">{depositOption ? `₦${selectedAmount.toLocaleString()}` : '—'}</span>
+        </div>
+        {depositOption && balance > 0 && (
+          <div className="payment-row">
+            <span className="payment-row-label payment-row-label--muted">Balance on the day</span>
+            <span className="payment-row-value payment-row-value--muted">₦{balance.toLocaleString()}</span>
+          </div>
+        )}
+      </div>
 
       <div className="phone-field">
         <label className="phone-field-label">
