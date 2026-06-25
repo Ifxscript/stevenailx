@@ -280,7 +280,7 @@ const UserDashboardModal = ({ isOpen, onClose }) => {
         stale.forEach(b => { b.status = 'cancelled'; });
       }
 
-      items.sort((a, b) => new Date(a.date) - new Date(b.date));
+      items.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       setBookings(items);
     } catch (err) { console.error(err); }
     finally { setLoadingBookings(false); }

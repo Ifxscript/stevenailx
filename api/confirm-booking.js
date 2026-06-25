@@ -7,7 +7,7 @@ function getDb() {
       credential: cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)),
     });
   }
-  return getFirestore();
+  return getFirestore('stevenailx');
 }
 
 export default async function handler(req, res) {

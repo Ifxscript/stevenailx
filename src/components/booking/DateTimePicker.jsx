@@ -22,10 +22,19 @@ function DateTimePicker() {
       setSelectedTime(null);
       getAvailableSlots(selectedDate, availability.workingHours)
         .then(slots => {
-          // Filter out slots that don't have enough time for the total duration
           const totalDur = getTotalDuration();
+          const now = new Date();
+          const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+          const isToday = selectedDate === todayStr;
+          const cutoffMinutes = now.getHours() * 60 + now.getMinutes() + 180; // 3 hours ahead
+
           const filtered = slots.filter((slot, idx) => {
-            // Check that consecutive slots exist
+            // Block slots within 3 hours of now when booking for today
+            if (isToday) {
+              const [h, m] = slot.split(':').map(Number);
+              if (h * 60 + m < cutoffMinutes) return false;
+            }
+            // Ensure enough consecutive slots for service duration
             const needed = Math.ceil(totalDur / 30);
             for (let i = 0; i < needed; i++) {
               if (!slots[idx + i]) return false;
