@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import StudioManagementPage from './StudioManagementPage';
 import OperationsPage from './OperationsPage';
+import PaymentsPage from './PaymentsPage';
 import SettingsPage from '../../components/admin/SettingsPage';
 import AdminSidebar from '../../components/admin/AdminSidebar';
 import AdminHeader from '../../components/admin/AdminHeader';
@@ -34,6 +35,7 @@ function AdminDashboard() {
     { label: 'Overview', path: '/admin' },
     { label: 'Studio Management', path: '/admin/studio-management' },
     { label: 'Operations', path: '/admin/operations' },
+    { label: 'Payments', path: '/admin/payments' },
     { label: 'Settings', path: '/admin/settings' },
   ];
 
@@ -73,6 +75,7 @@ function AdminDashboard() {
             <Route path="/" element={<DashboardOverview />} />
             <Route path="/studio-management" element={<StudioManagementPage />} />
             <Route path="/operations" element={<OperationsPage />} />
+            <Route path="/payments" element={<PaymentsPage />} />
             <Route path="/content" element={<Navigate to="/admin/studio-management" replace />} />
             <Route path="/services" element={<Navigate to="/admin/studio-management" replace />} />
             <Route path="/portfolio" element={<Navigate to="/admin/studio-management" replace />} />

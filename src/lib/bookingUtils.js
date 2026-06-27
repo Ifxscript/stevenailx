@@ -18,7 +18,7 @@ export const generateTimeSlots = (workingHours, dayName) => {
   let h = openH, m = openM;
   while (h < closeH || (h === closeH && m < closeM)) {
     slots.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
-    m += 30;
+    m += 60;
     if (m >= 60) { h++; m = 0; }
   }
   return slots;
@@ -42,8 +42,8 @@ export const getBookedSlots = async (dateStr) => {
       // Don't block slots held by awaiting_payment bookings older than 1 hour
       if (data.status === 'awaiting_payment' && data.createdAt < oneHourAgo) return;
       const startMinutes = timeToMinutes(data.timeSlot);
-      const duration = data.totalDuration || 30;
-      for (let i = 0; i < duration; i += 30) {
+      const duration = data.totalDuration || 60;
+      for (let i = 0; i < duration; i += 60) {
         booked.push(minutesToTime(startMinutes + i));
       }
     });

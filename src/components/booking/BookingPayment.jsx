@@ -134,7 +134,7 @@ function BookingPayment() {
         clientEmail: currentUser.email,
         clientPhone: trimmedPhone,
         services: bookingData.services.map(s => ({
-          name: s.name || '', price: s.price || 0, duration: s.duration || 30,
+          name: s.name || '', price: s.price || 0, duration: s.duration || 60,
         })),
         guests: (bookingData.guests || [])
           .filter(g => g.name && g.services?.length > 0)

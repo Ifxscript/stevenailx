@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
-  BarChart3, ListOrdered, LogOut, ChevronRight, X, CalendarCheck, Settings
+  BarChart3, ListOrdered, LogOut, ChevronRight, X, CalendarCheck, Settings, ReceiptText
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMobile } from '../../hooks/useMobile';
@@ -21,6 +21,7 @@ function AdminSidebar({ isOpen, onClose, currentUser, onLogout }) {
     { label: 'Overview',           path: '/admin',                    icon: <BarChart3 size={18} /> },
     { label: 'Studio Management',  path: '/admin/studio-management',  icon: <ListOrdered size={18} /> },
     { label: 'Operations',         path: '/admin/operations',         icon: <CalendarCheck size={18} /> },
+    { label: 'Payments',           path: '/admin/payments',           icon: <ReceiptText size={18} /> },
     { label: 'Settings',           path: '/admin/settings',           icon: <Settings size={18} /> },
   ];
 
