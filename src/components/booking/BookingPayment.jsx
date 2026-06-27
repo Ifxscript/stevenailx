@@ -299,7 +299,7 @@ function BookingPayment() {
         </div>
         {depositOption && (
           <div className="payment-row">
-            <span className="payment-row-label payment-row-label--muted">Processing fee (1.5%)</span>
+            <span className="payment-row-label payment-row-label--muted">Processing fee</span>
             <span className="payment-row-value payment-row-value--muted">₦{paystackFee.toLocaleString()}</span>
           </div>
         )}
