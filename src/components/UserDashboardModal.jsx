@@ -14,6 +14,7 @@ import { collection, query, where, getDocs, doc, updateDoc, setDoc, getDoc } fro
 import ReviewSubmissionModal from './ReviewSubmissionModal';
 import UserAvatar from './UserAvatar';
 import { CONFIG } from '../config';
+import { calculateChargeAmount } from '../lib/bookingUtils';
 import './UserDashboardModal.css';
 
 // Map of page titles for the modal header
@@ -104,7 +105,7 @@ const DashboardBookingRow = ({ booking, onReview, onResumePayment }) => {
           onClick={() => onResumePayment(booking)}
         >
           <CreditCard size={16} />
-          <span>Complete Payment — ₦{(booking.depositAmount || 0).toLocaleString()} deposit</span>
+          <span>Complete Payment — ₦{calculateChargeAmount(booking.depositAmount || 0).toLocaleString()} due</span>
           <ChevronRight size={16} />
         </button>
       )}
@@ -240,7 +241,7 @@ const UserDashboardModal = ({ isOpen, onClose }) => {
       popup.newTransaction({
         key: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
         email: currentUser.email,
-        amount: (booking.depositAmount || 5000) * 100,
+        amount: calculateChargeAmount(booking.depositAmount || 5000) * 100,
         reference: newRef,
         onSuccess: (txn) => {
           setResumePhase('waiting');
@@ -546,7 +547,7 @@ const UserDashboardModal = ({ isOpen, onClose }) => {
               <h4>Waiting for your transfer…</h4>
               <p>We check every 5 seconds. Bank transfers usually land within 2 minutes.</p>
               <div className="resume-amount-chip">
-                Amount due: <strong>₦{(resumeBooking.depositAmount || 0).toLocaleString()}</strong>
+                Amount due: <strong>₦{calculateChargeAmount(resumeBooking.depositAmount || 0).toLocaleString()}</strong>
               </div>
             </div>
           )}

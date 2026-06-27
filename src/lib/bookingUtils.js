@@ -155,6 +155,17 @@ To cancel or reschedule, visit your bookings at stevenailx.com/bookings`;
 };
 
 /**
+ * Gross up an amount so the merchant receives it in full after Paystack deducts their fee.
+ * Paystack Nigeria: 1.5% + ₦100 (amounts > ₦2,500), fee capped at ₦2,000.
+ */
+export const calculateChargeAmount = (amount) => {
+  const flat = amount > 2500 ? 100 : 0;
+  const grossed = Math.ceil((amount + flat) / 0.985);
+  const fee = grossed - amount;
+  return fee > 2000 ? amount + 2000 : grossed;
+};
+
+/**
  * Format date for display: "Tue, Apr 22"
  */
 export const formatDisplayDate = (dateStr) => {

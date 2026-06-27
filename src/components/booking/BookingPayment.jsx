@@ -4,6 +4,7 @@ import { useBooking } from '../../context/BookingContext';
 import { db } from '../../lib/firebase';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { Loader2, Phone } from 'lucide-react';
+import { calculateChargeAmount } from '../../lib/bookingUtils';
 import './BookingPayment.css';
 
 function BookingPayment() {
@@ -25,6 +26,9 @@ function BookingPayment() {
     depositOption === 'thirty' ? thirtyPercent
     : depositOption === 'full' ? totalPrice
     : 0;
+
+  const chargeAmount = selectedAmount > 0 ? calculateChargeAmount(selectedAmount) : 0;
+  const paystackFee = chargeAmount - selectedAmount;
 
   // Load saved phone on mount
   useEffect(() => {
@@ -166,7 +170,7 @@ function BookingPayment() {
       popup.newTransaction({
         key: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
         email: currentUser.email,
-        amount: selectedAmount * 100,
+        amount: chargeAmount * 100,
         reference,
         onSuccess: (txn) => {
           setPhase('waiting');
@@ -293,6 +297,18 @@ function BookingPayment() {
           <span className="payment-row-label payment-row-label--strong">Deposit now</span>
           <span className="deposit-now-val">{depositOption ? `₦${selectedAmount.toLocaleString()}` : '—'}</span>
         </div>
+        {depositOption && (
+          <div className="payment-row">
+            <span className="payment-row-label payment-row-label--muted">Processing fee (1.5%)</span>
+            <span className="payment-row-value payment-row-value--muted">₦{paystackFee.toLocaleString()}</span>
+          </div>
+        )}
+        {depositOption && (
+          <div className="payment-row payment-row--total">
+            <span className="payment-row-label payment-row-label--strong">You'll pay today</span>
+            <span className="deposit-now-val">₦{chargeAmount.toLocaleString()}</span>
+          </div>
+        )}
         {depositOption && balance > 0 && (
           <div className="payment-row">
             <span className="payment-row-label payment-row-label--muted">Balance on the day</span>

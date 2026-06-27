@@ -107,6 +107,11 @@
   color: #9A9395;
 }
 
+.payment-row--total {
+  border-top: 1.5px solid #221F20;
+  margin-top: 2px;
+}
+
 .deposit-now-val {
   font-size: 1.125rem;
   font-weight: 800;
