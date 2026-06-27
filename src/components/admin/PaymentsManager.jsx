@@ -46,7 +46,6 @@ export default function PaymentsManager() {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [source, setSource] = useState('');
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [fromDate, setFromDate] = useState('');
@@ -60,7 +59,6 @@ export default function PaymentsManager() {
       .then(data => {
         if (data.error) throw new Error(data.error);
         setPayments(data.payments || []);
-        setSource(data.source || '');
       })
       .catch(err => setError(err.message))
       .finally(() => setLoading(false));
@@ -112,11 +110,7 @@ export default function PaymentsManager() {
       {/* Header */}
       <p style={{ fontSize: 10, fontWeight: 700, color: T.acc, letterSpacing: '.1em', textTransform: 'uppercase', margin: '0 0 6px' }}>Payments</p>
       <h1 style={{ fontSize: 22, fontWeight: 800, color: T.text, margin: '0 0 4px', letterSpacing: '-.3px' }}>Payment History</h1>
-      <p style={{ fontSize: 13, color: T.sub, margin: '0 0 24px' }}>
-        All confirmed and completed deposits
-        {source === 'paystack' && <span style={{ marginLeft: 6, fontSize: 11, color: T.mut }}>(via Paystack)</span>}
-        {source === 'firestore' && <span style={{ marginLeft: 6, fontSize: 11, color: T.mut }}>(via Firestore)</span>}
-      </p>
+      <p style={{ fontSize: 13, color: T.sub, margin: '0 0 24px' }}>All successful Paystack transactions</p>
 
       {error && (
         <div style={{ background: T.accBg, border: `1px solid rgba(201,75,53,.25)`, borderRadius: 12, padding: '12px 16px', marginBottom: 20, fontSize: 13, color: T.acc }}>
@@ -218,42 +212,22 @@ export default function PaymentsManager() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {filtered.map((p) => (
             <div key={p.id} style={{ background: T.card, borderRadius: 14, padding: '16px', boxShadow: '0 1px 4px rgba(0,0,0,.07)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
-                <div>
-                  <div style={{ fontSize: 15, fontWeight: 800, color: T.text }}>{p.clientName || '—'}</div>
-                  <div style={{ fontSize: 11, color: T.mut, marginTop: 2 }}>{p.clientEmail}</div>
-                </div>
-                <StatusBadge status={p.status} />
+              <div style={{ marginBottom: 10 }}>
+                <div style={{ fontSize: 15, fontWeight: 800, color: T.text }}>{p.clientName || '—'}</div>
+                <div style={{ fontSize: 11, color: T.mut, marginTop: 2 }}>{p.clientEmail}</div>
               </div>
 
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 16px', fontSize: 12, color: T.sub }}>
-                <span><span style={{ color: T.mut, fontWeight: 600 }}>Order ID: </span>{p.orderId || '—'}</span>
+                <span><span style={{ color: T.mut, fontWeight: 600 }}>Reference: </span>{p.paystackReference}</span>
                 <span><span style={{ color: T.mut, fontWeight: 600 }}>Date paid: </span>{fmtDate(p.paidAt)}</span>
-                {p.appointmentDate && (
-                  <span><span style={{ color: T.mut, fontWeight: 600 }}>Appt: </span>{p.appointmentDate}</span>
-                )}
-                {p.services && (
-                  <span><span style={{ color: T.mut, fontWeight: 600 }}>Services: </span>{p.services}</span>
-                )}
-                {p.paystackReference && p.paystackReference !== p.orderId && (
-                  <span><span style={{ color: T.mut, fontWeight: 600 }}>Ref: </span>{p.paystackReference}</span>
+                {p.channel && (
+                  <span><span style={{ color: T.mut, fontWeight: 600 }}>Via: </span>{p.channel}</span>
                 )}
               </div>
 
               <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${T.bdr}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <span style={{ fontSize: 18, fontWeight: 800, color: T.grn }}>{naira(p.amountPaid)}</span>
-                  {p.depositOption && (
-                    <span style={{ marginLeft: 8, fontSize: 11, fontWeight: 600, color: T.mut }}>
-                      {p.depositOption === 'full' ? 'full payment' : '30% deposit'}
-                    </span>
-                  )}
-                </div>
-                {p.totalPrice > p.amountPaid && (
-                  <span style={{ fontSize: 11, color: T.acc, fontWeight: 600 }}>
-                    {naira(p.totalPrice - p.amountPaid)} balance due
-                  </span>
-                )}
+                <span style={{ fontSize: 18, fontWeight: 800, color: T.grn }}>{naira(p.amountPaid)}</span>
+                <StatusBadge status={p.status} />
               </div>
             </div>
           ))}
