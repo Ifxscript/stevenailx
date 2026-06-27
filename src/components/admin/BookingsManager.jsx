@@ -125,6 +125,13 @@ function BookingList({ list, activeSectionId, onUpdateStatus, openPopup, closePo
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px', color: '#8E8484', fontSize: '0.9rem' }}>
                   <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Calendar size={14} /> {formatDisplayDate(b.date)}</span>
                   <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 800, color: '#4a1a26' }}><Coins size={14} /> ₦{Number(b.totalPrice).toLocaleString()}</span>
+                  {b.depositOption && (
+                    <span style={{ fontSize: '0.8rem', color: b.depositOption === 'full' ? '#4F5E49' : '#92400E', fontWeight: 600 }}>
+                      {b.depositOption === 'full'
+                        ? 'Full payment'
+                        : `30% deposit — ₦${Number(b.totalPrice - b.depositAmount).toLocaleString()} balance due`}
+                    </span>
+                  )}
                 </div>
               </div>
 

@@ -122,6 +122,10 @@ export const formatWhatsAppForSteve = (booking) => {
     return `  ${g.name}\n${gServices}`;
   }).join('\n') || '';
 
+  const depositLine = booking.depositOption === 'full'
+    ? `Paid: ₦${Number(booking.depositAmount).toLocaleString()} (full payment)`
+    : `Paid: ₦${Number(booking.depositAmount).toLocaleString()} (30% deposit) — ₦${Number(booking.totalPrice - booking.depositAmount).toLocaleString()} balance due on the day`;
+
   const msg = `NEW BOOKING
 
 Order ID: ${booking.orderId || booking.id}
@@ -130,6 +134,7 @@ Date: ${booking.date} | ${booking.timeSlot}
 Services:
 ${services}${guestLines ? `\nGuests:\n${guestLines}` : ''}
 Total: ₦${Number(booking.totalPrice).toLocaleString()}
+${depositLine}
 Phone: ${booking.clientPhone || booking.clientEmail}
 ${booking.notes ? `Notes: ${booking.notes}` : ''}`;
 
