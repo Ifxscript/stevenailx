@@ -8,7 +8,7 @@ const FALLBACK_ADMIN = 'ianekwe7@gmail.com';
 async function getAdminEmails() {
   try {
     const url =
-      'https://firestore.googleapis.com/v1/projects/stevenailx/databases/(default)/documents/site_content/landing_page';
+      'https://firestore.googleapis.com/v1/projects/stevenailx/databases/stevenailx/documents/site_content/landing_page';
     const res = await fetch(url);
     const data = await res.json();
     const emails =
